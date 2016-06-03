@@ -1,0 +1,6 @@
+{
+  "name" : "Accept-Encoding",
+  "description" : "A string representing the list of acceptable encodings. This attribute is a HTTP header collected by the server.",
+  "files" : [],
+  "hash" : "False"
+}

@@ -1,0 +1,6 @@
+{
+  "name" : "Accept-Language",
+  "description" : "A string representing the list of acceptable human languages for response. This attribute is a HTTP header collected by the server.",
+  "files" : [],
+  "hash" : "False"
+}

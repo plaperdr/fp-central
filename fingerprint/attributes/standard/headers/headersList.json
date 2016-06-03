@@ -1,0 +1,6 @@
+{
+  "name" : "List of headers",
+  "description" : "An array with all the HTTP headers sent to the server. This attribute is collected by the server.",
+  "files" : [],
+  "hash" : "False"
+}

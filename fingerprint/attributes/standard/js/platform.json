@@ -1,0 +1,8 @@
+{
+  "name" : "Platform",
+  "description" : "A string representing the platform on which the browser is running. This attribute is collected through JavaScript via the 'navigator' object.",
+  "files" : ["platform.js"],
+  "variables" : ["platform"],
+  "hash" : "False",
+  "URL" : "https://developer.mozilla.org/docs/Web/API/NavigatorID/platform"
+}

@@ -1,0 +1,6 @@
+{
+  "name" : "User-Agent",
+  "description" : "A string giving details on the browser and its underlying operating system. This attribute is a HTTP header collected by the server.",
+  "files" : [],
+  "hash" : "False"
+}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Home - FP Central
+{% endblock %}
+{% block content %}
+    <div class="alert alert-warning">
+      <h1>Beta version!</h1>
+      <h4>This website is still in beta. If you find any bugs, don't hesitate to report them on our official GitHub repository.</h4>
+    </div>
+    <div class="jumbotron">
+      <h1>Welcome to FP Central!</h1>
+      <p>This website aims at studying the diversity of browser fingerprints and providing developers with data to help them design good defenses.
+         Contribute to the efforts by viewing your own browser fingerprint or consult the current statistics of data provided by users around the world!
+      <p>
+        <a class="btn btn-lg btn-default" role="button" href="/fp">View my fingerprint</a>
+        <a class="btn btn-lg btn-default" role="button" href="/faq">FAQ</a>
+      </p>
+    </div>
+{% endblock %}

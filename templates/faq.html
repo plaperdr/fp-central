@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+    FAQ - FP Central
+{% endblock %}
+
+{% block content %}
+    <h1>List of attributes</h1>
+    <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set count = 1 %}
+            {% for def in definitions %}
+            <tr>
+                <td>{{ count }}</td>
+                <td>{{ def.name }}</td>
+                <td>{{ def.description }}</td>
+                <td>
+                    {%  if def.URL is defined %}
+                    <a href="{{ def.URL }}"><span class="glyphicon glyphicon-link"></span></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% set count = count + 1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

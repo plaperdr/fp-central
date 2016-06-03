@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+    View my fingerprint - FP Central
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    <!-- Meta variable containing all the variables of the current fingerprint -->
+    <script type="text/javascript">
+        var fp = {};
+    </script>
+    <!-- Scripts to collect the attributes of a fingerprint -->
+    {% for file in files %}
+    <script type="text/javascript" src="{{ url_for('site.static', filename=file) }}"></script>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <script type="text/javascript">
+        console.log(fp);
+    </script>
+{% endblock %}

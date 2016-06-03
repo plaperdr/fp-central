@@ -1,0 +1,8 @@
+{
+  "name" : "Timezone",
+  "description" : "A string representing the time-zone offset from UTC, in minutes, for the current locale. This attribute is collected through JavaScript via the Date API.",
+  "files" : ["timezone.js"],
+  "variables" : ["timezone"],
+  "hash" : "False",
+  "URL" : "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset"
+}
