@@ -1,4 +1,4 @@
-#FP Central
+#Fingerprint Central
 Welcome to the official Fingerprint Central repository!
 This project is developed as part of the
 [Google Summer of Code 2016](https://summerofcode.withgoogle.com/projects/#5574889654190080)
@@ -78,5 +78,4 @@ However, as soon as the project is online, I'll gladly welcome any contributions
 to fix bugs or add new features.
 
 #License
-
-
+This project is licensed under the MIT License. See the LICENSE file for details.
