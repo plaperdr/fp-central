@@ -1,0 +1,1 @@
+fp.cookies = window.navigator.cookieEnabled? "yes" : "no";

@@ -1,0 +1,8 @@
+{
+  "name" : "Cookies",
+  "description" : "A boolean indicating if cookies are enabled or not. This attribute is collected through JavaScript via the 'navigator' object.",
+  "files" : ["cookies.js"],
+  "variables" : ["cookies"],
+  "hash" : "False",
+  "URL" : "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/cookieEnabled"
+}

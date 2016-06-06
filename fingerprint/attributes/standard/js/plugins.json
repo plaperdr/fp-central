@@ -1,0 +1,8 @@
+{
+  "name" : "Plugins",
+  "description" : "An array containing information on plugins installed by the browser. This attribute is collected through JavaScript via the 'navigator' object.",
+  "files" : ["plugins.js"],
+  "variables" : ["plugins"],
+  "hash" : "True",
+  "URL" : "https://developer.mozilla.org/en-US/docs/Web/API/Plugin"
+}

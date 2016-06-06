@@ -1,0 +1,1 @@
+fp.plugins = window.navigator.plugins;

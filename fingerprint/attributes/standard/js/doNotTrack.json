@@ -1,0 +1,8 @@
+{
+  "name" : "Do Not Track",
+  "description" : "A boolean indicating the status of the Do Not Track header. This attribute is collected through JavaScript via the 'navigator' object.",
+  "files" : ["doNotTrack.js"],
+  "variables" : ["dnt"],
+  "hash" : "False",
+  "URL" : "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack"
+}

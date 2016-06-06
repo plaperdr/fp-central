@@ -1,0 +1,8 @@
+{
+  "name" : "Storage",
+  "description" : "Information on the support of local and session storage . This attribute is collected through JavaScript.",
+  "files" : ["storage.js"],
+  "variables" : ["storage.local","storage.session"],
+  "hash" : "False",
+  "URL" : "https://developer.mozilla.org/en-US/docs/Web/API/Storage"
+}
