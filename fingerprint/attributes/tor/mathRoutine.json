@@ -2,7 +2,7 @@
   "name" : "Math routine",
   "description" : "Values for specific math routines",
   "files" : ["mathRoutine.js"],
-  "variables" : ["math.asinh(1)","math.acosh(1e300)","math.atanh(0.5)","math.expm1(1)",
+  "variables" : ["math.asinh(1)","math.acosh(1e300)","math.atanh(05)","math.expm1(1)",
     "math.cbrt(100)","math.log1p(10)","math.sinh(1)","math.cosh(10)","math.tanh(1)"],
   "hash" : "Yes",
   "URL" : "https://trac.torproject.org/projects/tor/ticket/13018"

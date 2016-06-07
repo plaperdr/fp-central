@@ -25,5 +25,6 @@ try {
 } catch (ex) {
 	domSessionStorage = "no";
 }
-
-fp.storage = {"local":domLocalStorage, "session":domSessionStorage};
+api.register("storage", function() {
+    return {"local":domLocalStorage, "session":domSessionStorage};
+});

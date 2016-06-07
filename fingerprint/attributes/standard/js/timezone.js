@@ -1,1 +1,3 @@
-fp.timezone = new Date().getTimezoneOffset();
+api.register("timezone", function() {
+    return new Date().getTimezoneOffset();
+});

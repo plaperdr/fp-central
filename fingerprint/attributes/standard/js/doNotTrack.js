@@ -8,4 +8,6 @@ if (window.navigator.doNotTrack != null && window.navigator.doNotTrack != "unspe
 } else {
 	doNotTrack = "NC";
 }
-fp.dnt = doNotTrack;
+api.register("dnt", function() {
+    return doNotTrack;
+});

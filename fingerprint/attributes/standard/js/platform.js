@@ -1,1 +1,3 @@
-fp.platform = navigator.platform;
+api.register("platform", function() {
+    return window.navigator.platform;
+});
