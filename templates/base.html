@@ -18,6 +18,12 @@
     <!-- Custom theme -->
     <link href="{{url_for('static', filename='css/theme.css')}}" rel="stylesheet">
     {%- endblock styles %}
+
+    {% block scripts %}
+    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    {%- endblock scripts %}
+
     {%- endblock head %}
   </head>
   <body{% block body_attribs %}{% endblock body_attribs %}>
@@ -46,14 +52,11 @@
     {%- endblock navbar %}
          <div class="container-fluid">
                 <div class="col-lg-8 col-lg-offset-2">
-    {% block content -%}
-    {%- endblock content %}
+                    {% block content -%}
+                    {%- endblock content %}
                 </div>
          </div>
-    {% block scripts %}
-    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    {%- endblock scripts %}
+
     {%- endblock body %}
   </body>
 {%- endblock html %}
