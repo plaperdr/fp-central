@@ -51,8 +51,11 @@ class Db(object):
 
     #Store
     def storeFP(self,fingerprint):
-        print(json.loads(fingerprint.decode('utf-8')))
         self.mongo.db.fp.insert_one(json.loads(fingerprint.decode('utf-8')))
+
+    #Global stats
+    def getTotalFP(self):
+        return self.mongo.db.fp.count()
 
     #Lifetime stats
     def getLifetimeStats(self, name, value):
@@ -80,27 +83,35 @@ db = Db()
 
 
 ###### API
-class Statistics(Resource):
-
-    #Get the most popular values
-    def get(self):
-
-        pass
-
+class IndividualStatistics(Resource):
     #Get the statistics for the value sent in POST
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, help='The name of the attribute must be included.', required=True)
-        parser.add_argument('value', type=str, help='A value must be included.', required=True)
+        parser.add_argument('value', type=str, help='A value must be included.')
         parser.add_argument('epoch', type=int, help='Only take the last X days (must be an int)')
         args = parser.parse_args()
 
-        if args.epoch is None:
-            return db.getLifetimeStats(args.name, json.loads(args.value))
+        if args.value is not None:
+            if args.epoch is None:
+                #print(args.name)
+                #print(json.loads(args.value),type(json.loads(args.value)))
+                return db.getLifetimeStats(args.name, json.loads(args.value))
+            else:
+                return db.getEpochStats(args.name, json.loads(args.value), args.epoch)
         else:
-            return db.getEpochStats(args.name, json.loads(args.value), args.epoch)
+            return ""
 
-api.add_resource(Statistics, '/stats')
+class GlobalStatistics(Resource):
+    # Get the most popular values
+    def get(self, att):
+        if att == "total":
+            return db.getTotalFP()
+        else:
+            return db.getPopularLifetimeValues(att)
+
+api.add_resource(IndividualStatistics, '/stats')
+api.add_resource(GlobalStatistics, '/stats/<string:att>')
 
 if __name__ == '__main__':
     #Launch application

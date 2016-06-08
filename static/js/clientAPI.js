@@ -42,5 +42,41 @@ api.store = function(){
 
 
 api.stats = function(){
+    //Get the total number of FPs
+    var nbFPs = parseInt(api.getTotalFP());
 
+    for(var i =0; i<attributes.length; i++){
+        var name = attributes[i].name;
+        var result = fp[name];
+
+        //Display percentage in HTML table
+        if(typeof result === "object"){
+            for(var key in result){
+                api.getPercentage(name+"."+key,JSON.stringify(result[key]),nbFPs);
+            }
+        } else {
+            api.getPercentage(name,JSON.stringify(result),nbFPs);
+        }
+    }
+};
+
+
+api.getPercentage = function(name,value,nbTotal){
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/stats", true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var percent = parseInt(xhr.responseText)*100/nbTotal;
+            document.getElementById(name+percentage).innerHTML = percent.toFixed(2).toString();
+        }
+    };
+    xhr.send(JSON.stringify({"name":name, "value":value}));
+};
+
+api.getTotalFP = function(){
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/stats/total", false);
+    xhr.send(null);
+    return xhr.responseText;
 };
