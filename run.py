@@ -1,10 +1,11 @@
 from flask import Flask,render_template,Blueprint,request
-from fingerprint.attribute_reader import get_definitions,get_files_and_variables
+from fingerprint.attribute_reader import get_definitions,get_files_and_variables,get_hashed_variables
 from flask_restful import Api, Resource,reqparse
 import env_config as config
 from flask_pymongo import PyMongo
 import json
 import datetime
+import hashlib
 from bson.objectid import ObjectId
 
 
@@ -41,6 +42,8 @@ def store():
 class Db(object):
 
     def __init__(self):
+
+        #Initialize connection to the Mongo database
         app.config['MONGO_HOST'] = config.db_host
         app.config['MONGO_PORT'] = config.db_port
         app.config['MONGO_DBNAME'] = config.db_dbname
@@ -49,9 +52,35 @@ class Db(object):
         app.config['MONGO_CONNECT'] = False #For multiprocessing
         self.mongo = PyMongo(app, config_prefix='MONGO')
 
+        #Get the list of hashed variables
+        self.hashedVariables = get_hashed_variables()
+        print(self.hashedVariables)
+
     #Store
     def storeFP(self,fingerprint):
-        self.mongo.db.fp.insert_one(json.loads(fingerprint.decode('utf-8')))
+        parsedFP = json.loads(fingerprint.decode('utf-8'))
+
+        #Store the complete fingerprint in the main collection
+        insertedID = self.mongo.db.fp.insert_one(parsedFP).inserted_id
+
+        #Compute hashes for hashed variables and
+        #store them in a secondary collection
+        hashes = { "_id": insertedID}
+        for key in parsedFP:
+            if key in self.hashedVariables:
+                print(key)
+                print(parsedFP[key])
+                self.hashValue(parsedFP[key])
+                hashes[key] = self.hashValue(parsedFP[key])
+
+        if len(hashes)>1:
+            print(hashes)
+            self.mongo.db.hash.insert_one(hashes)
+
+    #Hash
+    @staticmethod
+    def hashValue(value):
+        return hashlib.sha256(value.encode('ascii','ignore')).hexdigest()
 
     #Global stats
     def getTotalFP(self):
@@ -59,7 +88,11 @@ class Db(object):
 
     #Lifetime stats
     def getLifetimeStats(self, name, value):
-        return self.mongo.db.fp.find({name:value}).count()
+        if name in self.hashedVariables:
+            print(name)
+            return self.mongo.db.hash.find({name: self.hashValue(value)}).count()
+        else :
+            return self.mongo.db.fp.find({name:value}).count()
 
     def getPopularLifetimeValues(self, name):
         return self.mongo.db.fp.aggregate({"$group": {"_id":"$"+name, "count": {"$sum": 1}}}, {"$sort": { "count" : -1}},{"$limit": 5})
@@ -72,7 +105,10 @@ class Db(object):
 
     def getEpochStats(self, name, value, days):
         tempID = self.getObjectID(days)
-        return self.mongo.db.fp.find({"_id": {"$gte": tempID}, name: value}).count()
+        if name in self.hashedVariables:
+            return self.mongo.db.hash.find({"_id": {"$gte": tempID}, name: self.hashValue(value)}).count()
+        else:
+            return self.mongo.db.fp.find({"_id": {"$gte": tempID}, name: value}).count()
 
     def getPopularEpochValues(self, name, days):
         tempID = self.getObjectID(days)

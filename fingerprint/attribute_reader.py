@@ -34,5 +34,18 @@ def get_files_and_variables():
 
     return sources,variables
 
+def get_hashed_variables():
+    hashedVariables = []
+
+    descriptions = get_definitions()
+    for desc in descriptions:
+        if "variables" in desc and desc["hash"] == "True":
+            hashedVariables.extend(desc["variables"])
+
+    return hashedVariables
+
+
+
+
 if __name__ == '__main__':
     get_definitions()
