@@ -28,7 +28,6 @@ def get_files_and_variables():
                 with open(path) as json_file:
                     json_data = json.load(json_file)
                     if len(json_data["files"]) > 0:
-                        print(json_data["files"])
                         for f in json_data["files"]:
                             sources.append(os.path.join(subdir, f)[len(attributes_folder) + 1:])
                         variables.append(json_data["variables"])
