@@ -24,7 +24,7 @@ def home():
 @app.route('/fp')
 def fp():
     files,variables = get_files_and_variables()
-    return render_template('fp.html', files=files, variables=variables)
+    return render_template('fp.html', files=files, variables=variables, headers=request.headers)
 
 @app.route('/faq')
 def faq():
@@ -54,7 +54,6 @@ class Db(object):
 
         #Get the list of hashed variables
         self.hashedVariables = get_hashed_variables()
-        print(self.hashedVariables)
 
     #Store
     def storeFP(self,fingerprint):
@@ -68,13 +67,10 @@ class Db(object):
         hashes = { "_id": insertedID}
         for key in parsedFP:
             if key in self.hashedVariables:
-                print(key)
-                print(parsedFP[key])
                 self.hashValue(parsedFP[key])
                 hashes[key] = self.hashValue(parsedFP[key])
 
         if len(hashes)>1:
-            print(hashes)
             self.mongo.db.hash.insert_one(hashes)
 
     #Hash
@@ -130,8 +126,6 @@ class IndividualStatistics(Resource):
 
         if args.value is not None:
             if args.epoch is None:
-                #print(args.name)
-                #print(json.loads(args.value),type(json.loads(args.value)))
                 return db.getLifetimeStats(args.name, json.loads(args.value))
             else:
                 return db.getEpochStats(args.name, json.loads(args.value), args.epoch)

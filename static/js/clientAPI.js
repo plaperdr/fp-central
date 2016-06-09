@@ -16,6 +16,7 @@ api.register = function(name,code){
 };
 
 api.run = function (){
+    //Running registered tests
     for(var i =0; i<attributes.length; i++){
         var name = attributes[i].name;
         var result = attributes[i].code();
@@ -29,6 +30,13 @@ api.run = function (){
         } else {
             document.getElementById(name+value).innerHTML = result;
         }
+    }
+
+    //Adding HTTP headers
+    var headers = document.getElementById("headers");
+    for(var j=0; j<headers.children.length; j++){
+        var header = headers.children[j];
+        fp[header.cells[0].textContent] = header.cells[1].textContent;
     }
 };
 
@@ -44,9 +52,9 @@ api.store = function(){
 api.stats = function(){
     //Get the total number of FPs
     var nbFPs = parseInt(api.getTotalFP());
-
+    var attributes = Object.keys(fp);
     for(var i =0; i<attributes.length; i++){
-        var name = attributes[i].name;
+        var name = attributes[i];
         var result = fp[name];
 
         //Display percentage in HTML table
