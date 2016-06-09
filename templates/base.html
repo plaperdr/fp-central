@@ -1,3 +1,10 @@
+{% set navigation_bar = [
+    ('/', 'home', 'Home'),
+    ('/fp', 'fp', 'My fingerprint'),
+    ('/faq', 'faq', 'FAQ')
+] -%}
+{% set active_page = active_page|default('index') -%}
+
 {% block doc -%}
 <!DOCTYPE html>
 <html{% block html_attribs %}{% endblock html_attribs %}>
@@ -42,9 +49,9 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
-                <li><a href="/fp">My fingerprint</a></li>
-                <li><a href="/faq">FAQ</a></li>
+                {% for href, id, caption in navigation_bar %}
+                <li{% if id == active_page %} class="active"{% endif%}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+                {% endfor %}
               </ul>
             </div><!--/.nav-collapse -->
         </div>

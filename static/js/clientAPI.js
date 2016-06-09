@@ -38,14 +38,21 @@ api.run = function (){
         var header = headers.children[j];
         fp[header.cells[0].textContent] = header.cells[1].textContent;
     }
+    
+    //Enabling the send button
+    document.getElementById("sendBtn").classList.remove("disabled");
 };
 
 
 api.store = function(){
+    //Sending the complete fingerprint to the server
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/store", true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
     xhr.send(JSON.stringify(fp));
+
+    //Enabling the stats button
+    document.getElementById("statsBtn").classList.remove("disabled");
 };
 
 
