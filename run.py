@@ -55,7 +55,7 @@ class Db(object):
         #Get the list of hashed variables
         self.hashedVariables = get_hashed_variables()
 
-    #Store
+    ######Storage
     def storeFP(self,fingerprint):
         parsedFP = json.loads(fingerprint.decode('utf-8'))
 
@@ -67,38 +67,44 @@ class Db(object):
         hashes = { "_id": insertedID}
         for key in parsedFP:
             if key in self.hashedVariables:
-                self.hashValue(parsedFP[key])
                 hashes[key] = self.hashValue(parsedFP[key])
 
         if len(hashes)>1:
             self.mongo.db.hash.insert_one(hashes)
 
-    #Hash
+    #Hashing method using SHA-256
     @staticmethod
     def hashValue(value):
         return hashlib.sha256(value.encode('ascii','ignore')).hexdigest()
 
-    #Global stats
+
+    ######Global stats
+    #Return the total number of stored fingerprints
     def getTotalFP(self):
         return self.mongo.db.fp.count()
 
-    #Lifetime stats
+
+    ######Lifetime stats (since the creation of the collection)
+    #Return the number of fingerprints having the exact same value for the specified attribute
     def getLifetimeStats(self, name, value):
         if name in self.hashedVariables:
-            print(name)
             return self.mongo.db.hash.find({name: self.hashValue(value)}).count()
-        else :
+        else:
             return self.mongo.db.fp.find({name:value}).count()
 
+    #Return the 5 most popular values for a specific attribute
     def getPopularLifetimeValues(self, name):
         return self.mongo.db.fp.aggregate({"$group": {"_id":"$"+name, "count": {"$sum": 1}}}, {"$sort": { "count" : -1}},{"$limit": 5})
 
-    #Epoch stats
+
+    ######Epoch stats (stats on a specified period of time)
+    #Method to get the correct timestamp in an ObjectID object
     @staticmethod
     def getObjectID(days):
         genTime = datetime.datetime.today() - datetime.timedelta(days=days)
         return ObjectId.from_datetime(genTime)
 
+    #Return the number of fingerprints having the exact same value for the specified attribute in the last X days
     def getEpochStats(self, name, value, days):
         tempID = self.getObjectID(days)
         if name in self.hashedVariables:
@@ -106,6 +112,7 @@ class Db(object):
         else:
             return self.mongo.db.fp.find({"_id": {"$gte": tempID}, name: value}).count()
 
+    #Return the 5 most popular values for a specific attribute in the last X days
     def getPopularEpochValues(self, name, days):
         tempID = self.getObjectID(days)
         return self.mongo.db.fp.aggregate([{"$match": { "_id" : {"$gt": tempID}}},{"$group": {"_id": "$" + name, "$gte": tempID,  "count": {"$sum": 1}}},
@@ -121,7 +128,7 @@ class IndividualStatistics(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, help='The name of the attribute must be included.', required=True)
         parser.add_argument('value', type=str, help='A value must be included.')
-        parser.add_argument('epoch', type=int, help='Only take the last X days (must be an int)')
+        parser.add_argument('epoch', type=int, help='A period in days can be included.')
         args = parser.parse_args()
 
         if args.value is not None:
