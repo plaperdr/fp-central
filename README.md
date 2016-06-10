@@ -33,6 +33,11 @@ by executing the following instruction at the root of the repo:
 
     pip3 install -r requirements.txt
 
+
+Then you need to have MongoDB running on your system.
+Refer to the official documentation [HERE](https://docs.mongodb.com/manual/installation/)
+for instructions on how to install it on your operating system.
+
 After this step, you can directly run
 
     python3 run.py
