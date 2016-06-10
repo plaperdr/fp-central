@@ -1,12 +1,15 @@
 from flask import Flask,render_template,Blueprint,request
+from bson.objectid import ObjectId
 from fingerprint.attribute_reader import get_definitions,get_files_and_variables,get_hashed_variables
 from flask_restful import Api, Resource,reqparse
-import env_config as config
+from flask_babel import Babel
 from flask_pymongo import PyMongo
+
+import env_config as config
 import json
 import datetime
 import hashlib
-from bson.objectid import ObjectId
+
 
 
 ###### App
@@ -36,7 +39,12 @@ def store():
     db.storeFP(request.data)
     return 'ok'
 
+###### Babel
+babel = Babel(app)
 
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(config.LANGUAGES.keys())
 
 ###### DB
 class Db(object):

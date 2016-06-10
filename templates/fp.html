@@ -2,14 +2,14 @@
 {% set active_page = "fp" %}
 
 {% block title %}
-    View my fingerprint - FP Central
+    {{ _('View my fingerprint') }} - FP Central
 {% endblock %}
 
 {% block content %}
     <div class="btn-group btn-group-justified" role="group">
-        <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"><span class="badge">1</span> <strong>Run JavaScript tests</strong></a>
-        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.store()"><span class="badge">2</span> <strong>Send to server</strong></a>
-        <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"><span class="badge">3</span> <strong>Get statistics</strong></a>
+        <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"><span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong></a>
+        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.store()"><span class="badge">2</span> <strong>{{ _('Send to server') }}</strong></a>
+        <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"><span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong></a>
     </div>
 
     <br>
@@ -19,8 +19,8 @@
         <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Value</th>
+                    <th>{{ _('Name') }}</th>
+                    <th>{{ _('Value') }}</th>
                     <th>%</th>
                 </tr>
             </thead>
@@ -41,8 +41,8 @@
         <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Value</th>
+                    <th>{{ _('Name') }}</th>
+                    <th>{{ _('Value') }}</th>
                     <th>%</th>
                 </tr>
             </thead>

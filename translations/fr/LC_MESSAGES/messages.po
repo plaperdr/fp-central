@@ -1,0 +1,100 @@
+# French translations for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-06-10 14:46+0200\n"
+"PO-Revision-Date: 2016-06-10 15:00+0200\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: templates/base.html:2 templates/home.html:5
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/base.html:3
+msgid "My fingerprint"
+msgstr "Mon empreinte"
+
+#: templates/base.html:4 templates/faq.html:5 templates/home.html:21
+msgid "FAQ"
+msgstr ""
+
+#: templates/faq.html:9
+msgid "List of attributes"
+msgstr "Liste des attributs"
+
+#: templates/faq.html:14 templates/fp.html:22 templates/fp.html:44
+msgid "Name"
+msgstr "Nom"
+
+#: templates/faq.html:15
+msgid "Description"
+msgstr ""
+
+#: templates/faq.html:16
+msgid "URL"
+msgstr ""
+
+#: templates/fp.html:5 templates/home.html:20
+msgid "View my fingerprint"
+msgstr "Voir mon empreinte"
+
+#: templates/fp.html:10
+msgid "Run JavaScript tests"
+msgstr "Exécuter les tests JavaScript"
+
+#: templates/fp.html:11
+msgid "Send to server"
+msgstr "Envoyer au serveur"
+
+#: templates/fp.html:12
+msgid "Get statistics"
+msgstr "Obtenir les statistiques"
+
+#: templates/fp.html:23 templates/fp.html:45
+msgid "Value"
+msgstr "Valeur"
+
+#: templates/home.html:11
+msgid ""
+"Welcome to FP Central! This website aims at studying the diversity of "
+"browser fingerprints and providing developers with data to help them "
+"design good defenses.\n"
+"         Contribute to the efforts by viewing your own browser "
+"fingerprint or consult the current statistics of data provided by users "
+"around the world!"
+msgstr ""
+"Bienvenue sur FP Central! Ce site web a pour but d'étudier la diversité "
+"des empreintes de navigateur et de fournir à des développeurs des "
+"données leur permettant de concevoir des contre-mesures adaptées.\n"
+"         Contribuer à la base de données en affichant votre propre "
+"empreinte ou consulter les statistiques sur les empreintes récupérées à "
+"travers le monde!"
+
+#: templates/home.html:15
+msgid "Beta version"
+msgstr "Version beta"
+
+#: templates/home.html:16
+msgid ""
+"This website is still in development. If you find any bugs, don't "
+"hesitate to report them on\n"
+"          <a href=\"https://github.com/plaperdr/fp-central\"><strong>our "
+"official GitHub repository</strong></a>."
+msgstr ""
+"Ce site est toujours en développement. Si vous trouvez des bugs, "
+"n'hésitez pas à les reporter sur \n"
+"<a href=\"https://github.com/plaperdr/fp-central\"><strong>notre page "
+"GitHub officiel</strong></a>."
