@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% set active_page = "tor" %}
+
+{% block title %}
+    Tor - FP Central
+{% endblock %}
+
+{% block content %}
+    <h1>Acceptable fingerprint</h1>
+    <p>
+        The approach of the Tor browser towards browser fingerprinting is simple. The exposed fingerprints should be as
+        uniform as possible so that no browser can be uniquely identifiable. Many modifications have already been made
+        by Tor developers to limit the quantity of identifying information but differences still exist to support a
+        wide range of configurations.
+    </p>
+    <p>
+        On this page, several checks are performed to find out if your browser fingerprint is an "acceptable" one, i.e.
+        it follows Tor basic guidelines. If it is, this would mean that your fingerprint is not distinguishable from
+        the majority of Tor users, thus increasing your online privacy.
+    </p>
+    <h2>Results</h2>
+    <h4>Screen resolution <br> <span id="screen"></span> <span id="screenRes" class="glyphicon"></span></h4>
+    <div id="screenOk" style="display: none">
+        Your Tor browser is at one of the recommended sizes!
+    </div>
+    <div id="screenNotOk" style="display: none">
+        Your Tor browser is not at the recommended size. It should be either at 1000x1000 or at a multiple of 200x100.
+        The easiest way to fix the resolution difference is to launch a new Tor identity and <strong>not</strong>
+        change the size of the browser's window. The developer's console should also be closed since it has a direct
+        impact on the reported screen dimensions.
+
+        The only step required is to open the Onion menu on the left of the URL address bar and click on "New identity".
+        You will clean your browser state and start from a fresh profile.
+        <img src="{{ url_for('static', filename="images/identity.png") }}" class="img-responsive" alt="Responsive image">
+    </div>
+    <div id="screenNoJS" style="display: block">
+        No JavaScript.
+    </div>
+
+    <h4>Plugins <br> <span id="plugins"></span> <span id="pluginsRes" class="glyphicon"></span></h4>
+    <div id="pluginsOk" style="display: none">
+        No plugins were detected!
+    </div>
+    <div id="pluginsNotOk" style="display: none">
+        Your Tor browser has some browser plugins enabled and it can harm your online privacy. It is recommended
+        <a href="https://www.torproject.org/download/download.html.en#Warning">not to enable or install any plugins</a>
+        because they can be used to reveal your real IP address or identifying information on your system.
+        <br><br>
+        Two steps are required to easily disable plugins in the Tor browser. First, click on "Privacy and Security
+        settings..." in the Onion menu.
+        <img src="{{ url_for('static', filename="images/settings1.png") }}" class="img-responsive" alt="Responsive image">
+        Then, make sure that "Disable browser plugins (such as Flash)" option is checked.
+        <img src="{{ url_for('static', filename="images/settings2.png") }}" class="img-responsive" alt="Responsive image">
+    </div>
+    <div id="pluginsNoJS" style="display: block">
+        No JavaScript.
+    </div>
+
+    <br><br>
+
+    <h1>Security slider</h1>
+    <div id="sliderLow" style="display: none">
+        We detected that the security level of your Tor browser is set on low.
+        Did you know that you can easily set the security level of your browser in the browser settings?<br>
+
+        Open the Onion menu located on the left of the URL address bar and click on "Privacy and Security settings...".
+        <img src="{{ url_for('static', filename="images/settings1.png") }}" class="img-responsive" alt="Responsive image">
+
+        Then, you can see the Security slider which provides a user-friendly interface to set your own security level.
+        <img src="{{ url_for('static', filename="images/settings3.png") }}" class="img-responsive" alt="Responsive image">
+
+        You can easily see the trade off between functionality and security. Gradually increasing the security level will
+        disable more and more features reducing the vulnerability surface of your browser.
+    </div>
+    <div id="sliderMediumLow" style="display: none">
+        We detected that the security level of your Tor browser is set on "Medium-Low".
+        Why not try a higher security level to increase your online privacy?
+    </div>
+    <div id="sliderMediumHigh" style="display: none">
+        We detected that the security level of your Tor browser is set on "Medium-High".
+        Why not try a higher security level to increase your online privacy?
+    </div>
+    <div id="sliderHigh" style="display: none">
+        We detected that you are on the highest security level in your Tor browser!
+    </div>
+    <div id="sliderNoJS" style="display: block">
+        JavaScript is disabled in your browser. Enable it to know the level of your security slider.
+    </div>
+
+    <!-- Elements to detect the level of the security slider -->
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg" height="100" width="100" style="display: none">
+	    <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red"></circle>
+    </svg>
+
+    <!-- URL to be changed for the production version -->
+    <script type="text/javascript" src="http://127.0.0.1:5000/static/js/sliderMediumHigh.js"></script>
+    <!-- script type="text/javascript" src="{{ url_for('static', filename="js/sliderMediumHigh.js", _scheme='http', _external=True) }}"></script-->
+
+    <!-- Load the acceptable and slider JS script -->
+    <script type="text/javascript" src="{{ url_for('static', filename="js/acceptable.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/slider.js") }}"></script>
+
+{% endblock %}

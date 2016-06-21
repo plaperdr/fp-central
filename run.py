@@ -29,6 +29,10 @@ def fp():
     files,variables = get_files_and_variables()
     return render_template('fp.html', files=files, variables=variables, headers=request.headers)
 
+@app.route('/tor')
+def tor():
+    return render_template('tor.html')
+
 @app.route('/faq')
 def faq():
     definitions = get_definitions()
