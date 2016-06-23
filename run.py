@@ -33,6 +33,10 @@ def fp():
 def tor():
     return render_template('tor.html')
 
+@app.route('/stats')
+def stats():
+    return render_template('stats.html')
+
 @app.route('/faq')
 def faq():
     definitions = get_definitions()
