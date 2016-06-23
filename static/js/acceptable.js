@@ -13,7 +13,7 @@ var commonHeights = [600,720,768,800,900,1024,1050,1080,1200,1440,1600,2160];
 
 document.getElementById("screen").innerHTML = width+"x"+height;
 document.getElementById("screenNoJS").style.display = "none";
-if((aWidth==1000 && aHeight==1000) || (width%200==0 && height%100==0 && width==2*height)){
+if((aWidth==1000 && aHeight==1000) || (width%200==0 && height%100==0)){
     document.getElementById("screenRes").className += " glyphicon-ok";
     document.getElementById("screenOk").style.display = "block";
 } else {
