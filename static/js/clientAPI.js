@@ -21,39 +21,49 @@ var perTemp = "perTemp";
 //Check returning users and update the state of
 //the page according to saved data
 $(document).ready(function() {
-    if (localStorage.getItem(fpTemp) != null) {
-        //Filling the HTML table
-        fp = JSON.parse(localStorage.getItem(fpTemp));
-        for (var attribute in fp) {
-            var result = fp[attribute];
-            if (typeof result === "object") {
-                for (var key in result) {
-                    document.getElementById(attribute + "." + key + value).innerHTML = result[key];
+
+    //if the cookie is present, we load data from localStorage
+    //if it is not, this means that it either a new
+    //  connection or that data stored in localStorage has expired
+    if(document.cookie.indexOf("fpcentral") > -1) {
+        if (localStorage.getItem(fpTemp) != null) {
+            //Filling the HTML table
+            fp = JSON.parse(localStorage.getItem(fpTemp));
+            for (var attribute in fp) {
+                var result = fp[attribute];
+                if (typeof result === "object") {
+                    for (var key in result) {
+                        document.getElementById(attribute + "." + key + value).innerHTML = result[key];
+                    }
+                } else {
+                    document.getElementById(attribute + value).innerHTML = result;
+                }
+            }
+
+            //Disabling the run button
+            document.getElementById("runBtn").classList.add("disabled");
+            //Enabling the download button
+            document.getElementById("dlBtn").classList.remove("disabled");
+
+            if (localStorage.getItem(sendTemp) != null) {
+                if (localStorage.getItem(perTemp) != null) {
+                    //Adding the percentage to the HTML table
+                    per = JSON.parse(localStorage.getItem(perTemp));
+                    for (var attribute in per) {
+                        document.getElementById(attribute).innerHTML = per[attribute];
+                    }
+
+                } else {
+                    document.getElementById("statsBtn").classList.remove("disabled");
                 }
             } else {
-                document.getElementById(attribute + value).innerHTML = result;
+                document.getElementById("sendBtn").classList.remove("disabled");
             }
         }
-
-        //Disabling the run button
-        document.getElementById("runBtn").classList.add("disabled");
-        //Enabling the download button
-        document.getElementById("dlBtn").classList.remove("disabled");
-
-        if (localStorage.getItem(sendTemp) != null) {
-            if (localStorage.getItem(perTemp) != null) {
-                //Adding the percentage to the HTML table
-                per = JSON.parse(localStorage.getItem(perTemp));
-                for (var attribute in per) {
-                    document.getElementById(attribute).innerHTML = per[attribute];
-                }
-
-            } else {
-                document.getElementById("statsBtn").classList.remove("disabled");
-            }
-        } else {
-            document.getElementById("sendBtn").classList.remove("disabled");
-        }
+    } else {
+        localStorage.removeItem(fpTemp);
+        localStorage.removeItem(sendTemp);
+        localStorage.removeItem(perTemp);
     }
 });
 
@@ -102,6 +112,11 @@ api.run = function (){
 
     //Disabling the run button
     document.getElementById("runBtn").classList.add("disabled");
+
+    //Set up a cookie to indicate the time of the latest test
+    var expiration_date = new Date ();
+    expiration_date.setTime(expiration_date.getTime() + 1000*60*60*24*15);
+    document.cookie = "fpcentral = true; expires=" + expiration_date.toUTCString();
 };
 
 

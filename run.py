@@ -53,7 +53,7 @@ def fpNoJS():
 
     #We store a cookie if not present
     if "fpcentral" not in request.cookies:
-        resp.set_cookie('fpcentral', '', expires=datetime.datetime.now() + datetime.timedelta(days=config.cookiesDays))
+        resp.set_cookie('fpcentral', 'true', expires=datetime.datetime.now() + datetime.timedelta(days=config.cookiesDays))
 
     return resp
 
