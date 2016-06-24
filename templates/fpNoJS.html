@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% set active_page = "fp" %}
+
+{% block title %}
+    {{ _('View my fingerprint') }} - FP Central
+{% endblock %}
+
+{% block content %}
+    <h1>Results</h1>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>HTTP headers</h2></div>
+        <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
+            <thead>
+                <tr>
+                    <th>{{ _('Name') }}</th>
+                    <th>{{ _('Value') }}</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody id="headers">
+            {% for header in headers %}
+                <tr>
+                    <td>{{ header[0] }}</td>
+                    <td>{{ header[1] }}</td>
+                    <td>{{ header[2] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

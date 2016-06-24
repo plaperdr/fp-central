@@ -1,4 +1,4 @@
-from flask import Flask,render_template,Blueprint,request
+from flask import Flask,render_template,Blueprint,request,make_response
 from bson.objectid import ObjectId
 from fingerprint.attribute_reader import get_definitions,get_files_and_variables,get_hashed_variables
 from flask_restful import Api, Resource,reqparse
@@ -29,6 +29,34 @@ def fp():
     files,variables = get_files_and_variables()
     return render_template('fp.html', files=files, variables=variables, headers=request.headers)
 
+@app.route('/fpNoJS')
+def fpNoJS():
+
+    # If cookie is not present, we store
+    # the headers into the database
+    if "fpcentral" not in request.cookies:
+        headers = {}
+        # Transformation from array of tuples to dictionary
+        for key, value in request.headers:
+            headers[key] = value
+        db.storeFP(headers, False)
+
+    #Get total number of fingerprints
+    nbTotal = db.getTotalFP()
+    #Get percentages of all HTTP headers
+    headersPer = []
+    for header in request.headers:
+        if header[0] != "Cookie":
+            headersPer.append(header+(db.getLifetimeStats(header[0],header[1])*100/nbTotal,))
+
+    resp = make_response(render_template('fpNoJS.html', headers=headersPer))
+
+    #We store a cookie if not present
+    if "fpcentral" not in request.cookies:
+        resp.set_cookie('fpcentral', '', expires=datetime.datetime.now() + datetime.timedelta(days=config.cookiesDays))
+
+    return resp
+
 @app.route('/tor')
 def tor():
     return render_template('tor.html')
@@ -44,7 +72,7 @@ def faq():
 
 @app.route('/store', methods=['POST'])
 def store():
-    db.storeFP(request.data)
+    db.storeFP(request.data,True)
     return 'ok'
 
 ###### Babel
@@ -72,8 +100,11 @@ class Db(object):
         self.hashedVariables = get_hashed_variables()
 
     ######Storage
-    def storeFP(self,fingerprint):
-        parsedFP = json.loads(fingerprint.decode('utf-8'))
+    def storeFP(self,fingerprint,decode):
+        if decode :
+            parsedFP = json.loads(fingerprint.decode('utf-8'))
+        else :
+            parsedFP = fingerprint
 
         #Store the complete fingerprint in the main collection
         insertedID = self.mongo.db.fp.insert_one(parsedFP).inserted_id
