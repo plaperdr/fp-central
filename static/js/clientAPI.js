@@ -39,8 +39,14 @@ api.run = function (){
         fp[header.cells[0].textContent] = header.cells[1].textContent;
     }
     
-    //Enabling the send button
+    //Enabling the send and download button
     document.getElementById("sendBtn").classList.remove("disabled");
+    
+    var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fp, null, '\t'));
+    var dlBtn = document.getElementById("dlBtn");
+    dlBtn.href = "data:"+data;
+    dlBtn.download = "data.json";
+    document.getElementById("dlBtn").classList.remove("disabled");
 };
 
 
