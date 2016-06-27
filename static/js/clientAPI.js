@@ -31,13 +31,7 @@ $(document).ready(function() {
             fp = JSON.parse(localStorage.getItem(fpTemp));
             for (var attribute in fp) {
                 var result = fp[attribute];
-                if (typeof result === "object") {
-                    for (var key in result) {
-                        document.getElementById(attribute + "." + key + value).innerHTML = result[key];
-                    }
-                } else {
-                    document.getElementById(attribute + value).innerHTML = result;
-                }
+                api.addTable(attribute,result);
             }
 
             //Disabling the run button
@@ -52,7 +46,6 @@ $(document).ready(function() {
                     for (var attribute in per) {
                         document.getElementById(attribute).innerHTML = per[attribute];
                     }
-
                 } else {
                     document.getElementById("statsBtn").classList.remove("disabled");
                 }
@@ -72,20 +65,35 @@ api.register = function(name,code){
     attributes.push({'name':name,'code':code});
 };
 
+api.addTable = function(name,result){
+    if (result.constructor === {}.constructor) {
+        for (var key in result) {
+            api.addTable(name + "." + key, result[key]);
+        }
+    } else {
+        document.getElementById(name + value).innerHTML = result;
+    }
+};
+
 api.run = function (){
+    var promises = [];
+
     //Running registered tests
     for(var i =0; i<attributes.length; i++){
         var name = attributes[i].name;
         var result = attributes[i].code();
-        fp[name] = result;
-
         //Display results in HTML table
-        if(typeof result === "object"){
-            for(var key in result){
-                document.getElementById(name+"."+key+value).innerHTML = result[key];
-            }
+        if (typeof result.then === "function") {
+            //Result is a promise, wait for the result
+            promises.push(result);
+            result.then(function(result){
+                fp[result.name] = result.data;
+                api.addTable(result.name,result.data);
+            });
         } else {
-            document.getElementById(name+value).innerHTML = result;
+            //Result is either a single value or a JSON object
+            fp[name] = result;
+            api.addTable(name, result);
         }
     }
 
@@ -96,6 +104,16 @@ api.run = function (){
         fp[header.cells[0].textContent] = header.cells[1].textContent;
     }
 
+    if(promises.length == 0) {
+        api.postRun();
+    } else {
+        Promise.all(promises).then(function(){
+           api.postRun();
+        });
+    }
+};
+
+api.postRun = function(){
     var jsonFP = JSON.stringify(fp, null, '\t');
 
     //Storing the current fingerprint inside localStorage
@@ -103,10 +121,10 @@ api.run = function (){
 
     //Enabling the send and download button
     document.getElementById("sendBtn").classList.remove("disabled");
-    
+
     var data = "text/json;charset=utf-8," + encodeURIComponent(jsonFP);
     var dlBtn = document.getElementById("dlBtn");
-    dlBtn.href = "data:"+data;
+    dlBtn.href = "data:" + data;
     dlBtn.download = "data.json";
     document.getElementById("dlBtn").classList.remove("disabled");
 
@@ -114,11 +132,10 @@ api.run = function (){
     document.getElementById("runBtn").classList.add("disabled");
 
     //Set up a cookie to indicate the time of the latest test
-    var expiration_date = new Date ();
-    expiration_date.setTime(expiration_date.getTime() + 1000*60*60*24*15);
+    var expiration_date = new Date();
+    expiration_date.setTime(expiration_date.getTime() + 1000 * 60 * 60 * 24 * 15);
     document.cookie = "fpcentral = true; expires=" + expiration_date.toUTCString();
 };
-
 
 api.store = function(){
     //Sending the complete fingerprint to the server
@@ -147,21 +164,22 @@ api.stats = function(){
     for(var i =0; i<attributes.length; i++){
         var name = attributes[i];
         var result = fp[name];
-
-        //Display percentage in HTML table
-        if(typeof result === "object"){
-            for(var key in result){
-                api.getPercentage(name+"."+key,JSON.stringify(result[key]),nbFPs);
-                nbAttributes += 1;
-            }
-        } else {
-            nbAttributes += 1;
-            api.getPercentage(name,JSON.stringify(result),nbFPs);
-        }
+        api.exploreJSON(name,result,nbFPs);
     }
 
     //Disabling the stats button
     document.getElementById("statsBtn").classList.add("disabled");
+};
+
+api.exploreJSON = function(name,result,nbFPs){
+    if (result.constructor === {}.constructor) {
+        for (var key in result) {
+            api.exploreJSON(name + "." + key, result[key],nbFPs);
+        }
+    } else {
+        api.getPercentage(name,JSON.stringify(result),nbFPs);
+        nbAttributes += 1;
+    }
 };
 
 api.statsEnd = function(){
