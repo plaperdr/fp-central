@@ -1,3 +1,5 @@
-api.register("timezone", function() {
-    return new Date().getTimezoneOffset();
-});
+(function() {
+    api.register("timezone", function () {
+        return new Date().getTimezoneOffset();
+    });
+})();
