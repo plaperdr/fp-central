@@ -1,0 +1,14 @@
+{
+  "name" : "Audio context fingerprinting",
+  "description" : "WebAudio allows writing data to AudioBuffers and performs analysis on them.",
+  "files" : ["audioSha1.js","audioContext.js"],
+  "variables" : ["audio.pxi_output","audio.cc_output","audio.hybrid_output","audio.pxi_full_buffer_hash",
+    "audio.nt_vc_output.ac-sampleRate", "audio.nt_vc_output.ac-state", "audio.nt_vc_output.ac-maxChannelCount",
+    "audio.nt_vc_output.ac-numberOfInputs", "audio.nt_vc_output.ac-numberOfOutputs", "audio.nt_vc_output.ac-channelCount",
+    "audio.nt_vc_output.ac-channelCountMode", "audio.nt_vc_output.ac-channelInterpretation", "audio.nt_vc_output.an-fftSize",
+    "audio.nt_vc_output.an-frequencyBinCount", "audio.nt_vc_output.an-minDecibels", "audio.nt_vc_output.an-maxDecibels",
+    "audio.nt_vc_output.an-smoothingTimeConstant", "audio.nt_vc_output.an-numberOfInputs", "audio.nt_vc_output.an-numberOfOutputs",
+    "audio.nt_vc_output.an-channelCount", "audio.nt_vc_output.an-channelCountMode", "audio.nt_vc_output.an-channelInterpretation"],
+  "hash" : "False",
+  "URL" : "https://trac.torproject.org/projects/tor/ticket/13017"
+}
