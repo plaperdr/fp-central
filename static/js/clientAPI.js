@@ -37,7 +37,11 @@ $(document).ready(function() {
             //Disabling the run button
             document.getElementById("runBtn").classList.add("disabled");
             //Enabling the download button
-            document.getElementById("dlBtn").classList.remove("disabled");
+            var data = "text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(fpTemp));
+            var dlBtn = document.getElementById("dlBtn");
+            dlBtn.href = "data:" + data;
+            dlBtn.download = "data.json";
+            dlBtn.classList.remove("disabled");
 
             if (localStorage.getItem(sendTemp) != null) {
                 if (localStorage.getItem(perTemp) != null) {
