@@ -17,6 +17,16 @@ var fpTemp = "fpTemp";
 var sendTemp = "sendTemp";
 var perTemp = "perTemp";
 
+//Function for dashboard transition
+function btnTransition(name){
+    //Disabling the run button and providing feedback to the user
+    var btn = document.getElementById(name+"Btn");
+    btn.classList.add("disabled");
+    btn.classList.remove("btn-info");
+    btn.classList.add("btn-success");
+    document.getElementById(name+"Ok").classList.add("glyphicon-ok-circle");
+}
+
 
 //Check returning users and update the state of
 //the page according to saved data
@@ -34,17 +44,20 @@ $(document).ready(function() {
                 api.addTable(attribute,result);
             }
 
-            //Disabling the run button
-            document.getElementById("runBtn").classList.add("disabled");
+            //Disabling the run button and providing visual feedback to the user
+            btnTransition("run");
+
             //Enabling the download button
             var data = "text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(fpTemp));
             var dlBtn = document.getElementById("dlBtn");
             dlBtn.href = "data:" + data;
-            dlBtn.download = "data.json";
+            dlBtn.download = "fingerprint.json";
             dlBtn.classList.remove("disabled");
 
             if (localStorage.getItem(sendTemp) != null) {
+                btnTransition("send");
                 if (localStorage.getItem(perTemp) != null) {
+                    btnTransition("stats");
                     //Adding the percentage to the HTML table
                     per = JSON.parse(localStorage.getItem(perTemp));
                     for (var attribute in per) {
@@ -63,6 +76,7 @@ $(document).ready(function() {
         localStorage.removeItem(perTemp);
     }
 });
+
 
 
 api.register = function(name,code){
@@ -123,17 +137,18 @@ api.postRun = function(){
     //Storing the current fingerprint inside localStorage
     localStorage.setItem(fpTemp, jsonFP);
 
+
     //Enabling the send and download button
     document.getElementById("sendBtn").classList.remove("disabled");
 
     var data = "text/json;charset=utf-8," + encodeURIComponent(jsonFP);
     var dlBtn = document.getElementById("dlBtn");
     dlBtn.href = "data:" + data;
-    dlBtn.download = "data.json";
+    dlBtn.download = "fingerprint.json";
     document.getElementById("dlBtn").classList.remove("disabled");
 
-    //Disabling the run button
-    document.getElementById("runBtn").classList.add("disabled");
+    //Disabling the run button and providing visual feedback to the user
+    btnTransition("run");
 
     //Set up a cookie to indicate the time of the latest test
     var expiration_date = new Date();
@@ -146,16 +161,25 @@ api.store = function(){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/store", true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if(xhr.status == 200) {
+                //Storing the fact that we send the FP to the database
+                localStorage.setItem(sendTemp, "yes");
+
+                //Enabling the stats button
+                document.getElementById("statsBtn").classList.remove("disabled");
+
+                //Disabling the store button and providing visual feedback to the user
+                btnTransition("send");
+            } else {
+                console.log("Error when sending data to server");
+            }
+        }
+    };
+
     xhr.send(JSON.stringify(fp));
-    
-    //Storing the fact that we send the FP to the database
-    localStorage.setItem(sendTemp, "yes");
-
-    //Enabling the stats button
-    document.getElementById("statsBtn").classList.remove("disabled");
-
-    //Disabling the store button
-    document.getElementById("sendBtn").classList.add("disabled");
 };
 
 
@@ -171,8 +195,8 @@ api.stats = function(){
         api.exploreJSON(name,result,nbFPs);
     }
 
-    //Disabling the stats button
-    document.getElementById("statsBtn").classList.add("disabled");
+    //Disabling the stats button and providing visual feedback to the user
+    btnTransition("stats");
 };
 
 api.exploreJSON = function(name,result,nbFPs){

@@ -20,13 +20,15 @@ api = Api(app)
 attributes = Blueprint('site', __name__, static_url_path='', static_folder='fingerprint/attributes',url_prefix='/fp')
 app.register_blueprint(attributes)
 
+files,variables = get_files_and_variables()
+definitions = get_definitions()
+
 @app.route('/')
 def home():
     return render_template('home.html')
 
 @app.route('/fp')
 def fp():
-    files,variables = get_files_and_variables()
     return render_template('fp.html', files=files, variables=variables, headers=request.headers)
 
 @app.route('/fpNoJS')
@@ -63,11 +65,10 @@ def tor():
 
 @app.route('/stats')
 def stats():
-    return render_template('stats.html')
+    return render_template('stats.html', listOfVariables=variables, lifetimeDays=(datetime.date.today() - datetime.date(2016, 3, 15)).days)
 
 @app.route('/faq')
 def faq():
-    definitions = get_definitions()
     return render_template('faq.html',definitions=definitions)
 
 @app.route('/store', methods=['POST'])

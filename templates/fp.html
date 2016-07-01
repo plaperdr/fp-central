@@ -8,9 +8,9 @@
 {% block content %}
     <h1>Dashboard</h1>
     <div class="btn-group btn-group-justified" role="group">
-        <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"><span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong></a>
-        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.store()"><span class="badge">2</span> <strong>{{ _('Send to server') }}</strong></a>
-        <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"><span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong></a>
+        <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"><span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <span id="runOk" class="glyphicon"></span></a>
+        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.store()"><span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <span id="sendOk" class="glyphicon"></span></a>
+        <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"><span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong> <span id="statsOk" class="glyphicon"></span></a>
     </div>
 
     <br>
@@ -33,11 +33,13 @@
             </thead>
             <tbody id="headers">
             {% for header in headers %}
+                {% if header[0] != "Cookie" and header[0] != "Cache-Control" %}
                 <tr>
                     <td>{{ header[0] }}</td>
                     <td id="{{ header[0] + "Val" }}">{{ header[1] }}</td>
                     <td id="{{ header[0] + "Per" }}"></td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
