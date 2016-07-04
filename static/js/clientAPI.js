@@ -16,6 +16,7 @@ var percentage = "Per";
 var fpTemp = "fpTemp";
 var sendTemp = "sendTemp";
 var perTemp = "perTemp";
+var nbTemp = "nbTemp";
 
 //Function for dashboard transition
 function btnTransition(name){
@@ -27,6 +28,15 @@ function btnTransition(name){
     document.getElementById(name+"Ok").classList.add("glyphicon-ok-circle");
 }
 
+function setTooltip(nbFPs){
+    //Add a tooltip on each table header
+    var tooltip = "Out of "+nbFPs+" collected fingerprints";
+    document.getElementById("httpPerHeader").title = tooltip;
+    document.getElementById("JSPerHeader").title = tooltip;
+    $('[data-toggle="tooltip"]').tooltip({
+        placement : 'top'
+    });
+}
 
 //Check returning users and update the state of
 //the page according to saved data
@@ -57,6 +67,10 @@ $(document).ready(function() {
             if (localStorage.getItem(sendTemp) != null) {
                 btnTransition("send");
                 if (localStorage.getItem(perTemp) != null) {
+
+                    //Add a tooltip on each table header
+                    setTooltip(localStorage.getItem(nbTemp));
+
                     btnTransition("stats");
                     //Adding the percentage to the HTML table
                     per = JSON.parse(localStorage.getItem(perTemp));
@@ -137,7 +151,6 @@ api.postRun = function(){
     //Storing the current fingerprint inside localStorage
     localStorage.setItem(fpTemp, jsonFP);
 
-
     //Enabling the send and download button
     document.getElementById("sendBtn").classList.remove("disabled");
 
@@ -186,6 +199,10 @@ api.store = function(){
 api.stats = function(){
     //Get the total number of FPs
     var nbFPs = parseInt(api.getTotalFP());
+    localStorage.setItem(nbTemp, nbFPs);
+    
+    //Add a tooltip on each table header
+    setTooltip(nbFPs);
 
     //Calculate the percentage for each attribute
     var attributes = Object.keys(fp);

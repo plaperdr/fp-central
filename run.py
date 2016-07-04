@@ -51,7 +51,7 @@ def fpNoJS():
         if header[0] != "Cookie":
             headersPer.append(header+(db.getLifetimeStats(header[0],header[1])*100/nbTotal,))
 
-    resp = make_response(render_template('fpNoJS.html', headers=headersPer))
+    resp = make_response(render_template('fpNoJS.html', headers=headersPer, nbFP = nbTotal))
 
     #We store a cookie if not present
     if "fpcentral" not in request.cookies:
