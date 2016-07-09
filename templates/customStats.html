@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% set active_page = "customStats" %}
+
+{% block title %}
+    Custom statistics - FP Central
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{url_for('static', filename='css/bootstrap-slider.min.css')}}" rel="stylesheet">
+{%  endblock %}
+
+{% block content %}
+
+    <h1>Custom statistics</h1>
+    <!--
+        - Select the browsers you want to study
+        - Select the attributes you want to use (can be one or more)
+        - Have a slider for the period of days you want to take into account
+        - Get the popular values for the combination attributes/period
+        - Have the choice between a pie chart or ordered horizontal bar chart
+
+        - For future development, have the option to select defined tags
+    -->
+
+    <h2>
+        <span class="label label-info">
+            <span style="background-color: white; color: #29ABE0" class="badge">1</span>
+            Select the versions of the Tor browser
+        </span>
+    </h2>
+
+    <h2>
+        <span class="label label-info">
+            <span style="background-color: white; color: #29ABE0" class="badge">2</span>
+            Select the attributes you are interested in
+        </span>
+    </h2>
+    <br>
+    <div id="selection">
+    {% for list in listOfVariables %}
+        {% if list|length > 1 %}
+            {% set name = list[0].split('.')[0] %}
+
+            <div class="btn-group">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{ name }}Collapse"
+                        aria-expanded="false" aria-controls="{{ name }}Collapse">
+                    {{ name }} &nbsp; <span class="badge"><span id="{{ name }}Badge">0</span>/{{ list|length }} selected</span>
+                </button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="api.changeCheckbox('{{ name }}',true)">Select all</a></li>
+                    <li><a href="#" onclick="api.changeCheckbox('{{ name }}',false)">Deselect all</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a role="button" data-toggle="collapse" href="#{{ name }}Collapse"
+                           aria-expanded="false" aria-controls="{{ name }}Collapse">
+                        Expand/Collapse
+                    </a></li>
+                </ul>
+            </div>
+            <br>
+
+            <div class="collapse" id="{{ name }}Collapse">
+                <div class="btn-group" role="group" id="{{ name }}Group">
+                {%  for variable in list %}
+                    <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}" autocomplete="off"
+                    onclick="api.updateBadge('{{ name }}')">
+                        &nbsp;  {{ variable[name|length+1:] }}</label>
+                {% endfor %}
+                </div>
+            </div>
+            <br>
+
+        {% else %}
+            {% set variable = list[0] %}
+            <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}" autocomplete="off"> &nbsp;  {{ variable }}</label>
+            <br><br>
+        {% endif %}
+    {%  endfor %}
+    </div>
+
+    <h2>
+        <span class="label label-info">
+            <span style="background-color: white; color: #29ABE0" class="badge">3</span>
+            Select the time period
+        </span>
+    </h2>
+    <br>
+    <div style="margin-left: 30px; margin-top: 15px">
+        <input  type="text" id="period" style="width: 500px;"
+            data-provide="slider"  data-slider-ticks="[1, {{ lifetimeDays }}]" data-slider-ticks-labels='["Past day", "Lifetime"]'
+            data-slider-min="1" data-slider-max="{{ lifetimeDays }}" data-slider-step="1"  data-slider-value="{{ lifetimeDays }}"
+            ticks_positions="[0, {{ lifetimeDays }}]">
+    </div>
+
+    <h2>
+        <span class="label label-info">
+            <span style="background-color: white; color: #29ABE0" class="badge">4</span>
+            Submit request
+        </span>
+    </h2>
+    <a id="submitBtn" class="btn btn-primary" type="button" onclick="api.sendRequest()"><span class="badge"></span> <strong>Submit</strong></a>
+
+    <div id="results">
+
+    </div>
+
+    <!-- Load the API and the slider -->
+    <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/bootstrap-slider.min.js") }}"></script>
+
+{% endblock %}

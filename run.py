@@ -63,9 +63,17 @@ def fpNoJS():
 def tor():
     return render_template('tor.html')
 
-@app.route('/stats')
-def stats():
-    return render_template('stats.html', listOfVariables=variables, lifetimeDays=(datetime.date.today() - datetime.date(2016, 3, 15)).days)
+@app.route('/globalStats')
+def globalStats():
+    return render_template('globalStats.html',
+                            totalFP=db.getTotalFP(),
+                            epochFP=db.getEpochFP(90))
+
+@app.route('/customStats')
+def customStats():
+    return render_template('customStats.html',
+                            listOfVariables=variables,
+                            lifetimeDays=(datetime.date.today() - datetime.date(2016, 3, 15)).days)
 
 @app.route('/faq')
 def faq():
@@ -131,6 +139,11 @@ class Db(object):
     def getTotalFP(self):
         return self.mongo.db.fp.count()
 
+    #Return the number of fingerprints stored on a specific period in days
+    def getEpochFP(self,days):
+        tempID = self.getObjectID(days)
+        return self.mongo.db.fp.find({"_id": {"$gte": tempID}}).count()
+
 
     ######Lifetime stats (since the creation of the collection)
     #Return the number of fingerprints having the exact same value for the specified attribute
@@ -160,11 +173,20 @@ class Db(object):
         else:
             return self.mongo.db.fp.find({"_id": {"$gte": tempID}, name: value}).count()
 
-    #Return the 5 most popular values for a specific attribute in the last X days
-    def getPopularEpochValues(self, name, days):
+
+    #Return the 5 most popular values for one attribute or a list of attributes in the last X days
+    def getPopularEpochValues(self, attList, days):
         tempID = self.getObjectID(days)
-        return self.mongo.db.fp.aggregate([{"$match": { "_id" : {"$gt": tempID}}},{"$group": {"_id": "$" + name, "$gte": tempID,  "count": {"$sum": 1}}},
-                                          {"$sort": {"count": -1}}, {"$limit": 5}])
+        if type(attList) is list:
+            att = {}
+            for attribute in attList:
+                att[attribute] = "$"+attribute
+        else:
+            #attList is a single value
+            att = "$"+attList
+        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gt": tempID}}},
+                                           {"$group": {"_id": att, "count": {"$sum": 1}}},
+                                           {"$sort": {"count": -1}}, {"$limit": 5}]))
 
 db = Db()
 
@@ -173,19 +195,17 @@ db = Db()
 class IndividualStatistics(Resource):
     #Get the statistics for the value sent in POST
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, help='The name of the attribute must be included.', required=True)
-        parser.add_argument('value', type=str, help='A value must be included.')
-        parser.add_argument('epoch', type=int, help='A period in days can be included.')
-        args = parser.parse_args()
-
-        if args.value is not None:
-            if args.epoch is None:
-                return db.getLifetimeStats(args.name, json.loads(args.value))
+        jsonData = request.get_json(force=True)
+        if "name" in jsonData and "value" in jsonData:
+            if "epoch" not in jsonData:
+                return db.getLifetimeStats(jsonData["name"], json.loads(jsonData["value"]))
             else:
-                return db.getEpochStats(args.name, json.loads(args.value), args.epoch)
+                return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["epoch"])
         else:
-            return ""
+            if "epoch" in jsonData and "list" in jsonData:
+                return db.getPopularEpochValues(jsonData["list"], jsonData["epoch"])
+            else:
+                return ""
 
 class GlobalStatistics(Resource):
     # Get the most popular values

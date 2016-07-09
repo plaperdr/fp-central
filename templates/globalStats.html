@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% set active_page = "globalStats" %}
+
+{% block title %}
+    Global statistics - FP Central
+{% endblock %}
+
+{% block content %}
+    <h1>Global statistics</h1>
+    <div>
+        Lifetime: {{ totalFP }} fingerprints
+        <br>
+        Past 90 days: {{ epochFP }} fingerprints
+   </div>
+
+
+    <!--
+    Graph on the evolution of collected fingerprints
+    Graph on the evolution of collected fingerprints per version?
+    Pie chart on the distribution of browsers/tor browser version
+    Have a button to switch between lifetime and 90 days stats
+    Have a pie chart for language
+    -->
+
+{% endblock %}
