@@ -105,11 +105,14 @@
     <a id="submitBtn" class="btn btn-primary" type="button" onclick="api.sendRequest()"><span class="badge"></span> <strong>Submit</strong></a>
 
     <div id="results">
-
+        <h2>Result</h2>
+        <div id="chart" style="width:100%; height:400px;"></div>
     </div>
 
     <!-- Load the API and the slider -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/bootstrap-slider.min.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts-exporting.js") }}"></script>
 
 {% endblock %}
