@@ -102,12 +102,18 @@
             Submit request
         </span>
     </h2>
-    <a id="submitBtn" class="btn btn-primary" type="button" onclick="api.sendRequest()"><span class="badge"></span> <strong>Submit</strong></a>
+    <a id="submitBtn" tabindex="0" class="btn btn-primary" role="button" data-toggle="popover" data-trigger="focus" onclick="api.sendRequest()"
+       title="Attributes missing" data-content="You need to select at least one attribute to show the graph.">
+        <strong>Submit</strong>
+    </a>
 
-    <div id="results">
-        <h2>Result</h2>
-        <div id="chart" style="width:100%; height:400px;"></div>
-    </div>
+    <h2>
+        <span class="label label-info">
+            <span style="background-color: white; color: #29ABE0" class="badge">5</span>
+            Result
+        </span>
+    </h2>
+    <div id="chart" style="width:100%; height:400px;"></div>
 
     <!-- Load the API and the slider -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>

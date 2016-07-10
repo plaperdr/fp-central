@@ -11,6 +11,7 @@ $(document).ready(function() {
             return value+" days";
         }
     });
+    $("#submitBtn").popover();
 });
 
 api.sendRequest = function(){
@@ -20,16 +21,20 @@ api.sendRequest = function(){
         selected.push($(this).attr('name'));
     });
 
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/stats", true);
-    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            api.renderGraph(JSON.parse(xhr.responseText));
-        }
-    };
-    xhr.send(JSON.stringify({"list":selected, "epoch": $('#period').slider('getValue')}));
+    if(selected.length > 0) {
+        $("#submitBtn").popover('hide');
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/stats", true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                api.renderGraph(JSON.parse(xhr.responseText));
+            }
+        };
+        xhr.send(JSON.stringify({"list": selected, "epoch": $('#period').slider('getValue')}));
+    } else {
+        $("#submitBtn").popover('show');
+    }
 };
 
 
@@ -47,9 +52,10 @@ api.updateBadge = function(group){
 api.renderGraph = function(result){
     //Transforming the data to suit the JS charting library
     var data = [];
+    var nbFP = 0;
 
     for(var i =0; i<result.length; i++){
-        //Adding labels
+        //Creating label
         var label = "";
         var nbLabel = 0;
         for(var key in result[i]._id){
@@ -60,7 +66,17 @@ api.renderGraph = function(result){
 
         //Adding data
         data.push({name: label, y:result[i].count});
+
+        //Computing stats
+        nbFP += result[i].count;
     }
+
+    //Getting date for graph title
+    var d = new Date();
+    var days = $('#period').slider('getValue')
+    var currentDate = d.toLocaleDateString();
+    d.setDate(d.getDate()- days);
+    var startDate = d.toLocaleDateString();
 
     //Rendering the graph
      $('#chart').highcharts({
@@ -71,7 +87,7 @@ api.renderGraph = function(result){
             type: 'pie'
         },
         title: {
-            text: ''
+            text: ""+nbFP+" fingerprints collected between "+startDate+" and "+currentDate+ " ("+days+" days)"
         },
         tooltip: {
             //pointFormat: '{series.name}<br/>{point.percentage:.1f}%'
