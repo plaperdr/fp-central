@@ -203,7 +203,11 @@ class IndividualStatistics(Resource):
                 return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["epoch"])
         else:
             if "epoch" in jsonData and "list" in jsonData:
-                return db.getPopularEpochValues(jsonData["list"], jsonData["epoch"])
+                #We send data for the customStats page
+                return {
+                        "totalFP": db.getEpochFP(jsonData["epoch"]),
+                        "data": db.getPopularEpochValues(jsonData["list"], jsonData["epoch"])
+                        }
             else:
                 return ""
 

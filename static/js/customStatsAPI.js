@@ -22,7 +22,7 @@ api.sendRequest = function(){
     });
 
     if(selected.length > 0) {
-        $("#submitBtn").popover('hide');
+        $("#submitBtn").popover('destroy');
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/stats", true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
@@ -49,11 +49,12 @@ api.updateBadge = function(group){
     $('#'+group+'Badge').text($('#'+group+'Group').find(':checked').length);
 };
 
-api.renderGraph = function(result){
+api.renderGraph = function(jsData){
     //Transforming the data to suit the JS charting library
     var data = [];
     var nbFP = 0;
-
+    var result = jsData.data;
+    
     for(var i =0; i<result.length; i++){
         //Creating label
         var label = "";
@@ -73,10 +74,16 @@ api.renderGraph = function(result){
 
     //Getting date for graph title
     var d = new Date();
-    var days = $('#period').slider('getValue')
+    var days = $('#period').slider('getValue');
     var currentDate = d.toLocaleDateString();
     d.setDate(d.getDate()- days);
     var startDate = d.toLocaleDateString();
+
+    //Adding a section for the other values
+    var otherFPs = jsData.totalFP - nbFP;
+    if(otherFPs > 0) {
+        data.push({name: "Other values", y: otherFPs});
+    }
 
     //Rendering the graph
      $('#chart').highcharts({
@@ -87,11 +94,11 @@ api.renderGraph = function(result){
             type: 'pie'
         },
         title: {
-            text: ""+nbFP+" fingerprints collected between "+startDate+" and "+currentDate+ " ("+days+" days)"
+            text: ""+jsData.totalFP+" fingerprints collected between "+startDate+" and "+currentDate+ " ("+days+" days)"
         },
         tooltip: {
             //pointFormat: '{series.name}<br/>{point.percentage:.1f}%'
-            pointFormat: '{point.percentage:.1f}%'
+            pointFormat: '{point.percentage:.1f}%<br>{point.y:.0f}'
         },
         plotOptions: {
             pie: {
