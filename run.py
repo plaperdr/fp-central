@@ -115,6 +115,8 @@ class Db(object):
         else :
             parsedFP = fingerprint
 
+        #Adding date
+        parsedFP["date"] = datetime.datetime.utcnow()
         #Store the complete fingerprint in the main collection
         insertedID = self.mongo.db.fp.insert_one(parsedFP).inserted_id
 
