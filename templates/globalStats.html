@@ -15,11 +15,71 @@
 
 
     <!--
-    Graph on the evolution of collected fingerprints
+    Graph on the evolution of collected fingerprints (single day + cumulative)
     Graph on the evolution of collected fingerprints per version?
     Pie chart on the distribution of browsers/tor browser version
     Have a button to switch between lifetime and 90 days stats
     Have a pie chart for language
     -->
+
+    <br>
+    <div id="daily" style="width:100%; height:500px;"></div>
+
+    <script type="text/javascript">
+        var dailyFP = {{ dailyFP|safe }};
+        var dailyData = [];
+        for(var i=0; i<dailyFP.length; i++){
+            var d = dailyFP[i]._id;
+            dailyData.push([Date.UTC(d.year,d.month-1,d.day),dailyFP[i].count])
+        }
+
+        $(document).ready(function() {
+            $('#daily').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'Number of stored fingerprints'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        month: '%e. %b',
+                        year: '%b'
+                    },
+                    title: {
+                        text: 'Date'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Number of fingerprints'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: '{point.x:%e. %b}: {point.y:.0f} fingerprints'
+                },
+
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [{
+                    name: 'Daily fingerprints',
+                    data: dailyData
+                }]
+            });
+        });
+    </script>
+
+    <!-- Load the external libraries -->
+    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts-exporting.js") }}"></script>
 
 {% endblock %}

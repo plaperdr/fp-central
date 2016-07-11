@@ -67,7 +67,9 @@ def tor():
 def globalStats():
     return render_template('globalStats.html',
                             totalFP=db.getTotalFP(),
-                            epochFP=db.getEpochFP(90))
+                            epochFP=db.getEpochFP(90),
+                            dailyFP=db.getDailyFP()
+                           )
 
 @app.route('/customStats')
 def customStats():
@@ -145,6 +147,15 @@ class Db(object):
     def getEpochFP(self,days):
         tempID = self.getObjectID(days)
         return self.mongo.db.fp.find({"_id": {"$gte": tempID}}).count()
+
+    #Get the number of daily stored fingerprints
+    def getDailyFP(self):
+        return list(self.mongo.db.fp.aggregate( [{ "$group" : {"_id": {"year" : { "$year" : "$date" },
+                                                                 "month" : { "$month" : "$date" },
+                                                                 "day" : { "$dayOfMonth" : "$date" }
+                                                              },
+                                                   "count": { "$sum": 1 }}},
+                                                  {"$sort": {'_id.year': 1, '_id.month': 1, '_id.day': 1}}] ))
 
 
     ######Lifetime stats (since the creation of the collection)
