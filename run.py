@@ -68,7 +68,8 @@ def globalStats():
     return render_template('globalStats.html',
                             totalFP=db.getTotalFP(),
                             epochFP=db.getEpochFP(90),
-                            dailyFP=db.getDailyFP()
+                            dailyFP=db.getDailyFP(),
+                            lang=db.getLifetimeValues("Accept-Language")
                            )
 
 @app.route('/customStats')
@@ -166,6 +167,10 @@ class Db(object):
         else:
             return self.mongo.db.fp.find({name:value}).count()
 
+    #Return all the values for a specific attribute
+    def getLifetimeValues(self, name):
+        return list(self.mongo.db.fp.aggregate([{"$group": {"_id": "$" + name, "count": {"$sum": 1}}},{"$sort": {"count": -1}}]))
+
     #Return the 5 most popular values for a specific attribute
     def getPopularLifetimeValues(self, name):
         return self.mongo.db.fp.aggregate({"$group": {"_id":"$"+name, "count": {"$sum": 1}}}, {"$sort": { "count" : -1}},{"$limit": 5})
@@ -186,6 +191,12 @@ class Db(object):
         else:
             return self.mongo.db.fp.find({"_id": {"$gte": tempID}, name: value}).count()
 
+    #Return all the values for a specific attribute in the last X days
+    def getEpochValues(self, name, days):
+        tempID = self.getObjectID(days)
+        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gt": tempID}}},
+                                                {"$group": {"_id": "$" + name, "count": {"$sum": 1}}},
+                                                {"$sort": {"count": -1}}]))
 
     #Return the 5 most popular values for one attribute or a list of attributes in the last X days
     def getPopularEpochValues(self, attList, days):
