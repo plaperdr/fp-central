@@ -28,9 +28,13 @@
     <script type="text/javascript">
         var dailyFP = {{ dailyFP|safe }};
         var dailyData = [];
+        var cumulativeData = [];
+        var nbCounter = 0;
         for(var i=0; i<dailyFP.length; i++){
             var d = dailyFP[i]._id;
-            dailyData.push([Date.UTC(d.year,d.month-1,d.day),dailyFP[i].count])
+            dailyData.push([Date.UTC(d.year,d.month-1,d.day),dailyFP[i].count]);
+            nbCounter += dailyFP[i].count;
+            cumulativeData.push([Date.UTC(d.year,d.month-1,d.day),nbCounter])
         }
 
         $(document).ready(function() {
@@ -43,10 +47,6 @@
                 },
                 xAxis: {
                     type: 'datetime',
-                    dateTimeLabelFormats: {
-                        month: '%e. %b',
-                        year: '%b'
-                    },
                     title: {
                         text: 'Date'
                     }
@@ -55,7 +55,8 @@
                     title: {
                         text: 'Number of fingerprints'
                     },
-                    min: 0
+                    min: 0,
+                    allowDecimals: false
                 },
                 tooltip: {
                     headerFormat: '<b>{series.name}</b><br>',
@@ -73,6 +74,9 @@
                 series: [{
                     name: 'Daily fingerprints',
                     data: dailyData
+                },{
+                    name: 'Cumulative fingerprints',
+                    data: cumulativeData
                 }]
             });
         });
