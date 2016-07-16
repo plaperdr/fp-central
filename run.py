@@ -216,6 +216,16 @@ class Db(object):
                                            {"$group": {"_id": att, "count": {"$sum": 1}}},
                                            {"$sort": {"count": -1}}, {"$limit": 5}]))
 
+    ##FOR TAG SUPPORT
+    # ALL OF THEM
+    # t = [{"tags": el} for el in tags]
+    # t.append({"date": {"$gt": tempID})
+    #{"$match": {"$and": t}}
+    #
+    # AT LEAST ONE
+    #t = {"$match": {"$and": [{"tags": {"$in": tags}}, {"date": {"$gt": tempID}}]}}
+    #
+
 db = Db()
 
 
