@@ -14,7 +14,7 @@ Depending on a fingerprint's tag, not all the tests are run and not all attribut
 
 
 ## Tags
-**This functionality is not active yet and will be developed at a later date.**
+**This functionality is currently in development and it is not stable.**
 ### Description
 A tag is a classification of a fingerprint in a specific category.
 Based on the analysis of standard attributes, a fingerprint will go through a series of tests

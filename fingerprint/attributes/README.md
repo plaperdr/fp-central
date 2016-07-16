@@ -26,9 +26,8 @@ each test must manually be added in the **fp** JSON variable. This way, the code
 main page does not have to be updated every time a test is added or removed and one script
 can store more than one value.
 
-In case more than one value is stored for a single attribute, it is recommended to
-store the result inside a JSON object under that attribute's name to prevent name collision:
-`fp.<name of attribute> = { "att1":X, "att2":Y, ...}`.
+If you want to store more than a single value for an attribute, you must store all the data
+in a JSON object: `{ "att1":X, "att2":Y, ...}`.
 
 **Example**
 
@@ -46,6 +45,12 @@ store the result inside a JSON object under that attribute's name to prevent nam
 
 *platform.js*
 ``` javascript
-//Storage of the test result in the json variable
-fp.platform = navigator.platform;
+(function() {
+    api.register("platform", function () {
+        //Here you can perform the computation you want
+         [...]
+        //Then you can return the result
+        return window.navigator.platform;
+    });
+})();
 ```
