@@ -1,7 +1,8 @@
 from flask import Flask,render_template,Blueprint,request,make_response
 from bson.objectid import ObjectId
-from fingerprint.attribute_reader import get_definitions,get_files_and_variables,get_hashed_variables
-from flask_restful import Api, Resource,reqparse
+from fingerprint.attribute_reader import *
+from fingerprint.tags_checker import *
+from flask_restful import Api, Resource
 from flask_babel import Babel
 from flask_pymongo import PyMongo
 
@@ -9,7 +10,6 @@ import env_config as config
 import json
 import datetime
 import hashlib
-
 
 
 ###### App
@@ -22,6 +22,9 @@ app.register_blueprint(attributes)
 
 files,variables = get_files_and_variables()
 definitions = get_definitions()
+
+tagChecker = TagChecker()
+tags = tagChecker.getTagList()
 
 @app.route('/')
 def home():
@@ -75,6 +78,7 @@ def globalStats():
 @app.route('/customStats')
 def customStats():
     return render_template('customStats.html',
+                            tags=tags,
                             listOfVariables=variables,
                             lifetimeDays=(datetime.date.today() - datetime.date(2016, 3, 15)).days)
 
