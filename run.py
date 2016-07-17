@@ -5,10 +5,10 @@ from fingerprint.tags_checker import *
 from flask_restful import Api, Resource
 from flask_babel import Babel
 from flask_pymongo import PyMongo
+from datetime import datetime, timedelta
 
 import env_config as config
 import json
-import datetime
 import hashlib
 
 
@@ -58,7 +58,7 @@ def fpNoJS():
 
     #We store a cookie if not present
     if "fpcentral" not in request.cookies:
-        resp.set_cookie('fpcentral', 'true', expires=datetime.datetime.now() + datetime.timedelta(days=config.cookiesDays))
+        resp.set_cookie('fpcentral', 'true', expires=datetime.now() + timedelta(days=config.cookiesDays))
 
     return resp
 
@@ -80,7 +80,7 @@ def customStats():
     return render_template('customStats.html',
                             tags=tags,
                             listOfVariables=variables,
-                            lifetimeDays=(datetime.date.today() - datetime.date(2016, 3, 15)).days)
+                          )
 
 @app.route('/faq')
 def faq():
@@ -123,7 +123,7 @@ class Db(object):
             parsedFP = fingerprint
 
         #Adding date
-        parsedFP["date"] = datetime.datetime.utcnow()
+        parsedFP["date"] = datetime.utcnow()
 
         #Adding tags
         parsedFP["tags"] = tagChecker.checkFingerprint(parsedFP)
@@ -153,9 +153,16 @@ class Db(object):
         return self.mongo.db.fp.count()
 
     #Return the number of fingerprints stored on a specific period in days
-    def getEpochFP(self,days):
-        tempID = self.getObjectID(days)
-        return self.mongo.db.fp.find({"_id": {"$gte": tempID}}).count()
+    #1 argument: number of days from current date
+    #2 arguments: start and end dates
+    def getEpochFP(self,*args):
+        if len(args) == 1:
+            startID = ObjectId.from_datetime(datetime.today() - timedelta(days=args[0]))
+            return self.mongo.db.fp.find({"_id": {"$gte": startID}}).count()
+        else:
+            startID = self.getObjectID(args[0])
+            endID = self.getObjectID(args[1])
+            return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}}).count()
 
     #Get the number of daily stored fingerprints
     def getDailyFP(self):
@@ -187,28 +194,30 @@ class Db(object):
     ######Epoch stats (stats on a specified period of time)
     #Method to get the correct timestamp in an ObjectID object
     @staticmethod
-    def getObjectID(days):
-        genTime = datetime.datetime.today() - datetime.timedelta(days=days)
-        return ObjectId.from_datetime(genTime)
+    def getObjectID(date):
+        return ObjectId.from_datetime(datetime.strptime(date,'%Y-%m-%d'))
 
     #Return the number of fingerprints having the exact same value for the specified attribute in the last X days
-    def getEpochStats(self, name, value, days):
-        tempID = self.getObjectID(days)
+    def getEpochStats(self, name, value, start, end):
+        startID = self.getObjectID(start)
+        endID = self.getObjectID(end)
         if name in self.hashedVariables:
-            return self.mongo.db.hash.find({"_id": {"$gte": tempID}, name: self.hashValue(value)}).count()
+            return self.mongo.db.hash.find({"_id": {"$gte": startID, "$lt": endID}, name: self.hashValue(value)}).count()
         else:
-            return self.mongo.db.fp.find({"_id": {"$gte": tempID}, name: value}).count()
+            return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}, name: value}).count()
 
     #Return all the values for a specific attribute in the last X days
-    def getEpochValues(self, name, days):
-        tempID = self.getObjectID(days)
-        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gt": tempID}}},
+    def getEpochValues(self, name, start, end):
+        startID = self.getObjectID(start)
+        endID = self.getObjectID(end)
+        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gte": startID, "$lt": endID}}},
                                                 {"$group": {"_id": "$" + name, "count": {"$sum": 1}}},
                                                 {"$sort": {"count": -1}}]))
 
     #Return the 5 most popular values for one attribute or a list of attributes in the last X days
-    def getPopularEpochValues(self, attList, days):
-        tempID = self.getObjectID(days)
+    def getPopularEpochValues(self, attList, start, end):
+        startID = self.getObjectID(start)
+        endID = self.getObjectID(end)
         if type(attList) is list:
             att = {}
             for attribute in attList:
@@ -216,7 +225,7 @@ class Db(object):
         else:
             #attList is a single value
             att = "$"+attList
-        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gt": tempID}}},
+        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gte": startID, "$lt": endID}}},
                                            {"$group": {"_id": att, "count": {"$sum": 1}}},
                                            {"$sort": {"count": -1}}, {"$limit": 5}]))
 
@@ -239,16 +248,16 @@ class IndividualStatistics(Resource):
     def post(self):
         jsonData = request.get_json(force=True)
         if "name" in jsonData and "value" in jsonData:
-            if "epoch" not in jsonData:
+            if "start" not in jsonData:
                 return db.getLifetimeStats(jsonData["name"], json.loads(jsonData["value"]))
             else:
-                return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["epoch"])
+                return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["start"],jsonData["end"])
         else:
-            if "epoch" in jsonData and "list" in jsonData:
+            if "start" in jsonData and "list" in jsonData:
                 #We send data for the customStats page
                 return {
-                        "totalFP": db.getEpochFP(jsonData["epoch"]),
-                        "data": db.getPopularEpochValues(jsonData["list"], jsonData["epoch"])
+                        "totalFP": db.getEpochFP(jsonData["start"],jsonData["end"]),
+                        "data": db.getPopularEpochValues(jsonData["list"], jsonData["start"],jsonData["end"])
                         }
             else:
                 return ""

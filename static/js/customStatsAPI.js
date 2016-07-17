@@ -5,12 +5,30 @@
 var api = {};
 
 $(document).ready(function() {
-    $('#period').slider({
-        tooltip: 'always',
-        formatter: function(value) {
-            return value+" days";
+
+    var start = moment("2016-07-01");
+    var end = moment();
+
+    function cb(start, end) {
+        $('#period span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+
+    $('#period').daterangepicker({
+        startDate: start,
+        endDate: end,
+        minDate: start,
+        maxDate: end,
+        ranges: {
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Past week': [moment().subtract(6, 'days'), moment()],
+            'Past Month': [moment().subtract(1, 'month'), moment()],
+            'Lifetime': [start,end]
         }
-    });
+    }, cb);
+
+    cb(start, end);
+
+
     $("#submitBtn").popover();
 });
 
@@ -28,10 +46,14 @@ api.sendRequest = function(){
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                api.renderGraph(JSON.parse(xhr.responseText));
+                api.renderGraph(JSON.parse(xhr.responseText),start,end);
             }
         };
-        xhr.send(JSON.stringify({"list": selected, "epoch": $('#period').slider('getValue')}));
+        var d = $('#period').data('daterangepicker');
+        var format = "YYYY-MM-DD";
+        var start = d.startDate.format(format);
+        var end = d.endDate.format(format);
+        xhr.send(JSON.stringify({"list": selected, "start": start, "end": end}));
     } else {
         $("#submitBtn").popover('show');
     }
@@ -49,7 +71,7 @@ api.updateBadge = function(group){
     $('#'+group+'Badge').text($('#'+group+'Group').find(':checked').length);
 };
 
-api.renderGraph = function(jsData){
+api.renderGraph = function(jsData,startDate,endDate){
     //Transforming the data to suit the JS charting library
     var data = [];
     var nbFP = 0;
@@ -72,13 +94,6 @@ api.renderGraph = function(jsData){
         nbFP += result[i].count;
     }
 
-    //Getting date for graph title
-    var d = new Date();
-    var days = $('#period').slider('getValue');
-    var currentDate = d.toLocaleDateString();
-    d.setDate(d.getDate()- days);
-    var startDate = d.toLocaleDateString();
-
     //Adding a section for the other values
     var otherFPs = jsData.totalFP - nbFP;
     if(otherFPs > 0) {
@@ -94,7 +109,7 @@ api.renderGraph = function(jsData){
             type: 'pie'
         },
         title: {
-            text: ""+jsData.totalFP+" fingerprints collected between "+startDate+" and "+currentDate+ " ("+days+" days)"
+            text: ""+jsData.totalFP+" fingerprints collected between "+startDate+" and "+endDate
         },
         tooltip: {
             //pointFormat: '{series.name}<br/>{point.percentage:.1f}%'
