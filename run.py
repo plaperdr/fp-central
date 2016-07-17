@@ -124,6 +124,10 @@ class Db(object):
 
         #Adding date
         parsedFP["date"] = datetime.datetime.utcnow()
+
+        #Adding tags
+        parsedFP["tags"] = tagChecker.checkFingerprint(parsedFP)
+
         #Store the complete fingerprint in the main collection
         insertedID = self.mongo.db.fp.insert_one(parsedFP).inserted_id
 
