@@ -19,7 +19,7 @@ $(document).ready(function() {
         minDate: start,
         maxDate: end,
         ranges: {
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Past day': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
             'Past week': [moment().subtract(6, 'days'), moment()],
             'Past Month': [moment().subtract(1, 'month'), moment()],
             'Lifetime': [start,end]
