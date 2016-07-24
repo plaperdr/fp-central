@@ -29,9 +29,22 @@
             Select the versions of the Tor browser
         </span>
     </h2>
+    <!-- label class="btn btn-primary"><input type="checkbox" name="all" autocomplete="off" checked> &nbsp;  All</label-->
+
+    <div id="tagSelection" class="btn-group" data-toggle="buttons">
+        <label id="all" class="btn btn-default active">
+            <input type="radio" checked="checked"/> All
+        </label>
+        <label id="custom" class="btn btn-default">
+            <input type="radio"/> Custom
+        </label>
+     </div>
+    <br><br>
+    <div id="tags">
     {%  for tag in tags %}
-        <h1>{{ tag }}</h1>
+        <label class="btn btn-primary" disabled="disabled"><input type="checkbox" name="{{ tag }}" autocomplete="off" disabled="disabled" checked> &nbsp;  {{ tag }}</label>
     {%  endfor %}
+    </div>
 
     <h2>
         <span class="label label-info">

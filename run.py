@@ -47,7 +47,7 @@ def fpNoJS():
         db.storeFP(headers, False)
 
     #Get total number of fingerprints
-    nbTotal = db.getTotalFP()
+    nbTotal = db.getNumberFP()
     #Get percentages of all HTTP headers
     headersPer = []
     for header in request.headers:
@@ -69,8 +69,8 @@ def tor():
 @app.route('/globalStats')
 def globalStats():
     return render_template('globalStats.html',
-                            totalFP=db.getTotalFP(),
-                            epochFP=db.getEpochFP(90),
+                            totalFP=db.getNumberFP(),
+                            epochFP=db.getNumberFP(90),
                             dailyFP=db.getDailyFP(),
                             lang=db.getLifetimeValues("Accept-Language")
                            )
@@ -152,17 +152,28 @@ class Db(object):
     def getTotalFP(self):
         return self.mongo.db.fp.count()
 
-    #Return the number of fingerprints stored on a specific period in days
+    #Return the number of stored fingerprints
+    #0 argument: return the number of lifetime fingerprints
     #1 argument: number of days from current date
     #2 arguments: start and end dates
-    def getEpochFP(self,*args):
-        if len(args) == 1:
+    #3 arguments: start date, end date, tags
+    def getNumberFP(self,*args):
+        print(args)
+        if len(args) == 0:
+            return self.mongo.db.fp.count()
+        elif len(args) == 1:
             startID = ObjectId.from_datetime(datetime.today() - timedelta(days=args[0]))
             return self.mongo.db.fp.find({"_id": {"$gte": startID}}).count()
-        else:
+        elif len(args) == 2:
             startID = self.getObjectID(args[0])
             endID = self.getObjectID(args[1])
             return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}}).count()
+        else:
+            startID = self.getObjectID(args[0])
+            endID = self.getObjectID(args[1])
+            tagList = args[2]
+            return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}, "tags":{ "$in": tagList}}).count()
+
 
     #Get the number of daily stored fingerprints
     def getDailyFP(self):
@@ -215,9 +226,10 @@ class Db(object):
                                                 {"$sort": {"count": -1}}]))
 
     #Return the 5 most popular values for one attribute or a list of attributes in the last X days
-    def getPopularEpochValues(self, attList, start, end):
-        startID = self.getObjectID(start)
-        endID = self.getObjectID(end)
+    def getPopularEpochValues(self, *args):
+        attList = args[0]
+        startID = self.getObjectID(args[1])
+        endID = self.getObjectID(args[2])
         if type(attList) is list:
             att = {}
             for attribute in attList:
@@ -225,7 +237,13 @@ class Db(object):
         else:
             #attList is a single value
             att = "$"+attList
-        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gte": startID, "$lt": endID}}},
+
+        if len(args) < 4:
+            match = {"_id": {"$gte": startID, "$lt": endID}}
+        else:
+            match = {"$and": [{"tags": {"$in": args[3]}}, {"_id": {"$gte": startID, "$lt": endID}}]}
+
+        return list(self.mongo.db.fp.aggregate([{"$match": match},
                                            {"$group": {"_id": att, "count": {"$sum": 1}}},
                                            {"$sort": {"count": -1}}, {"$limit": 5}]))
 
@@ -254,10 +272,16 @@ class IndividualStatistics(Resource):
                 return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["start"],jsonData["end"])
         else:
             if "start" in jsonData and "list" in jsonData:
+                if jsonData["tags"] == "all":
+                    nbFP = db.getNumberFP(jsonData["start"],jsonData["end"])
+                    data = db.getPopularEpochValues(jsonData["list"], jsonData["start"], jsonData["end"])
+                else:
+                    nbFP = db.getNumberFP(jsonData["start"], jsonData["end"],jsonData["tags"])
+                    data = db.getPopularEpochValues(jsonData["list"], jsonData["start"], jsonData["end"], jsonData["tags"])
                 #We send data for the customStats page
                 return {
-                        "totalFP": db.getEpochFP(jsonData["start"],jsonData["end"]),
-                        "data": db.getPopularEpochValues(jsonData["list"], jsonData["start"],jsonData["end"])
+                        "totalFP": nbFP,
+                        "data": data
                         }
             else:
                 return ""
@@ -266,7 +290,7 @@ class GlobalStatistics(Resource):
     # Get the most popular values
     def get(self, att):
         if att == "total":
-            return db.getTotalFP()
+            return db.getNumberFP()
         else:
             return db.getPopularLifetimeValues(att)
 

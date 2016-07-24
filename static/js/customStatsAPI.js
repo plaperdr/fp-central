@@ -6,6 +6,16 @@ var api = {};
 
 $(document).ready(function() {
 
+    $('#tagSelection').on('click', function(){
+        if($(this).find(".active").attr('id')=="all"){
+            $("#tags .btn, #tags :checkbox").removeAttr('disabled');
+        } else {
+            $("#tags .btn, #tags :checkbox").attr('disabled','disabled');
+        }
+    });
+
+
+
     var start = moment("2016-07-01");
     var end = moment();
 
@@ -33,6 +43,18 @@ $(document).ready(function() {
 });
 
 api.sendRequest = function(){
+
+    var tags;
+    if($('#tagSelection .active').attr('id') == "custom") {
+        //Get the list of chosen tags
+        tags = [];
+        $('#tags input:checked').each(function () {
+            tags.push($(this).attr('name'));
+        });
+    } else {
+        tags = "all";
+    }
+
     //Get the list of chosen attributes
     var selected = [];
     $('#selection input:checked').each(function() {
@@ -53,7 +75,7 @@ api.sendRequest = function(){
         var format = "YYYY-MM-DD";
         var start = d.startDate.format(format);
         var end = d.endDate.format(format);
-        xhr.send(JSON.stringify({"list": selected, "start": start, "end": end}));
+        xhr.send(JSON.stringify({"list": selected, "start": start, "end": end, "tags": tags}));
     } else {
         $("#submitBtn").popover('show');
     }
