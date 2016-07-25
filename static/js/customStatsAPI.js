@@ -105,7 +105,7 @@ api.renderGraph = function(jsData,startDate,endDate){
         var nbLabel = 0;
         for(var key in result[i]._id){
             if(nbLabel > 0) label+="<br/>";
-            label += key+":"+ ((key == "timezone")?  "UTC+"+result[i]._id[key]/-60 :result[i]._id[key]);
+            label += key+":"+ ((key == "timezone")?  "UTC+"+result[i]._id[key]/-60 : (''+result[i]._id[key]).substring(0,10));
             nbLabel += 1;
         }
 
