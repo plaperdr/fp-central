@@ -98,14 +98,14 @@ api.renderGraph = function(jsData,startDate,endDate){
     var data = [];
     var nbFP = 0;
     var result = jsData.data;
-    
+
     for(var i =0; i<result.length; i++){
         //Creating label
         var label = "";
         var nbLabel = 0;
         for(var key in result[i]._id){
             if(nbLabel > 0) label+="<br/>";
-            label += key+":"+result[i]._id[key];
+            label += key+":"+ ((key == "timezone")?  "UTC+"+result[i]._id[key]/-60 :result[i]._id[key]);
             nbLabel += 1;
         }
 
