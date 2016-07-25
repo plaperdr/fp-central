@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import env_config as config
 import json
 import hashlib
+import sys
 
 
 ###### App
@@ -257,6 +258,16 @@ class Db(object):
     #t = {"$match": {"$and": [{"tags": {"$in": tags}}, {"date": {"$gt": tempID}}]}}
     #
 
+
+    ######Database maintenance
+    #Update the tags of all fingerprints -> run it if a tag's logic
+    # has been updated or if a new tag has been added
+    def updateTags(self):
+        with app.app_context():
+            cursor = self.mongo.db.fp.find(modifiers={"$snapshot": True})
+            for doc in cursor:
+                self.mongo.db.fp.update_one({"_id": doc["_id"]}, {"$set": {"tags": tagChecker.checkFingerprint(doc)}})
+
 db = Db()
 
 
@@ -298,5 +309,9 @@ api.add_resource(IndividualStatistics, '/stats')
 api.add_resource(GlobalStatistics, '/stats/<string:att>')
 
 if __name__ == '__main__':
-    #Launch application
-    app.run()
+    if len(sys.argv)>1 and sys.argv[1] == "updateTags":
+        #Update the list of tags of all fingerprints
+        db.updateTags()
+    else:
+        #Launch application
+        app.run()

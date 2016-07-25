@@ -29,7 +29,7 @@ to all the attributes collected in a fingerprint. From there, you can perform
 any verification that is needed and you have to return a list with all the tags that apply
 to the fingerprint.
 
-5. Finally, when your file is ready and all your checks have been written, you have to add
+5. When your file is ready and all your checks have been written, you have to add
 your newly created class in the **tags_checker.py** located in the parent folder.
 First, you have to import it.
 ``` python
@@ -40,6 +40,14 @@ Then, you need to add an instance of your class in the **classList** attribute o
 ``` python
     self.classList = [....,Tor(),MySuperNewClass()]
 ```
+
+6. Finally, you need to launch the **run.py** script with the **updateTags** argument.
+```bash
+python3 run.py updateTags
+```
+This process will refresh the tags of all collected fingerprints by going through all
+the tests including your newly added one.
+
 
 This is it! Your newly created tags are now supported by the application and every new
 fingerprint that is submitted to the system will go through the tests that you wrote.
