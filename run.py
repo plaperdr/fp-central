@@ -191,11 +191,15 @@ class Db(object):
 
     #Return all the values for a specific attribute
     def getLifetimeValues(self, name):
-        return list(self.mongo.db.fp.aggregate([{"$group": {"_id": "$" + name, "count": {"$sum": 1}}},{"$sort": {"count": -1}}]))
+        return list(self.mongo.db.fp.aggregate([{"$project": {name: {"$ifNull": ["$"+name,"Unspecified"]}}},
+                                                {"$group": {"_id": "$" + name, "count": {"$sum": 1}}},
+                                                {"$sort": {"count": -1}}]))
 
     #Return the 5 most popular values for a specific attribute
     def getPopularLifetimeValues(self, name):
-        return self.mongo.db.fp.aggregate({"$group": {"_id":"$"+name, "count": {"$sum": 1}}}, {"$sort": { "count" : -1}},{"$limit": 5})
+        return list(self.mongo.db.fp.aggregate({"$project": {name: {"$ifNull": ["$"+name,"Unspecified"]}}},
+                                          {"$group": {"_id":"$"+name, "count": {"$sum": 1}}},
+                                          {"$sort": { "count" : -1}},{"$limit": 5}))
 
 
     ######Epoch stats (stats on a specified period of time)

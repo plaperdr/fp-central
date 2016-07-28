@@ -45,7 +45,7 @@
         var lang = {{ lang|safe }};
         var langData = [];
         for(var j=0; j<lang.length; j++){
-            langData.push({'name': lang[j]._id.substring(0,2), 'y': lang[j].count});
+            langData.push({'name': (lang[j]._id =="Unspecified")? "Unspecified" : lang[j]._id.substring(0,2), 'y': lang[j].count});
         }
 
         $(document).ready(function() {
