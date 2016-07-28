@@ -133,14 +133,27 @@
     <div id="chart" style="width:100%; height:500px;"></div>
     <br><br>
     <h3>Data</h3>
-    <table id="table"></table>
+    <table id="table"
+       data-toggle="table"
+       data-show-export="true"
+       data-pagination="true"
+       data-filter-control="true"
+       data-filter-show-clear="true"
+       data-show-toggle="true"
+       data-search="true"
+    ></table>
 
-    <!-- Load the API and the slider -->
+    <!-- Load the API, the date and graph libraries -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/moment.min.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/daterangepicker.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts-exporting.js") }}"></script>
+    <!-- Load the table API and extensions -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/bootstrap-table.min.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/bootstrap-table-export.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/tableExport.min.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/bootstrap-table-filter-control.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/bootstrap-table-multiple-sort.js") }}"></script>
 
 {% endblock %}

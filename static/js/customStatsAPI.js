@@ -176,8 +176,13 @@ api.renderTable = function(jsData){
     $('#table').bootstrapTable("destroy");
 
     //Get the name of the columns for the table header
-    var columns = [{"field":"id","title": "N°"},{"field":"count","title":"Count"},{"field":"percentage","title":"Percentage"}];
-    for(var c in jsData.data[0]._id) columns.push({"field": c, "title": c.charAt(0).toUpperCase() + c.slice(1)});
+    var columns = [
+                {"field":"id","title": "N°","sortable":true, align: 'center',valign: 'middle'},
+                {"field":"count","title":"Count","sortable":true,align: 'center',valign: 'middle'},
+                {"field":"percentage","title":"Percentage","sortable":true,align: 'center',valign: 'middle'}
+    ];
+    for(var c in jsData.data[0]._id) columns.push({"field": c, "title": c.charAt(0).toUpperCase() + c.slice(1),
+        "filterControl": "input","sortable":true, align: 'center',valign: 'middle'});
 
     //Flatten the "_id" part of the JSON file for the table data
     var tableData = [];
@@ -192,7 +197,10 @@ api.renderTable = function(jsData){
     //Create the HTML table
     $('#table').bootstrapTable({
         columns: columns,
-        data: tableData
+        data: tableData,
+        height: 500,
+        showColumns: true,
+        showMultiSort: true
     });
 
 };
