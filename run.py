@@ -149,17 +149,12 @@ class Db(object):
 
 
     ######Global stats
-    #Return the total number of stored fingerprints
-    def getTotalFP(self):
-        return self.mongo.db.fp.count()
-
     #Return the number of stored fingerprints
     #0 argument: return the number of lifetime fingerprints
     #1 argument: number of days from current date
     #2 arguments: start and end dates
     #3 arguments: start date, end date, tags
     def getNumberFP(self,*args):
-        print(args)
         if len(args) == 0:
             return self.mongo.db.fp.count()
         elif len(args) == 1:
@@ -218,16 +213,8 @@ class Db(object):
         else:
             return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}, name: value}).count()
 
-    #Return all the values for a specific attribute in the last X days
-    def getEpochValues(self, name, start, end):
-        startID = self.getObjectID(start)
-        endID = self.getObjectID(end)
-        return list(self.mongo.db.fp.aggregate([{"$match": {"_id": {"$gte": startID, "$lt": endID}}},
-                                                {"$group": {"_id": "$" + name, "count": {"$sum": 1}}},
-                                                {"$sort": {"count": -1}}]))
-
-    #Return the 5 most popular values for one attribute or a list of attributes in the last X days
-    def getPopularEpochValues(self, *args):
+    #Return the values for one attribute or a list of attributes in the last X days
+    def getEpochValues(self, *args):
         attList = args[0]
         startID = self.getObjectID(args[1])
         endID = self.getObjectID(args[2])
@@ -246,7 +233,7 @@ class Db(object):
 
         return list(self.mongo.db.fp.aggregate([{"$match": match},
                                            {"$group": {"_id": att, "count": {"$sum": 1}}},
-                                           {"$sort": {"count": -1}}, {"$limit": 5}]))
+                                           {"$sort": {"count": -1}}]))
 
     ##FOR TAG SUPPORT
     # ALL OF THEM
@@ -285,10 +272,10 @@ class IndividualStatistics(Resource):
             if "start" in jsonData and "list" in jsonData:
                 if jsonData["tags"] == "all":
                     nbFP = db.getNumberFP(jsonData["start"],jsonData["end"])
-                    data = db.getPopularEpochValues(jsonData["list"], jsonData["start"], jsonData["end"])
+                    data = db.getEpochValues(jsonData["list"], jsonData["start"], jsonData["end"])
                 else:
                     nbFP = db.getNumberFP(jsonData["start"], jsonData["end"],jsonData["tags"])
-                    data = db.getPopularEpochValues(jsonData["list"], jsonData["start"], jsonData["end"], jsonData["tags"])
+                    data = db.getEpochValues(jsonData["list"], jsonData["start"], jsonData["end"], jsonData["tags"])
                 #We send data for the customStats page
                 return {
                         "totalFP": nbFP,

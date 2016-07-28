@@ -68,7 +68,12 @@ api.sendRequest = function(){
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                api.renderGraph(JSON.parse(xhr.responseText),start,end);
+                var data = JSON.parse(xhr.responseText);
+                //Adding data to the main graph
+                api.renderGraph(data,start,end);
+
+                //Adding data to the HTML table
+                api.renderTable(data);
             }
         };
         var d = $('#period').data('daterangepicker');
@@ -93,31 +98,39 @@ api.updateBadge = function(group){
     $('#'+group+'Badge').text($('#'+group+'Group').find(':checked').length);
 };
 
-api.renderGraph = function(jsData,startDate,endDate){
+
+
+api.renderGraph = function(jsData, startDate, endDate){
     //Transforming the data to suit the JS charting library
     var data = [];
-    var nbFP = 0;
     var result = jsData.data;
+    var totalFP = jsData.totalFP;
+    var otherFPs = 0;
 
     for(var i =0; i<result.length; i++){
-        //Creating label
-        var label = "";
-        var nbLabel = 0;
-        for(var key in result[i]._id){
-            if(nbLabel > 0) label+="<br/>";
-            label += key+":"+ ((key == "timezone")?  "UTC+"+result[i]._id[key]/-60 : (''+result[i]._id[key]).substring(0,10));
-            nbLabel += 1;
+        var count = result[i].count;
+        var percentage = count*100/totalFP;
+
+        //If percentage above 5%, we add it directly to the graph
+        //If below 5%, we add it to the "Other values" section
+        if(percentage > 5) {
+            //Creating label
+            var label = "";
+            var nbLabel = 0;
+            for (var key in result[i]._id) {
+                if (nbLabel > 0) label += "<br/>";
+                label += key + ":" + ((key == "timezone") ? "UTC+" + result[i]._id[key] / -60 : ('' + result[i]._id[key]).substring(0, 10));
+                nbLabel += 1;
+            }
+
+            //Adding data
+            data.push({name: label, y: count});
+        } else {
+            otherFPs += count;
         }
-
-        //Adding data
-        data.push({name: label, y:result[i].count});
-
-        //Computing stats
-        nbFP += result[i].count;
     }
 
-    //Adding a section for the other values
-    var otherFPs = jsData.totalFP - nbFP;
+    //Adding a section for the other values for the graph
     if(otherFPs > 0) {
         data.push({name: "Other values", y: otherFPs});
     }
@@ -155,4 +168,31 @@ api.renderGraph = function(jsData,startDate,endDate){
             data: data
         }]
     });
+};
+
+api.renderTable = function(jsData){
+
+    //Removing previous table data
+    $('#table').bootstrapTable("destroy");
+
+    //Get the name of the columns for the table header
+    var columns = [{"field":"id","title": "N°"},{"field":"count","title":"Count"},{"field":"percentage","title":"Percentage"}];
+    for(var c in jsData.data[0]._id) columns.push({"field": c, "title": c.charAt(0).toUpperCase() + c.slice(1)});
+
+    //Flatten the "_id" part of the JSON file for the table data
+    var tableData = [];
+    for(var i = 0; i<jsData.data.length; i++){
+        var tableElement = {"id":i+1, "count":jsData.data[i].count, "percentage":jsData.data[i].count*100/jsData.totalFP + '%'};
+        for(var c in jsData.data[i]._id){
+            tableElement[c] = jsData.data[i]._id[c]
+        }
+        tableData.push(tableElement);
+    }
+
+    //Create the HTML table
+    $('#table').bootstrapTable({
+        columns: columns,
+        data: tableData
+    });
+
 };

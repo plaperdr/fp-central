@@ -8,6 +8,7 @@
 {% block styles %}
     {{ super() }}
     <link href="{{url_for('static', filename='css/daterangepicker.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/bootstrap-table.min.css')}}" rel="stylesheet">
 {%  endblock %}
 
 {% block content %}
@@ -29,7 +30,6 @@
             Select the versions of the Tor browser
         </span>
     </h2>
-    <!-- label class="btn btn-primary"><input type="checkbox" name="all" autocomplete="off" checked> &nbsp;  All</label-->
 
     <div id="tagSelection" class="btn-group" data-toggle="buttons">
         <label id="all" class="btn btn-default active">
@@ -128,7 +128,12 @@
             Result
         </span>
     </h2>
+
+    <h3>Chart</h3>
     <div id="chart" style="width:100%; height:500px;"></div>
+    <br><br>
+    <h3>Data</h3>
+    <table id="table"></table>
 
     <!-- Load the API and the slider -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>
@@ -136,5 +141,6 @@
     <script type="text/javascript" src="{{ url_for('static', filename="js/daterangepicker.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts-exporting.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/bootstrap-table.min.js") }}"></script>
 
 {% endblock %}
