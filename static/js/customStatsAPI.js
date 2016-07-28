@@ -6,15 +6,12 @@ var api = {};
 
 $(document).ready(function() {
 
-    $('#tagSelection').on('click', function(){
-        if($(this).find(".active").attr('id')=="all"){
-            $("#tags .btn, #tags :checkbox").removeAttr('disabled');
-        } else {
-            $("#tags .btn, #tags :checkbox").attr('disabled','disabled');
-        }
+    $('#all').on('click', function(){
+        $("#tags .btn, #tags :checkbox").prop('checked','true').attr('disabled','disabled');
     });
-
-
+    $('#custom').on('click', function(){
+        $("#tags .btn, #tags :checkbox").removeAttr('disabled');
+    });
 
     var start = moment("2016-07-01");
     var end = moment();
