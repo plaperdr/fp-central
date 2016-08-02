@@ -67,10 +67,10 @@ api.sendRequest = function(){
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var data = JSON.parse(xhr.responseText);
                 //Adding data to the main graph
-                api.renderGraph(data,start,end);
+                api.renderGraph(data,selected,start,end);
 
                 //Adding data to the HTML table
-                api.renderTable(data);
+                api.renderTable(data,selected);
             }
         };
         var d = $('#period').data('daterangepicker');
@@ -97,7 +97,7 @@ api.updateBadge = function(group){
 
 
 
-api.renderGraph = function(jsData, startDate, endDate){
+api.renderGraph = function(jsData, attributeList, startDate, endDate){
     //Transforming the data to suit the JS charting library
     var data = [];
     var result = jsData.data;
@@ -114,12 +114,21 @@ api.renderGraph = function(jsData, startDate, endDate){
             //Creating label
             var label = "";
             var nbLabel = 0;
-            for (var key in result[i]._id) {
+            for (var j=0; j<attributeList.length; j++){
+                var att = attributeList[j];
                 if (nbLabel > 0) label += "<br/>";
-                label += key + ":" + ((key == "timezone") ? "UTC+" + result[i]._id[key] / -60 : ('' + result[i]._id[key]).substring(0, 10));
+                label += att + " : ";
+                if(result[i]._id[att] != null){
+                    if(att == "timezone"){
+                        label+= "UTC+" + result[i]._id[att] / -60;
+                    } else {
+                        label += ('' + result[i]._id[att]).substring(0, 10);
+                    }
+                } else {
+                    label += "-";
+                }
                 nbLabel += 1;
             }
-
             //Adding data
             data.push({name: label, y: count});
         } else {
@@ -167,7 +176,7 @@ api.renderGraph = function(jsData, startDate, endDate){
     });
 };
 
-api.renderTable = function(jsData){
+api.renderTable = function(jsData, columnList){
 
     //Removing previous table data
     $('#table').bootstrapTable("destroy");
@@ -178,7 +187,8 @@ api.renderTable = function(jsData){
                 {"field":"count","title":"Count","sortable":true,align: 'center',valign: 'middle'},
                 {"field":"percentage","title":"Percentage","sortable":true,align: 'center',valign: 'middle'}
     ];
-    for(var c in jsData.data[0]._id) columns.push({"field": c, "title": c.charAt(0).toUpperCase() + c.slice(1),
+    for(var i=0; i<columnList.length; i++) columns.push({"field": columnList[i],
+        "title": columnList[i].charAt(0).toUpperCase() + columnList[i].slice(1),
         "filterControl": "input","sortable":true, align: 'center',valign: 'middle'});
 
     //Flatten the "_id" part of the JSON file for the table data
