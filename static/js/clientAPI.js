@@ -98,12 +98,14 @@ api.register = function(name,code){
 };
 
 api.addTable = function(name,result){
-    if (result.constructor === {}.constructor) {
-        for (var key in result) {
-            api.addTable(name + "." + key, result[key]);
+    if(result != null) {
+        if (result.constructor === {}.constructor) {
+            for (var key in result) {
+                api.addTable(name + "." + key, result[key]);
+            }
+        } else {
+            document.getElementById(name + value).innerHTML = result;
         }
-    } else {
-        document.getElementById(name + value).innerHTML = result;
     }
 };
 
