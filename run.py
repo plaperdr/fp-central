@@ -159,16 +159,16 @@ class Db(object):
             return self.mongo.db.fp.count()
         elif len(args) == 1:
             startID = ObjectId.from_datetime(datetime.today() - timedelta(days=args[0]))
-            return self.mongo.db.fp.find({"_id": {"$gte": startID}}).count()
+            return self.mongo.db.fp.find({"date": {"$gte": startID}}).count()
         elif len(args) == 2:
-            startID = self.getObjectID(args[0])
-            endID = self.getObjectID(args[1])
-            return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}}).count()
+            startID = self.getStartDate(args[0])
+            endID = self.getEndDate(args[1])
+            return self.mongo.db.fp.find({"date": {"$gte": startID, "$lt": endID}}).count()
         else:
-            startID = self.getObjectID(args[0])
-            endID = self.getObjectID(args[1])
+            startID = self.getStartDate(args[0])
+            endID = self.getEndDate(args[1])
             tagList = args[2]
-            return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}, "tags":{ "$in": tagList}}).count()
+            return self.mongo.db.fp.find({"date": {"$gte": startID, "$lt": endID}, "tags":{ "$in": tagList}}).count()
 
 
     #Get the number of daily stored fingerprints
@@ -203,25 +203,31 @@ class Db(object):
 
 
     ######Epoch stats (stats on a specified period of time)
-    #Method to get the correct timestamp in an ObjectID object
+    #Method to get the date from the date string
     @staticmethod
-    def getObjectID(date):
-        return ObjectId.from_datetime(datetime.strptime(date,'%Y-%m-%d'))
+    def getStartDate(date):
+        return datetime.strptime(date,'%Y-%m-%d')
+
+    #Method to add one day to the end date so that
+    #it takes the data collected during the day
+    @staticmethod
+    def getEndDate(date):
+        return datetime.strptime(date, '%Y-%m-%d') +  timedelta(days=1)
 
     #Return the number of fingerprints having the exact same value for the specified attribute in the last X days
     def getEpochStats(self, name, value, start, end):
-        startID = self.getObjectID(start)
-        endID = self.getObjectID(end)
+        startID = self.getStartDate(start)
+        endID = self.getEndDate(end)
         if name in self.hashedVariables:
-            return self.mongo.db.hash.find({"_id": {"$gte": startID, "$lt": endID}, name: self.hashValue(value)}).count()
+            return self.mongo.db.hash.find({"date": {"$gte": startID, "$lt": endID}, name: self.hashValue(value)}).count()
         else:
-            return self.mongo.db.fp.find({"_id": {"$gte": startID, "$lt": endID}, name: value}).count()
+            return self.mongo.db.fp.find({"date": {"$gte": startID, "$lt": endID}, name: value}).count()
 
     #Return the values for one attribute or a list of attributes in the last X days
     def getEpochValues(self, *args):
         attList = args[0]
-        startID = self.getObjectID(args[1])
-        endID = self.getObjectID(args[2])
+        startID = self.getStartDate(args[1])
+        endID = self.getEndDate(args[2])
         if type(attList) is list:
             att = {}
             for attribute in attList:
@@ -231,9 +237,9 @@ class Db(object):
             att = "$"+attList
 
         if len(args) < 4:
-            match = {"_id": {"$gte": startID, "$lt": endID}}
+            match = {"date": {"$gte": startID, "$lt": endID}}
         else:
-            match = {"$and": [{"tags": {"$in": args[3]}}, {"_id": {"$gte": startID, "$lt": endID}}]}
+            match = {"$and": [{"tags": {"$in": args[3]}}, {"date": {"$gte": startID, "$lt": endID}}]}
 
         return list(self.mongo.db.fp.aggregate([{"$match": match},
                                            {"$group": {"_id": att, "count": {"$sum": 1}}},
