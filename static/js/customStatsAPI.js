@@ -194,7 +194,7 @@ api.renderTable = function(jsData, columnList){
     //Flatten the "_id" part of the JSON file for the table data
     var tableData = [];
     for(var i = 0; i<jsData.data.length; i++){
-        var tableElement = {"id":i+1, "count":jsData.data[i].count, "percentage":jsData.data[i].count*100/jsData.totalFP + '%'};
+        var tableElement = {"id":i+1, "count":jsData.data[i].count, "percentage":(jsData.data[i].count*100/jsData.totalFP).toFixed(2) + '%'};
         for(var c in jsData.data[i]._id){
             tableElement[c] = jsData.data[i]._id[c]
         }
