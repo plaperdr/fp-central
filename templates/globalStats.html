@@ -32,20 +32,27 @@
         //Daily graph
         var dailyFP = {{ dailyFP|safe }};
         var dailyData = [];
-        var cumulativeData = [];
-        var nbCounter = 0;
         for(var i=0; i<dailyFP.length; i++){
             var d = dailyFP[i]._id;
             dailyData.push([Date.UTC(d.year,d.month-1,d.day),dailyFP[i].count]);
-            nbCounter += dailyFP[i].count;
-            cumulativeData.push([Date.UTC(d.year,d.month-1,d.day),nbCounter])
+        }
+
+        //Sort data by date
+        dailyData.sort(function(a,b){return a[0] - b[0]});
+
+        //Generate cumulative data
+        var cumulativeData = [];
+        var nbCounter = 0;
+        for(var j=0; j<dailyData.length; j++) {
+            nbCounter += dailyData[j][1];
+            cumulativeData.push([dailyData[j][0], nbCounter]);
         }
 
         //Language graph
         var lang = {{ lang|safe }};
         var langData = [];
-        for(var j=0; j<lang.length; j++){
-            langData.push({'name': (lang[j]._id =="Unspecified")? "Unspecified" : lang[j]._id.substring(0,2), 'y': lang[j].count});
+        for(var k=0; k<lang.length; k++){
+            langData.push({'name': (lang[k]._id =="Unspecified")? "Unspecified" : lang[k]._id.substring(0,2), 'y': lang[k].count});
         }
 
         $(document).ready(function() {

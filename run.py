@@ -177,8 +177,7 @@ class Db(object):
                                                                  "month" : { "$month" : "$date" },
                                                                  "day" : { "$dayOfMonth" : "$date" }
                                                               },
-                                                   "count": { "$sum": 1 }}},
-                                                  {"$sort": {'_id.year': 1, '_id.month': 1, '_id.day': 1}}] ))
+                                                   "count": { "$sum": 1 }}}] ))
 
 
     ######Lifetime stats (since the creation of the collection)
