@@ -22,7 +22,7 @@ attributes = Blueprint('site', __name__, static_url_path='', static_folder='fing
 app.register_blueprint(attributes)
 
 files,variables = get_files_and_variables()
-variablesWithHTTP = [["User-Agent"],["Accept-Language"],["Accept-Encoding"],["Connection"]]
+variablesWithHTTP = [["User-Agent"],["Accept"],["Accept-Language"],["Accept-Encoding"],["Connection"]]
 variablesWithHTTP.extend(variables)
 definitions = get_definitions()
 
