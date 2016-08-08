@@ -123,6 +123,7 @@ api.renderGraph = function(jsData, attributeList, startDate, endDate){
                         label+= "UTC+" + result[i]._id[att] / -60;
                     } else {
                         label += ('' + result[i]._id[att]).substring(0, 10);
+                        if(result[i]._id[att].length>10) label += '...';
                     }
                 } else {
                     label += "-";
@@ -205,7 +206,7 @@ api.renderTable = function(jsData, columnList){
     $('#table').bootstrapTable({
         columns: columns,
         data: tableData,
-        height: 500,
+        height: 1000,
         showColumns: true,
         showMultiSort: true
     });

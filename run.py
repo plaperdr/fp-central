@@ -22,6 +22,8 @@ attributes = Blueprint('site', __name__, static_url_path='', static_folder='fing
 app.register_blueprint(attributes)
 
 files,variables = get_files_and_variables()
+variablesWithHTTP = [["User-Agent"],["Accept-Language"],["Accept-Encoding"],["Connection"]]
+variablesWithHTTP.extend(variables)
 definitions = get_definitions()
 
 tagChecker = TagChecker()
@@ -78,9 +80,10 @@ def globalStats():
 
 @app.route('/customStats')
 def customStats():
+    print(variablesWithHTTP)
     return render_template('customStats.html',
                             tags=tags,
-                            listOfVariables=variables,
+                            listOfVariables=variablesWithHTTP,
                           )
 
 @app.route('/faq')

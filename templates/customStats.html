@@ -54,6 +54,13 @@
     <br>
     <div id="selection">
     {% for list in listOfVariables %}
+        {% if list|length == 1 %}
+        {% set variable = list[0] %}
+            <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}" autocomplete="off"> &nbsp;  {{ variable }}</label>
+        {% endif %}
+    {%  endfor %}
+    <br><br>
+    {% for list in listOfVariables %}
         {% if list|length > 1 %}
             {% set name = list[0].split('.')[0] %}
 
@@ -88,11 +95,6 @@
                 </div>
             </div>
             <br>
-
-        {% else %}
-            {% set variable = list[0] %}
-            <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}" autocomplete="off"> &nbsp;  {{ variable }}</label>
-            <br><br>
         {% endif %}
     {%  endfor %}
     </div>
