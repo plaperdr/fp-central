@@ -6,9 +6,10 @@ class AcceptableChecker:
         self.acceptList = {}
         for subdir, dirs, files in os.walk("fingerprint/acceptable"):
             for file in files:
-                with open(os.path.join(subdir, file)) as json_file:
-                    json_data = json.load(json_file)
-                    self.acceptList[json_data["mainTag"]] = flattenJSON(json_data)
+                if file.endswith(".json"):
+                    with open(os.path.join(subdir, file)) as json_file:
+                        json_data = json.load(json_file)
+                        self.acceptList[json_data["mainTag"]] = flattenJSON(json_data)
 
 
     #For an attribute with a specific value, returns:
