@@ -1,7 +1,8 @@
 from flask import Flask,render_template,Blueprint,request,make_response
 from bson.objectid import ObjectId
-from fingerprint.attribute_reader import *
-from fingerprint.tags_checker import *
+from fingerprint.attributes_manager import *
+from fingerprint.tags_manager import *
+from fingerprint.acceptable_manager import *
 from flask_restful import Api, Resource
 from flask_babel import Babel
 from flask_pymongo import PyMongo
@@ -28,6 +29,8 @@ definitions = get_definitions()
 
 tagChecker = TagChecker()
 tags = tagChecker.getTagList()
+
+acceptableChecker = AcceptableChecker()
 
 @app.route('/')
 def home():
@@ -80,7 +83,6 @@ def globalStats():
 
 @app.route('/customStats')
 def customStats():
-    print(variablesWithHTTP)
     return render_template('customStats.html',
                             tags=tags,
                             listOfVariables=variablesWithHTTP,
@@ -92,8 +94,7 @@ def faq():
 
 @app.route('/store', methods=['POST'])
 def store():
-    db.storeFP(request.data,True)
-    return 'ok'
+    return json.dumps(db.storeFP(request.data,True))
 
 ###### Babel
 babel = Babel(app)
@@ -144,6 +145,11 @@ class Db(object):
 
         if len(hashes)>1:
             self.mongo.db.hash.insert_one(hashes)
+
+        if len(parsedFP["tags"]) == 0:
+            return {'tags': "No tags"}
+        else:
+            return {'tags': parsedFP["tags"]}
 
     #Hashing method using SHA-256
     @staticmethod
@@ -277,7 +283,10 @@ class IndividualStatistics(Resource):
         jsonData = request.get_json(force=True)
         if "name" in jsonData and "value" in jsonData:
             if "start" not in jsonData:
-                return db.getLifetimeStats(jsonData["name"], json.loads(jsonData["value"]))
+                result = {'count': db.getLifetimeStats(jsonData["name"], json.loads(jsonData["value"]))}
+                if len(jsonData["tags"]) > 0:
+                    result["acceptable"] = acceptableChecker.checkValue(jsonData["tags"],jsonData["name"], json.loads(jsonData["value"]))
+                return result
             else:
                 return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["start"],jsonData["end"])
         else:

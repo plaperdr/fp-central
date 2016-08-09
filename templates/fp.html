@@ -29,6 +29,7 @@
                     <th>{{ _('Name') }}</th>
                     <th>{{ _('Value') }}</th>
                     <th><a href="#" id="httpPerHeader" data-toggle="tooltip">%</a></th>
+                    <th id="httpAcc" style="display:none;" align="center">Acceptable value</th>
                 </tr>
             </thead>
             <tbody id="headers">
@@ -38,6 +39,7 @@
                     <td>{{ header[0] }}</td>
                     <td id="{{ header[0] + "Val" }}">{{ header[1] }}</td>
                     <td id="{{ header[0] + "Per" }}"></td>
+                    <td id="{{ header[0] + "Acc" }}" align="center"></td>
                 </tr>
                 {% endif %}
             {% endfor %}
@@ -53,6 +55,7 @@
                     <th>{{ _('Name') }}</th>
                     <th>{{ _('Value') }}</th>
                     <th><a href="#" id="JSPerHeader" data-toggle="tooltip">%</a></th>
+                    <th id="JSAcc" style="display:none;" align="center">Acceptable value</th>
                 </tr>
             </thead>
             <tbody id="attributes">
@@ -62,6 +65,7 @@
                     <td>{{ variable }}</td>
                     <td id="{{ variable + "Val" }}"></td>
                     <td id="{{ variable + "Per" }}"></td>
+                    <td id="{{ variable + "Acc" }}" align="center"></td>
                 </tr>
                 {% endfor %}
             {% endfor %}
