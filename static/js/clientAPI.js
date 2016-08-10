@@ -253,7 +253,6 @@ api.stats = function(){
     setTooltip(nbFPs);
 
     //We display the table headers that were hidden
-    console.log(tags);
     if(tags.length > 0) {
         $("#httpAcc").show();
         $("#JSAcc").show();
