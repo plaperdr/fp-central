@@ -25,14 +25,14 @@
 
     {%- block styles %}
     <!-- Bootstrap core CSS  (Bootswatch Sandstone Theme) -->
-    <link href="{{url_for('static', filename='css/bootstrap-sandstone.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/bootstrap/css/bootstrap-sandstone.min.css')}}" rel="stylesheet">
     <!-- Custom theme -->
     <link href="{{url_for('static', filename='css/theme.css')}}" rel="stylesheet">
     {%- endblock styles %}
 
     {% block scripts %}
-    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='external/jquery/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='external/bootstrap/js/bootstrap.min.js')}}"></script>
     {%- endblock scripts %}
 
     {%- endblock head %}

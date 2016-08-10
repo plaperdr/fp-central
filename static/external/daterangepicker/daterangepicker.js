@@ -1,5 +1,5 @@
 /**
-* @version: 2.1.23
+* @version: 2.1.24
 * @author: Dan Grossman http://www.dangrossman.info/
 * @copyright: Copyright (c) 2012-2016 Dan Grossman. All rights reserved.
 * @license: Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
@@ -41,6 +41,7 @@
         this.showDropdowns = false;
         this.showWeekNumbers = false;
         this.showISOWeekNumbers = false;
+        this.showCustomRangeLabel = true;
         this.timePicker = false;
         this.timePicker24Hour = false;
         this.timePickerIncrement = 1;
@@ -227,6 +228,9 @@
         if (typeof options.showDropdowns === 'boolean')
             this.showDropdowns = options.showDropdowns;
 
+        if (typeof options.showCustomRangeLabel === 'boolean')
+            this.showCustomRangeLabel = options.showCustomRangeLabel;
+
         if (typeof options.singleDatePicker === 'boolean') {
             this.singleDatePicker = options.singleDatePicker;
             if (this.singleDatePicker)
@@ -338,7 +342,9 @@
             for (range in this.ranges) {
                 list += '<li data-range-key="' + range + '">' + range + '</li>';
             }
-            list += '<li data-range-key="' + this.locale.customRangeLabel + '">' + this.locale.customRangeLabel + '</li>';
+            if (this.showCustomRangeLabel) {
+                list += '<li data-range-key="' + this.locale.customRangeLabel + '">' + this.locale.customRangeLabel + '</li>';
+            }
             list += '</ul>';
             this.container.find('.ranges').prepend(list);
         }
@@ -403,7 +409,7 @@
         this.container.find('.calendar')
             .on('click.daterangepicker', '.prev', $.proxy(this.clickPrev, this))
             .on('click.daterangepicker', '.next', $.proxy(this.clickNext, this))
-            .on('click.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
+            .on('mousedown.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
             .on('mouseenter.daterangepicker', 'td.available', $.proxy(this.hoverDate, this))
             .on('mouseleave.daterangepicker', 'td.available', $.proxy(this.updateFormInputs, this))
             .on('change.daterangepicker', 'select.yearselect', $.proxy(this.monthOrYearChanged, this))
@@ -1157,6 +1163,7 @@
                 target.closest('.calendar-table').length
                 ) return;
             this.hide();
+            this.element.trigger('outsideClick.daterangepicker', this);
         },
 
         showCalendars: function() {
@@ -1298,6 +1305,7 @@
             // * if the time picker is enabled, apply the hour/minute/second from the select boxes to the clicked date
             // * if autoapply is enabled, and an end date was chosen, apply the selection
             // * if single date picker mode, and time picker isn't enabled, apply the selection immediately
+            // * if one of the inputs above the calendars was focused, cancel that manual input
             //
 
             if (this.endDate || date.isBefore(this.startDate, 'day')) { //picking start
@@ -1349,6 +1357,9 @@
 
             this.updateView();
 
+            //This is to cancel the blur event handler if the mouse was in one of the inputs
+            e.stopPropagation();
+
         },
 
         calculateChosenLabel: function() {
@@ -1371,7 +1382,7 @@
               }
               i++;
           }
-          if (customRange) {
+          if (customRange && this.showCustomRangeLabel) {
               this.chosenLabel = this.container.find('.ranges li:last').addClass('active').html();
               this.showCalendars();
           }

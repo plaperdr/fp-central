@@ -13,15 +13,6 @@
         Past 90 days: {{ epochFP }} fingerprints
    </div>
 
-
-    <!--
-    Graph on the evolution of collected fingerprints (single day + cumulative)
-    Graph on the evolution of collected fingerprints per version?
-    Pie chart on the distribution of browsers/tor browser version
-    Have a button to switch between lifetime and 90 days stats
-    Have a pie chart for language
-    -->
-
     <br>
     <div id="daily" style="width:100%; height:500px;"></div>
     <br>
@@ -134,7 +125,7 @@
     </script>
 
     <!-- Load the external libraries -->
-    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts-exporting.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/highcharts/highcharts.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/highcharts/highcharts-exporting.js") }}"></script>
 
 {% endblock %}

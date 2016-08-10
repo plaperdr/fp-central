@@ -7,8 +7,8 @@
 
 {% block styles %}
     {{ super() }}
-    <link href="{{url_for('static', filename='css/daterangepicker.css')}}" rel="stylesheet">
-    <link href="{{url_for('static', filename='css/bootstrap-table.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/bootstrapTable/bootstrap-table.min.css')}}" rel="stylesheet">
 {%  endblock %}
 
 {% block content %}
@@ -146,15 +146,15 @@
 
     <!-- Load the API, the date and graph libraries -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/moment.min.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/daterangepicker.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/highcharts-exporting.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/daterangepicker/moment.min.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/daterangepicker/daterangepicker.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/highcharts/highcharts.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/highcharts/highcharts-exporting.js") }}"></script>
     <!-- Load the table API and extensions -->
-    <script type="text/javascript" src="{{ url_for('static', filename="js/bootstrap-table.min.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/bootstrap-table-export.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/tableExport.min.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/bootstrap-table-filter-control.js") }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename="js/tableExtensions/bootstrap-table-multiple-sort.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/bootstrap-table.min.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/bootstrap-table-export.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/tableExport.min.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/bootstrap-table-filter-control.js") }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/bootstrap-table-multiple-sort.js") }}"></script>
 
 {% endblock %}
