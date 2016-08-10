@@ -188,7 +188,7 @@ api.renderTable = function(jsData, columnList){
                 {"field":"count","title":"Count","sortable":true,align: 'center',valign: 'middle'},
                 {"field":"percentage","title":"Percentage","sortable":true,align: 'center',valign: 'middle'}
     ];
-    for(var i=0; i<columnList.length; i++) columns.push({"field": columnList[i],
+    for(var i=0; i<columnList.length; i++) columns.push({"field": columnList[i].replace('.',''),
         "title": columnList[i].charAt(0).toUpperCase() + columnList[i].slice(1),
         "filterControl": "input","sortable":true, align: 'center',valign: 'middle'});
 
@@ -197,7 +197,7 @@ api.renderTable = function(jsData, columnList){
     for(var i = 0; i<jsData.data.length; i++){
         var tableElement = {"id":i+1, "count":jsData.data[i].count, "percentage":(jsData.data[i].count*100/jsData.totalFP).toFixed(2) + '%'};
         for(var c in jsData.data[i]._id){
-            tableElement[c] = jsData.data[i]._id[c]
+            tableElement[c.replace('.','')] = jsData.data[i]._id[c]
         }
         tableData.push(tableElement);
     }
