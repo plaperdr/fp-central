@@ -57,25 +57,27 @@ Here is the list of technology or libraries currently used by the project for th
 * Flask-PyMongo ([Official](https://flask-pymongo.readthedocs.io/en/latest/) - [GitHub](https://github.com/dcrosta/flask-pymongo) - [Pypi](https://pypi.python.org/pypi/Flask-PyMongo))
 
 And for the front-end:
-* Bootstrap ([Official](https://getbootstrap.com/))
-* Sandstone Bootswatch theme ([Official](https://bootswatch.com/))
-* jQuery ([Official](https://jquery.com/))
+* Bootstrap ([Official](https://getbootstrap.com/) - [GitHub](https://github.com/twbs/bootstrap))
+* Sandstone Bootswatch theme ([Official](https://bootswatch.com/) - [GitHub](https://github.com/thomaspark/bootswatch))
+* jQuery ([Official](https://jquery.com/) - [GitHub](https://github.com/jquery/jquery))
+* Highcharts ([Official](http://www.highcharts.com/) - [GitHub](https://github.com/highcharts/highcharts))
+* Date Range Picker ([Official](http://www.daterangepicker.com/) - [GitHub](https://github.com/dangrossman/bootstrap-daterangepicker))
+* Bootstrap Table ([Official](http://bootstrap-table.wenzhixin.net.cn/) - [GitHub](https://github.com/wenzhixin/bootstrap-table))
 
-## Features and roadmap
-You will find below the list of currently supported features with future ones listed in no particular order.
+## Features
+You will find below the list of currently supported features.
 
 - [x] Basic front-end and back-end with Flask and Bootstrap
 - [x] Support of a dynamic test suite
-- [ ] Addition of MongoDB and storage of collected fingerprints
-- [ ] Addition of unit testing to prevent regression of the core functionalities
-- [ ] Addition of standard and Tor Browser specific fingerprinting tests
-- [ ] Support of returning visitors
-- [ ] Addition of basic statistics (for users + global page with aggregate statistics)
-- [ ] Addition of finer-grained statistics with lifetime stats, epoched stats and browser version stats
-- [ ] Addition of a RESTful API to get specific statistics easily
-- [ ] Support for localization
-- [ ] Addition of a page for acceptable Tor fingerprints
-- [ ] Support of additional browsers through the tagging system
+- [x] Addition of MongoDB and storage of collected fingerprints
+- [x] Addition of standard and Tor Browser specific fingerprinting tests
+- [x] Support of returning visitors
+- [x] Addition of basic statistics (for users + global page with aggregate statistics)
+- [x] Addition of finer-grained statistics with lifetime stats, epoched stats and browser version stats
+- [x] Addition of a RESTful API to get specific statistics easily
+- [x] Support for localization
+- [x] Addition of a page for acceptable Tor fingerprints
+- [x] Support of additional browsers through the tagging system
 
 #Contributions
 As the project is in early phases of development, it is subject to heavy modifications
