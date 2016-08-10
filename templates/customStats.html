@@ -41,7 +41,7 @@
     <br><br>
     <div id="tags">
     {%  for tag in tags %}
-        <label class="btn btn-primary" disabled="disabled"><input type="checkbox" name="{{ tag }}" autocomplete="off" disabled="disabled" checked> &nbsp;  {{ tag }}</label>
+        <label class="btn btn-primary" disabled="disabled"><input type="checkbox" name="{{ tag }}" disabled="disabled" checked> &nbsp;  {{ tag }}</label>
     {%  endfor %}
     </div>
 
@@ -56,7 +56,7 @@
     {% for list in listOfVariables %}
         {% if list|length == 1 %}
         {% set variable = list[0] %}
-            <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}" autocomplete="off"> &nbsp;  {{ variable }}</label>
+            <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}"> &nbsp;  {{ variable }}</label>
         {% endif %}
     {%  endfor %}
     <br><br>
@@ -88,7 +88,7 @@
             <div class="collapse" id="{{ name }}Collapse">
                 <div class="btn-group" role="group" id="{{ name }}Group">
                 {%  for variable in list %}
-                    <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}" autocomplete="off"
+                    <label class="btn btn-primary"><input type="checkbox" name="{{ variable }}"
                     onclick="api.updateBadge('{{ name }}')">
                         &nbsp;  {{ variable[name|length+1:] }}</label>
                 {% endfor %}
