@@ -2,7 +2,7 @@
 {% set active_page = "customStats" %}
 
 {% block title %}
-    Custom statistics - FP Central
+    {{ _('Custom statistics') }} - FP Central
 {% endblock %}
 
 {% block styles %}
@@ -13,7 +13,7 @@
 
 {% block content %}
 
-    <h1>Custom statistics</h1>
+    <h1>{{ _('Custom statistics') }}</h1>
     <!--
         - Select the tags you are interest in
         - Select the browsers you want to study
@@ -26,16 +26,16 @@
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">1</span>
-            Select the versions of the Tor browser
+            {{ _('Select the versions of the Tor browser') }}
         </span>
     </h2>
 
     <div id="tagSelection" class="btn-group" data-toggle="buttons">
         <label id="all" class="btn btn-default active">
-            <input type="radio" checked="checked"/> All
+            <input type="radio" checked="checked"/> {{ _('All') }}
         </label>
         <label id="custom" class="btn btn-default">
-            <input type="radio"/> Custom
+            <input type="radio"/> {{ _('Custom') }}
         </label>
      </div>
     <br><br>
@@ -48,7 +48,7 @@
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">2</span>
-            Select the attributes you are interested in
+            {{ _('Select the attributes you are interested in') }}
         </span>
     </h2>
     <br>
@@ -102,11 +102,11 @@
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">3</span>
-            Select the collection period
+            {{ _('Select the collection period') }}
         </span>
     </h2>
     <br>
-    Fingerprints collected between &nbsp;
+    {{ _('Fingerprints collected between') }} &nbsp;
     <span id="period" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;">
         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
         <span></span> <b class="caret"></b>
@@ -115,25 +115,25 @@
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">4</span>
-            Submit request
+            {{ _('Submit request') }}
         </span>
     </h2>
     <a id="submitBtn" tabindex="0" class="btn btn-primary" role="button" data-toggle="popover" data-trigger="focus" onclick="api.sendRequest()"
-       title="Attributes missing" data-content="You need to select at least one attribute to see the graph.">
-        <strong>Submit</strong>
+       title="Attributes missing" data-content={{ _('You need to select at least one attribute to see results.') | tojson }}>
+        <strong>{{ _('Submit') }}</strong>
     </a>
 
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">5</span>
-            Result
+            {{ _('Result') }}
         </span>
     </h2>
 
-    <h3>Chart</h3>
+    <h3>{{ _('Chart') }}</h3>
     <div id="chart" style="width:100%; height:500px;"></div>
     <br><br>
-    <h3>Data</h3>
+    <h3>{{ _('Data') }}</h3>
     <table id="table"
        data-toggle="table"
        data-show-export="true"
@@ -145,6 +145,18 @@
     ></table>
 
     <!-- Load the API, the date and graph libraries -->
+    <script type="text/javascript">
+        //Defining constants for i18n
+        const pastDayText = {{ _('Past day') | tojson }};
+        const pastWeekText = {{ _('Past week') | tojson }};
+        const pastMonthText = {{ _('Past month') | tojson }};
+        const lifetimeText = {{ _('Lifetime') | tojson }};
+        const percentageText = {{ _('Percentage') | tojson }};
+        const countText = {{ _('Count') | tojson }};
+        const andText = {{ _('and') | tojson }};
+        const fpCollectText = {{ _('fingerprints collected between') | tojson }};
+        const otherText = {{ _('Other values') | tojson }};
+    </script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/customStatsAPI.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="external/daterangepicker/moment.min.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="external/daterangepicker/daterangepicker.js") }}"></script>

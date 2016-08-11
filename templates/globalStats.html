@@ -6,11 +6,11 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Global statistics</h1>
+    <h1>{{ _('Global statistics') }}</h1>
     <div>
-        Lifetime: {{ totalFP }} fingerprints
+        {{ _('Lifetime') }}: {{ totalFP }} {{ _('fingerprints') }}
         <br>
-        Past 90 days: {{ epochFP }} fingerprints
+        {{ _('Past 90 days') }}: {{ epochFP }} {{ _('fingerprints') }}
    </div>
 
     <br>
@@ -43,7 +43,7 @@
         var lang = {{ lang|safe }};
         var langData = [];
         for(var k=0; k<lang.length; k++){
-            langData.push({'name': (lang[k]._id =="Unspecified")? "Unspecified" : lang[k]._id.substring(0,2), 'y': lang[k].count});
+            langData.push({'name': (lang[k]._id =="Unspecified")? {{ _('Unspecified') | tojson }} : lang[k]._id.substring(0,2), 'y': lang[k].count});
         }
 
         $(document).ready(function() {
@@ -52,17 +52,17 @@
                     type: 'spline'
                 },
                 title: {
-                    text: 'Number of stored fingerprints'
+                    text: {{ _('Number of stored fingerprints') | tojson }}
                 },
                 xAxis: {
                     type: 'datetime',
                     title: {
-                        text: 'Date'
+                        text: {{ _('Date') | tojson }}
                     }
                 },
                 yAxis: {
                     title: {
-                        text: 'Number of fingerprints'
+                        text: {{ _('Number of fingerprints') | tojson }}
                     },
                     min: 0,
                     allowDecimals: false
@@ -79,10 +79,10 @@
                     }
                 },
                 series: [{
-                    name: 'Daily fingerprints',
+                    name: {{ _('Daily fingerprints') | tojson }},
                     data: dailyData
                 },{
-                    name: 'Cumulative fingerprints',
+                    name: {{ _('Cumulative fingerprints') | tojson }},
                     data: cumulativeData
                 }]
             });
@@ -95,10 +95,10 @@
                     type: 'pie'
                 },
                 title: {
-                    text: 'Language distribution'
+                    text: {{ _('Language distribution') | tojson }}
                 },
                 tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br>{point.y} fingerprints'
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br>{point.y} '+ {{ _('fingerprints') | tojson }}
                 },
                 plotOptions: {
                     pie: {
@@ -114,7 +114,7 @@
                     }
                 },
                 series: [{
-                    name: 'Language',
+                    name: {{ _('Language') | tojson }},
                     colorByPoint: true,
                     data: langData
                 }]

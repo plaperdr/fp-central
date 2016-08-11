@@ -20,17 +20,17 @@ $(document).ready(function() {
         $('#period span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
 
+    var ranges = {};
+    ranges[pastDayText] = [moment().subtract(1, 'days'), moment().subtract(1, 'days')];
+    ranges[pastWeekText] = [moment().subtract(6, 'days'), moment()];
+    ranges[pastMonthText] = [moment().subtract(1, 'month'), moment()];
+    ranges[lifetimeText] = [start,end];
     $('#period').daterangepicker({
         startDate: start,
         endDate: end,
         minDate: start,
         maxDate: end,
-        ranges: {
-            'Past day': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Past week': [moment().subtract(6, 'days'), moment()],
-            'Past Month': [moment().subtract(1, 'month'), moment()],
-            'Lifetime': [start,end]
-        }
+        ranges: ranges
     }, cb);
 
     cb(start, end);
@@ -139,7 +139,7 @@ api.renderGraph = function(jsData, attributeList, startDate, endDate){
 
     //Adding a section for the other values for the graph
     if(otherFPs > 0) {
-        data.push({name: "Other values", y: otherFPs});
+        data.push({name: otherText, y: otherFPs});
     }
 
     //Rendering the graph
@@ -151,7 +151,7 @@ api.renderGraph = function(jsData, attributeList, startDate, endDate){
             type: 'pie'
         },
         title: {
-            text: ""+jsData.totalFP+" fingerprints collected between "+startDate+" and "+endDate
+            text: ""+jsData.totalFP+" "+fpCollectText+" "+startDate+" "+andText+" "+endDate
         },
         tooltip: {
             //pointFormat: '{series.name}<br/>{point.percentage:.1f}%'
@@ -185,8 +185,8 @@ api.renderTable = function(jsData, columnList){
     //Get the name of the columns for the table header
     var columns = [
                 {"field":"id","title": "N°","sortable":true, align: 'center',valign: 'middle'},
-                {"field":"count","title":"Count","sortable":true,align: 'center',valign: 'middle'},
-                {"field":"percentage","title":"Percentage","sortable":true,align: 'center',valign: 'middle'}
+                {"field":"count","title":countText,"sortable":true,align: 'center',valign: 'middle'},
+                {"field":"percentage","title":percentageText,"sortable":true,align: 'center',valign: 'middle'}
     ];
     for(var i=0; i<columnList.length; i++) columns.push({"field": columnList[i].replace(/[.()]/g,''),
         "title": columnList[i].charAt(0).toUpperCase() + columnList[i].slice(1),
