@@ -1,44 +1,64 @@
 /**
  * JS instructions for the acceptable FP page
  */
+$(document).ready(function() {
 
-//Screen resolution
-var aWidth = screen.availWidth;
-var aHeight = screen.availHeight;
-var height = screen.height;
-var width = screen.width;
+    //Colors and strings
+    var red = "#FF8080";
+    var green = "#B9D98A";
+    var res = "Res";
+    var panel = "Panel";
 
-var commonWidths = [800,1024,1152,1280,1440,1600,1680,1920,2560,3840];
-var commonHeights = [600,720,768,800,900,1024,1050,1080,1200,1440,1600,2160];
-
-document.getElementById("screen").innerHTML = width+"x"+height;
-document.getElementById("screenNoJS").style.display = "none";
-if((aWidth==1000 && aHeight==1000) || (width%200==0 && height%100==0)){
-    document.getElementById("screenRes").className += " glyphicon-ok";
-    document.getElementById("screenOk").style.display = "block";
-} else {
-    document.getElementById("screenRes").className += " glyphicon-remove";
-    document.getElementById("screenNotOk").style.display = "block";
-}
-
-//Plugins absence
-document.getElementById("pluginsNoJS").style.display = "none";
-if(navigator.plugins.length==0){
-    document.getElementById("plugins").innerHTML = "Empty";
-    document.getElementById("pluginsRes").className += " glyphicon-ok";
-    document.getElementById("pluginsOk").style.display = "block";
-} else {
-    var np = window.navigator.plugins;
-    var plist = [];
-    for (var i = 0; i < np.length; i++) {
-        plist[i] = np[i].name + "; ";
-        plist[i] += np[i].description + "; ";
-        plist[i] += np[i].filename;
-        plist[i] += ". ";
+    //Helper functions
+    function setPanel(name,val){
+        if(val=="Ok"){
+            $("#"+name+res).toggleClass("glyphicon-ok").css("color", green);
+            $("#"+name+"Ok").css("display", "block");
+        } else {
+            $("#"+name+res).toggleClass("glyphicon-remove").css("color", red);
+            $("#"+name+"NotOk").css("display", "block");
+        }
     }
-    var plugins = "";
-    for (i = 0; i < np.length; i++) plugins+= "Plugin "+i+": " + plist[i];
-    document.getElementById("plugins").innerHTML = plugins;
-    document.getElementById("pluginsRes").className += " glyphicon-remove";
-    document.getElementById("pluginsNotOk").style.display = "block";
-}
+
+    //Screen resolution
+    var aWidth = screen.availWidth;
+    var aHeight = screen.availHeight;
+    var height = screen.height;
+    var width = screen.width;
+
+    var commonWidths = [800, 1024, 1152, 1280, 1440, 1600, 1680, 1920, 2560, 3840];
+    var commonHeights = [600, 720, 768, 800, 900, 1024, 1050, 1080, 1200, 1440, 1600, 2160];
+
+    $("#screen").html(width + "x" + height);
+    $("#screenNoJS").css("display", "none");
+    if ((aWidth == 1000 && aHeight == 1000) || (width % 200 == 0 && height % 100 == 0)) {
+        setPanel("screen","Ok");
+    } else {
+        setPanel("screen","NotOk");
+    }
+
+    //Plugins absence
+    $("#pluginsNoJS").css("display", "none");
+    if (navigator.plugins.length == 0) {
+        $("#plugins").html("Empty");
+        setPanel("plugins","Ok");
+    } else {
+        var plist = [];
+        for (var i = 0; i < np.length; i++) {
+            plist[i] = np[i].name + "; ";
+            plist[i] += np[i].description + "; ";
+            plist[i] += np[i].filename;
+            plist[i] += ". ";
+        }
+        var plugins = "";
+        for (i = 0; i < np.length; i++) plugins += "Plugin " + i + ": " + plist[i];
+        $("#plugins").html(plugins);
+        setPanel("plugins","NotOk");
+    }
+
+    //We open the right panel if it is indicated in the URL
+    var url = document.location.toString();
+    if (url.match('#')){
+        $("#" + url.split('#')[1] + panel).collapse('show');
+    }
+});
