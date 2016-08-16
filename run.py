@@ -203,11 +203,11 @@ class Db(object):
                                                 {"$group": {"_id": "$" + name, "count": {"$sum": 1}}},
                                                 {"$sort": {"count": -1}}]))
 
-    #Return the 5 most popular values for a specific attribute
-    def getPopularLifetimeValues(self, name):
-        return list(self.mongo.db.fp.aggregate({"$project": {name: {"$ifNull": ["$"+name,"Unspecified"]}}},
+    #Return the most popular values for a specific attribute
+    def getPopularLifetimeValues(self, name, limit):
+        return list(self.mongo.db.fp.aggregate([{"$project": {name: {"$ifNull": ["$"+name,"Unspecified"]}}},
                                           {"$group": {"_id":"$"+name, "count": {"$sum": 1}}},
-                                          {"$sort": { "count" : -1}},{"$limit": 5}))
+                                          {"$sort": { "count" : -1}},{"$limit": limit}]))
 
 
     ######Epoch stats (stats on a specified period of time)
@@ -286,6 +286,18 @@ class IndividualStatistics(Resource):
                 result = {'count': db.getLifetimeStats(jsonData["name"], json.loads(jsonData["value"]))}
                 if len(jsonData["tags"]) > 0:
                     result["acceptable"] = acceptableChecker.checkValue(jsonData["tags"],jsonData["name"], json.loads(jsonData["value"]))
+
+                    #If value is not acceptable, we get the most popular value
+                    #and check if any help is available for this attribute
+                    if result["acceptable"] == "No":
+                        #Get the most popular value
+                        result["popular"] = db.getPopularLifetimeValues(jsonData["name"], 1)
+
+                        #Check for help
+                        l = acceptableChecker.hasHelp(jsonData["name"])
+                        if l != "":
+                            result["link"] = l
+
                 return result
             else:
                 return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["start"],jsonData["end"])
@@ -311,7 +323,7 @@ class GlobalStatistics(Resource):
         if att == "total":
             return db.getNumberFP()
         else:
-            return db.getPopularLifetimeValues(att)
+            return db.getPopularLifetimeValues(att,5)
 
 api.add_resource(IndividualStatistics, '/stats')
 api.add_resource(GlobalStatistics, '/stats/<string:att>')

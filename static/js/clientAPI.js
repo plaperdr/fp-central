@@ -5,23 +5,22 @@
 var attributes = [];
 var api = {};
 
-//Variable containing the current fingerprint and percentages
+//Variable containing the current fingerprint and stats
 var fp = {};
-var per = {};
-var acc = {};
+var stats = {"fp": {}};
 var tags = [];
 var nbAttributes = 0;
 var statsFetched = 0;
+var numberFP = 0;
+var showAcceptable = false;
 
 var value = "Val";
 var percentage = "Per";
 var acceptable = "Acc";
+var popover = "Pop";
 var fpTemp = "fpTemp";
 var sendTemp = "sendTemp";
-var perTemp = "perTemp";
-var nbTemp = "nbTemp";
-var tagsTemp = "tagsTemp";
-var accTemp = "accTemp";
+var statsTemp = "statsTemp";
 
 //Functions for dashboard and table transitions
 function btnTransition(name){
@@ -31,6 +30,14 @@ function btnTransition(name){
     btn.classList.remove("btn-info");
     btn.classList.add("btn-success");
     document.getElementById(name+"Ok").classList.add("glyphicon-ok-circle");
+}
+
+function dlBtnTransition(fpData){
+    var data = "text/json;charset=utf-8," + encodeURIComponent(fpData);
+    var dlBtn = document.getElementById("dlBtn");
+    dlBtn.href = "data:" + data;
+    dlBtn.download = "fingerprint.json";
+    dlBtn.classList.remove("disabled");
 }
 
 function setTooltip(nbFPs){
@@ -43,76 +50,62 @@ function setTooltip(nbFPs){
     });
 }
 
-function setAcceptableCell(name,value){
-    var glyph = "";
-    var color = "";
-    if(value == "Yes") {
-        color = "#B9D98A";
-        glyph = "ok";
-    } else if (value == "No") {
-        color = "#FF8080";
-        glyph = "remove";
-    } else {
-        color = "#A3A3C2";
-        glyph = "minus";
-    }
-    document.getElementById(name).innerHTML ="<span class='glyphicon glyphicon-" + glyph + "' style='color:"+color+"'></span>";
+function showAcceptableColumn(){
+    //Show columns
+    $("#httpTable").toggleClass("hideAcc");
+    $("#jsTable").toggleClass("hideAcc");
+
+    //Activate all popover elements
+    $("span[id$='"+popover+"']").popover()
 }
 
-//Check returning users and update the state of
-//the page according to saved data
+//Updating the state of the collection page
 $(document).ready(function() {
 
     //if the cookie is present, we load data from localStorage
-    //if it is not, this means that it either a new
-    //  connection or that data stored in localStorage has expired
+    //if it is not, this means that it is either a new
+    //connection or that data stored in localStorage has expired
     if(document.cookie.indexOf("fpcentral") > -1) {
         if (localStorage.getItem(fpTemp) != null) {
             //Filling the HTML table
             fp = JSON.parse(localStorage.getItem(fpTemp));
             for (var attribute in fp) {
                 var result = fp[attribute];
-                api.addTable(attribute,result);
+                api.addValue(attribute,result);
             }
 
             //Disabling the run button and providing visual feedback to the user
             btnTransition("run");
 
             //Enabling the download button
-            var data = "text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(fpTemp));
-            var dlBtn = document.getElementById("dlBtn");
-            dlBtn.href = "data:" + data;
-            dlBtn.download = "fingerprint.json";
-            dlBtn.classList.remove("disabled");
+            dlBtnTransition(localStorage.getItem(fpTemp));
 
             if (localStorage.getItem(sendTemp) != null) {
                 btnTransition("send");
-                if(localStorage.getItem(tagsTemp) != null){
-                    tags = localStorage.getItem(tagsTemp);
-                }
+                tags = JSON.parse(localStorage.getItem(sendTemp));
 
-                if (localStorage.getItem(perTemp) != null) {
+                if (localStorage.getItem(statsTemp) != null) {
+
+                    //We get the percentages if each value + the number of FP
+                    stats = JSON.parse(localStorage.getItem(statsTemp));
+                    numberFP = stats["number"];
 
                     //Add a tooltip on each table header
-                    setTooltip(localStorage.getItem(nbTemp));
+                    setTooltip(numberFP);
 
+                    //We perform the transition on the dashboard
                     btnTransition("stats");
+
                     //Adding the percentage to the HTML table
-                    per = JSON.parse(localStorage.getItem(perTemp));
-                    for (var attribute in per) {
-                        document.getElementById(attribute).innerHTML = per[attribute];
+                    for(var attribute in stats["fp"]) {
+                        var att = stats["fp"][attribute];
+                        api.addPercentage(attribute,att.percentage);
+                        api.addAcceptable(attribute,att);
                     }
 
-                    if (localStorage.getItem(accTemp) != null) {
-                        //Adding the acceptable values if present
-                        acc = JSON.parse(localStorage.getItem(accTemp));
-                        for (var attribute in acc) {
-                            setAcceptableCell(attribute,acc[attribute]);
-                        }
-
-                        //We display the table headers that were hidden
-                        $("#httpAcc").show();
-                        $("#JSAcc").show();
+                    if(showAcceptable) {
+                        //We display the table headers and columns that were hidden
+                        showAcceptableColumn();
                     }
                 } else {
                     document.getElementById("statsBtn").classList.remove("disabled");
@@ -124,22 +117,26 @@ $(document).ready(function() {
     } else {
         localStorage.removeItem(fpTemp);
         localStorage.removeItem(sendTemp);
-        localStorage.removeItem(perTemp);
-        localStorage.removeItem(tagsTemp);
+        localStorage.removeItem(statsTemp);
     }
 });
 
 
+/************ API FUNCTIONS ************/
 
+//Registering name and tests of attributes
 api.register = function(name,code){
     attributes.push({'name':name,'code':code});
 };
 
-api.addTable = function(name,result){
+
+
+//Functions to add values in the HTML table
+api.addValue = function(name, result){
     if(result != null) {
         if (result.constructor === {}.constructor) {
             for (var key in result) {
-                api.addTable(name + "." + key, result[key]);
+                api.addValue(name + "." + key, result[key]);
             }
         } else {
             document.getElementById(name + value).innerHTML = result;
@@ -147,6 +144,65 @@ api.addTable = function(name,result){
     }
 };
 
+api.addPercentage = function(name, result){
+    document.getElementById(name + percentage).innerHTML = result;
+};
+
+api.addAcceptable = function(name,jsonData){
+    //Add the acceptable value
+    if(jsonData.hasOwnProperty("acceptable")) {
+        api.addAcceptableValue(name, jsonData.acceptable);
+
+        //Add the info if present
+        if (jsonData.hasOwnProperty("popular")) {
+            api.addAcceptableInfo(name, jsonData.percentage, jsonData.popular);
+        }
+
+        //Add the helper link if present
+        if (jsonData.hasOwnProperty("link")) {
+            api.addAcceptableHelper(name, jsonData.link);
+        }
+    }
+};
+
+api.addAcceptableValue = function(name, value){
+    var glyph = "";
+    var color = "";
+    if(value == "Yes") {
+        color = "#B9D98A";
+        glyph = "ok";
+        showAcceptable = true;
+    } else if (value == "No") {
+        color = "#FF8080";
+        glyph = "remove";
+        showAcceptable = true;
+    } else {
+        color = "#A3A3C2";
+        glyph = "minus";
+    }
+    document.getElementById(name + acceptable).innerHTML ="<span class='glyphicon glyphicon-" + glyph + "' style='color:"+color+"'></span>";
+};
+
+
+api.addAcceptableInfo = function(name,percent,popular){
+    var text = "Only "+percent+"% of collected fingerprints share the same value as you for the \""+name+"\" attribute. The most ";
+    text += "popular value is \""+popular[0]._id+"\" shared by "+(popular[0].count*100/numberFP).toFixed(2).toString()+"% of the population.";
+
+    var idHtml = name+popover;
+    var addHTML = "&nbsp; <span id='"+idHtml+"' class='glyphicon glyphicon-info-sign clickableGlyph'";
+    addHTML +=  "data-container='body' data-toggle='popover' data-placement='left' data-content='"+text+"'></span>";
+
+    document.getElementById(name + acceptable).innerHTML += addHTML;
+};
+
+api.addAcceptableHelper = function(name,link){
+    document.getElementById(name + acceptable).innerHTML +=
+        "&nbsp; <a href='tor#"+link+"' target='_blank' style='color: #3E3F3A'><i class='glyphicon glyphicon-question-sign'></i></a>";
+};
+
+
+
+//Functions for the different phases of the collection process
 api.run = function (){
     var promises = [];
 
@@ -160,12 +216,12 @@ api.run = function (){
             promises.push(result);
             result.then(function(result){
                 fp[result.name] = result.data;
-                api.addTable(result.name,result.data);
+                api.addValue(result.name,result.data);
             });
         } else {
             //Result is either a single value or a JSON object
             fp[name] = result;
-            api.addTable(name, result);
+            api.addValue(name, result);
         }
     }
 
@@ -193,12 +249,7 @@ api.postRun = function(){
 
     //Enabling the send and download button
     document.getElementById("sendBtn").classList.remove("disabled");
-
-    var data = "text/json;charset=utf-8," + encodeURIComponent(jsonFP);
-    var dlBtn = document.getElementById("dlBtn");
-    dlBtn.href = "data:" + data;
-    dlBtn.download = "fingerprint.json";
-    document.getElementById("dlBtn").classList.remove("disabled");
+    dlBtnTransition(jsonFP);
 
     //Disabling the run button and providing visual feedback to the user
     btnTransition("run");
@@ -209,7 +260,7 @@ api.postRun = function(){
     document.cookie = "fpcentral = true; expires=" + expiration_date.toUTCString();
 };
 
-api.store = function(){
+api.send = function(){
     //Sending the complete fingerprint to the server
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/store", true);
@@ -218,20 +269,15 @@ api.store = function(){
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if(xhr.status == 200) {
-                //Storing the fact that we send the FP to the database
-                localStorage.setItem(sendTemp, "yes");
-
-                //Storing the tags if there are
+                //Storing the tags even if empty
                 var res = JSON.parse(xhr.responseText);
-                if(res.tags != "No tags"){
-                    localStorage.setItem(tagsTemp, res.tags);
-                    tags = res.tags;
-                }
+                tags = res.tags;
+                localStorage.setItem(sendTemp, JSON.stringify(tags));
 
                 //Enabling the stats button
                 document.getElementById("statsBtn").classList.remove("disabled");
 
-                //Disabling the store button and providing visual feedback to the user
+                //Disabling the send button and providing visual feedback to the user
                 btnTransition("send");
 
             } else {
@@ -246,17 +292,11 @@ api.store = function(){
 
 api.stats = function(){
     //Get the total number of FPs
-    var nbFPs = parseInt(api.getTotalFP());
-    localStorage.setItem(nbTemp, nbFPs);
+    numberFP = parseInt(api.getTotalFP());
+    stats["number"] = numberFP;
     
     //Add a tooltip on each table header
-    setTooltip(nbFPs);
-
-    //We display the table headers that were hidden
-    if(tags.length > 0) {
-        $("#httpAcc").show();
-        $("#JSAcc").show();
-    }
+    setTooltip(numberFP);
 
     //Calculate the percentage for each attribute
     //And get the acceptable values if the list of
@@ -265,33 +305,38 @@ api.stats = function(){
     for(var i =0; i<attributes.length; i++){
         var name = attributes[i];
         var result = fp[name];
-        api.exploreJSON(name,result,nbFPs);
+        api.exploreJSON(name,result);
     }
 
     //Disabling the stats button and providing visual feedback to the user
     btnTransition("stats");
 };
 
-api.exploreJSON = function(name,result,nbFPs){
+api.exploreJSON = function(name,result){
     if (result.constructor === {}.constructor) {
         for (var key in result) {
-            api.exploreJSON(name + "." + key, result[key],nbFPs);
+            api.exploreJSON(name + "." + key, result[key]);
         }
     } else {
-        api.getPerAndAcc(name,JSON.stringify(result),nbFPs);
+        api.getPerAndAcc(name,JSON.stringify(result));
         nbAttributes += 1;
     }
 };
 
 api.statsEnd = function(){
+    //We display the table headers that were hidden if
+    //there are acceptable values
+    if(showAcceptable) {
+        showAcceptableColumn();
+    }
+
     //Store the percentages in localStorage if all percentages have been loaded
     if(nbAttributes == statsFetched) {
-        localStorage.setItem(perTemp, JSON.stringify(per, null, '\t'));
-        localStorage.setItem(accTemp, JSON.stringify(acc, null, '\t'));
+        localStorage.setItem(statsTemp, JSON.stringify(stats, null, '\t'));
     }
 };
 
-api.getPerAndAcc = function(name,value,nbTotal){
+api.getPerAndAcc = function(name,value){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/stats", true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
@@ -302,18 +347,19 @@ api.getPerAndAcc = function(name,value,nbTotal){
             var jsonData = JSON.parse(xhr.responseText);
 
             //Adding percentage to the table
-            var percent = parseInt(jsonData.count) * 100 / nbTotal;
+            var percent = parseInt(jsonData.count) * 100 / numberFP;
             var val = percent.toFixed(2).toString();
-            document.getElementById(name + percentage).innerHTML = val;
-            per[name + percentage] = val;
+            jsonData.percentage = val;
+
+            //Adding percentages and acceptable value if present
+            api.addPercentage(name,val);
+            api.addAcceptable(name,jsonData);
+
+            //We store the result in the stats JSON object
+            //And increase the number of statsFetched by 1
+            stats["fp"][name] = jsonData;
             statsFetched += 1;
 
-            //Adding acceptable value if present
-            if(jsonData.hasOwnProperty("acceptable")){
-                var res = jsonData.acceptable;
-                setAcceptableCell(name + acceptable,res);
-                acc[name + acceptable] = res;
-            }
             api.statsEnd();
         }
     };

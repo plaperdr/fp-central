@@ -5,11 +5,27 @@
     {{ _('View my fingerprint') }} - FP Central
 {% endblock %}
 
+{%  block head %}
+    {{ super() }}
+    <style type="text/css">
+        .glyphicon {
+           font-size: 17px;
+        }
+        .clickableGlyph {
+            cursor: pointer;
+        }
+
+        .hideAcc tr > *:nth-child(4) {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <h1>Dashboard</h1>
     <div class="btn-group btn-group-justified" role="group">
         <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"><span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <span id="runOk" class="glyphicon"></span></a>
-        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.store()"><span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <span id="sendOk" class="glyphicon"></span></a>
+        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.send()"><span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <span id="sendOk" class="glyphicon"></span></a>
         <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"><span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong> <span id="statsOk" class="glyphicon"></span></a>
     </div>
 
@@ -23,7 +39,7 @@
     </h1>
     <div class="panel panel-default">
         <div class="panel-heading"><h2>HTTP headers</h2></div>
-        <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
+        <table id="httpTable" class="table table-striped table-hover hideAcc" xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
                     <th>{{ _('Name') }}</th>
@@ -49,7 +65,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading"><h2>JavaScript</h2></div>
-        <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
+        <table id="jsTable" class="table table-striped table-hover hideAcc" xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
                     <th>{{ _('Name') }}</th>

@@ -11,6 +11,8 @@ class AcceptableChecker:
                         json_data = json.load(json_file)
                         self.acceptList[json_data["mainTag"]] = flattenJSON(json_data)
 
+        self.acceptHelp = ["plugins","screen"]
+
 
     #For an attribute with a specific value, returns:
     # - 'Ok' if there is no acceptable supported tag
@@ -31,6 +33,15 @@ class AcceptableChecker:
                         return 'No'
         return 'Ok'
 
+    #Returns if there is help on this attribute in case
+    #it does not have an acceptable value
+    #(See Tor page)
+    def hasHelp(self, attribute):
+        base = attribute.split(".")[0]
+        if base in self.acceptHelp:
+            return base
+        else:
+            return ""
 
 def flattenJSON(jsonData):
     flat = {}
