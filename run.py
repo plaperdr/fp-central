@@ -167,7 +167,7 @@ class Db(object):
         if len(args) == 0:
             return self.mongo.db.fp.count()
         elif len(args) == 1:
-            startID = ObjectId.from_datetime(datetime.today() - timedelta(days=args[0]))
+            startID = datetime.today() - timedelta(days=args[0])
             return self.mongo.db.fp.find({"date": {"$gte": startID}}).count()
         elif len(args) == 2:
             startID = self.getStartDate(args[0])
