@@ -1,0 +1,31 @@
+.glyphicon {
+    font-size: 17px;
+}
+.clickableGlyph {
+    cursor: pointer;
+}
+
+.hideAcc tr > *:nth-child(4) {
+    display: none;
+}
+
+.tableCustom {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.tableCustom tr > *:nth-child(1) {
+    width: 30%;
+}
+
+.tableCustom tr > *:nth-child(2) {
+    width: 50%;
+}
+
+.tableCustom tr > *:nth-child(3){
+    width: 8%;
+}
+
+.tableCustom tr > *:nth-child(4) {
+    width: 12%;
+}

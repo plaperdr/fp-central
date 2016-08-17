@@ -5,20 +5,9 @@
     {{ _('View my fingerprint') }} - FP Central
 {% endblock %}
 
-{%  block head %}
+{%  block styles %}
     {{ super() }}
-    <style type="text/css">
-        .glyphicon {
-           font-size: 17px;
-        }
-        .clickableGlyph {
-            cursor: pointer;
-        }
-
-        .hideAcc tr > *:nth-child(4) {
-            display: none;
-        }
-    </style>
+    <link href="{{url_for('static', filename='css/fp.css')}}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -39,13 +28,13 @@
     </h1>
     <div class="panel panel-default">
         <div class="panel-heading"><h2>HTTP headers</h2></div>
-        <table id="httpTable" class="table table-striped table-hover hideAcc" xmlns="http://www.w3.org/1999/html">
+        <table id="httpTable" class="table table-striped table-hover tableCustom hideAcc" xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
                     <th>{{ _('Name') }}</th>
                     <th>{{ _('Value') }}</th>
-                    <th><a href="#" id="httpPerHeader" data-toggle="tooltip">%</a></th>
-                    <th id="httpAcc" style="display:none;" align="center">{{ _('Acceptable value') }}</th>
+                    <th class="text-center"><a href="#" id="httpPerHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center">{{ _('Acceptable value') }}</th>
                 </tr>
             </thead>
             <tbody id="headers">
@@ -54,8 +43,8 @@
                 <tr>
                     <td>{{ header[0] }}</td>
                     <td id="{{ header[0] + "Val" }}">{{ header[1] }}</td>
-                    <td id="{{ header[0] + "Per" }}"></td>
-                    <td id="{{ header[0] + "Acc" }}" align="center"></td>
+                    <td class="text-center" id="{{ header[0] + "Per" }}"></td>
+                    <td class="text-center" id="{{ header[0] + "Acc" }}"></td>
                 </tr>
                 {% endif %}
             {% endfor %}
@@ -65,13 +54,13 @@
 
     <div class="panel panel-default">
         <div class="panel-heading"><h2>JavaScript</h2></div>
-        <table id="jsTable" class="table table-striped table-hover hideAcc" xmlns="http://www.w3.org/1999/html">
+        <table id="jsTable" class="table table-striped table-hover tableCustom hideAcc" xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
                     <th>{{ _('Name') }}</th>
                     <th>{{ _('Value') }}</th>
-                    <th><a href="#" id="JSPerHeader" data-toggle="tooltip">%</a></th>
-                    <th id="JSAcc" style="display:none;" align="center">{{ _('Acceptable value') }}</th>
+                    <th class="text-center"><a href="#" id="JSPerHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center">{{ _('Acceptable value') }}</th>
                 </tr>
             </thead>
             <tbody id="attributes">
@@ -80,8 +69,8 @@
                 <tr>
                     <td>{{ variable }}</td>
                     <td id="{{ variable + "Val" }}"></td>
-                    <td id="{{ variable + "Per" }}"></td>
-                    <td id="{{ variable + "Acc" }}" align="center"></td>
+                    <td class="text-center" id="{{ variable + "Per" }}"></td>
+                    <td class="text-center" id="{{ variable + "Acc" }}"></td>
                 </tr>
                 {% endfor %}
             {% endfor %}
