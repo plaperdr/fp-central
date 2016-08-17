@@ -324,15 +324,16 @@ api.exploreJSON = function(name,result){
 };
 
 api.statsEnd = function(){
-    //We display the table headers that were hidden if
-    //there are acceptable values
-    if(showAcceptable) {
-        showAcceptableColumn();
-    }
-
-    //Store the percentages in localStorage if all percentages have been loaded
+    //If all stats have been loaded
     if(nbAttributes == statsFetched) {
+        //Store them in localStorage
         localStorage.setItem(statsTemp, JSON.stringify(stats, null, '\t'));
+
+        //We display the table headers that were hidden if
+        //there are acceptable values
+        if(showAcceptable) {
+            showAcceptableColumn();
+        }
     }
 };
 
