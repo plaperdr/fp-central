@@ -10,15 +10,11 @@ class Tor(Tag):
 
     def checkTags(self, fp):
         ua = fp["User-Agent"]
-        buildID = fp["buildID"]
-        if buildID == "20100101":
-            if ua == "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0":
-                return [tor6]
-            elif ua == "Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0":
-                return [tor5]
-            elif ua == "Mozilla/5.0 (Windows NT 6.1; rv:31.0) Gecko/20100101 Firefox/31.0":
-                return [tor6]
-            else:
-                return []
-        else :
+        if ua == "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0":
+            return [tor6]
+        elif ua == "Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0":
+            return [tor5]
+        elif ua == "Mozilla/5.0 (Windows NT 6.1; rv:31.0) Gecko/20100101 Firefox/31.0":
+            return [tor6]
+        else:
             return []
