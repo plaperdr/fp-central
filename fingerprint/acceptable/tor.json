@@ -13,6 +13,7 @@
 	},
 	"plugins": "",
 	"dnt": "NC",
+	"buildID": "20100101",
 	"screen": {
 		"width": 1000,
 		"height": 1000,

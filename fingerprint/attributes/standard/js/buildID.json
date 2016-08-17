@@ -1,0 +1,8 @@
+{
+  "name" : "BuildID",
+  "description" : "A string indicating the build identifier of the browser(not present in all browsers). This attribute is collected through JavaScript via the 'navigator' object.",
+  "files" : ["buildID.js"],
+  "variables" : ["buildID"],
+  "hash" : "False",
+  "URL" : "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/buildID"
+}
