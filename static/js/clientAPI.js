@@ -21,6 +21,7 @@ var popover = "Pop";
 var fpTemp = "fpTemp";
 var sendTemp = "sendTemp";
 var statsTemp = "statsTemp";
+var undef = "Undefined";
 
 //Functions for dashboard and table transitions
 function btnTransition(name){
@@ -211,7 +212,10 @@ api.run = function (){
         var name = attributes[i].name;
         var result = attributes[i].code();
         //Display results in HTML table
-        if (typeof result.then === "function") {
+        if(result == undefined) {
+            fp[name] = undef;
+            api.addValue(name,undef);
+        } else if (typeof result.then === "function") {
             //Result is a promise, wait for the result
             promises.push(result);
             result.then(function(result){
