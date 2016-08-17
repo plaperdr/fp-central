@@ -7,10 +7,13 @@ var api = {};
 $(document).ready(function() {
 
     $('#all').on('click', function(){
-        $("#tags .btn, #tags :checkbox").prop('checked','true').attr('disabled','disabled');
+        $("#tags").css("visibility","hidden");
+    });
+    $('#tbb').on('click', function(){
+        $("#tags").css("visibility","hidden");
     });
     $('#custom').on('click', function(){
-        $("#tags .btn, #tags :checkbox").removeAttr('disabled');
+        $("#tags").css("visibility","visible");
     });
 
     var start = moment("2016-07-01");
@@ -41,11 +44,16 @@ $(document).ready(function() {
 
 api.sendRequest = function(){
 
-    var tags;
-    if($('#tagSelection .active').attr('id') == "custom") {
+    var tags = [];
+    var selection = $('#tagSelection .active').attr('id');
+    if(selection == "custom") {
         //Get the list of chosen tags
-        tags = [];
         $('#tags input:checked').each(function () {
+            tags.push($(this).attr('name'));
+        });
+    } else if(selection == "tbb") {
+        //Get the list of all Tor tags
+        $("#tags").find("[name^='Tor']").each(function () {
             tags.push($(this).attr('name'));
         });
     } else {

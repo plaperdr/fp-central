@@ -7,16 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-08-11 15:11+0200\n"
-"PO-Revision-Date: 2016-08-11 15:09+0200\n"
+"POT-Creation-Date: 2016-08-17 12:34+0200\n"
+"PO-Revision-Date: 2016-08-17 12:36+0200\n"
 "Last-Translator: \n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: templates/base.html:2 templates/home.html:5
 msgid "Home"
@@ -40,86 +41,90 @@ msgid "FAQ"
 msgstr ""
 
 #: templates/customStats.html:29
-msgid "Select the versions of the Tor browser"
-msgstr "Sélectionner les versions du navigateur Tor"
+msgid "Select the browsers you want to study"
+msgstr "Sélectionner les navigateurs que vous voulez étudier"
 
 #: templates/customStats.html:35
 msgid "All"
 msgstr "Tous"
 
 #: templates/customStats.html:38
+msgid "Only Tor browsers"
+msgstr "Seulement les navigateurs Tor"
+
+#: templates/customStats.html:41
 msgid "Custom"
 msgstr "Personnalisé"
 
-#: templates/customStats.html:51
+#: templates/customStats.html:53
 msgid "Select the attributes you are interested in"
 msgstr "Sélectioner les attributs que vous voulez étudier"
 
-#: templates/customStats.html:105
+#: templates/customStats.html:107
 msgid "Select the collection period"
 msgstr "Sélectionner la période de collection"
 
-#: templates/customStats.html:109
+#: templates/customStats.html:111
 msgid "Fingerprints collected between"
 msgstr "Empreintes collectées entre"
 
-#: templates/customStats.html:118
+#: templates/customStats.html:120
 msgid "Submit request"
 msgstr "Envoyer la requête"
 
-#: templates/customStats.html:122
+#: templates/customStats.html:124
 msgid "You need to select at least one attribute to see results."
 msgstr "Vous devez sélectionner au moins un attribut pour voir les résultats."
 
-#: templates/customStats.html:123
+#: templates/customStats.html:125
 msgid "Submit"
 msgstr "Envoyer"
 
-#: templates/customStats.html:129
+#: templates/customStats.html:131
 msgid "Result"
 msgstr "Résultat"
 
-#: templates/customStats.html:133
+#: templates/customStats.html:135
 msgid "Chart"
 msgstr "Graphique"
 
-#: templates/customStats.html:136
+#: templates/customStats.html:138
 msgid "Data"
 msgstr "Données"
 
-#: templates/customStats.html:150
+#: templates/customStats.html:152
 msgid "Past day"
 msgstr "Dernière journée"
 
-#: templates/customStats.html:151
+#: templates/customStats.html:153
 msgid "Past week"
 msgstr "Dernière semaine"
 
-#: templates/customStats.html:152
+#: templates/customStats.html:154
 msgid "Past month"
 msgstr "Dernier mois"
 
-#: templates/customStats.html:153 templates/globalStats.html:11
+#: templates/customStats.html:155 templates/globalStats.html:11
 msgid "Lifetime"
 msgstr "Depuis la création"
 
-#: templates/customStats.html:154
+#: templates/customStats.html:156
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: templates/customStats.html:155
+#: templates/customStats.html:157
 msgid "Count"
 msgstr "Nombre"
 
-#: templates/customStats.html:156
+#: templates/customStats.html:158
 msgid "and"
 msgstr "et le"
 
-#: templates/customStats.html:157
+#: templates/customStats.html:159
 msgid "fingerprints collected between"
 msgstr "empreintes collectées entre le"
 
-#: templates/customStats.html:158
+#: templates/customStats.html:160
 msgid "Other values"
 msgstr "Autres valeurs"
 
@@ -127,7 +132,7 @@ msgstr "Autres valeurs"
 msgid "List of attributes"
 msgstr "Liste des attributs"
 
-#: templates/faq.html:14 templates/fp.html:29 templates/fp.html:55
+#: templates/faq.html:14 templates/fp.html:45 templates/fp.html:71
 #: templates/fpNoJS.html:15
 msgid "Name"
 msgstr "Nom"
@@ -144,31 +149,31 @@ msgstr ""
 msgid "View my fingerprint"
 msgstr "Voir mon empreinte"
 
-#: templates/fp.html:11
+#: templates/fp.html:27
 msgid "Run JavaScript tests"
 msgstr "Exécuter les tests JavaScript"
 
-#: templates/fp.html:12
+#: templates/fp.html:28
 msgid "Send to server"
 msgstr "Envoyer au serveur"
 
-#: templates/fp.html:13
+#: templates/fp.html:29
 msgid "Get statistics"
 msgstr "Obtenir les statistiques"
 
-#: templates/fp.html:19
+#: templates/fp.html:35
 msgid "Results"
 msgstr "Résultats"
 
-#: templates/fp.html:21
+#: templates/fp.html:37
 msgid "Download as JSON"
 msgstr "Télécharger au format JSON"
 
-#: templates/fp.html:30 templates/fp.html:56 templates/fpNoJS.html:16
+#: templates/fp.html:46 templates/fp.html:72 templates/fpNoJS.html:16
 msgid "Value"
 msgstr "Valeur"
 
-#: templates/fp.html:32 templates/fp.html:58
+#: templates/fp.html:48 templates/fp.html:74
 msgid "Acceptable value"
 msgstr "Valeur acceptable"
 
@@ -216,15 +221,15 @@ msgstr "Langage"
 #: templates/home.html:11
 msgid ""
 "Welcome to FP Central! This website aims at studying the diversity of "
-"browser fingerprints and providing developers with data to help them "
-"design good defenses.\n"
-"         Contribute to the efforts by viewing your own browser "
-"fingerprint or consult the current statistics of data provided by users "
-"around the world!"
+"browser fingerprints and providing developers with data to help them design "
+"good defenses.\n"
+"         Contribute to the efforts by viewing your own browser fingerprint "
+"or consult the current statistics of data provided by users around the "
+"world!"
 msgstr ""
-"Bienvenue sur FP Central! Ce site web a pour but d'étudier la diversité "
-"des empreintes de navigateur et de fournir à des développeurs des données"
-" leur permettant de concevoir des contre-mesures adaptées.\n"
+"Bienvenue sur FP Central! Ce site web a pour but d'étudier la diversité des "
+"empreintes de navigateur et de fournir à des développeurs des données leur "
+"permettant de concevoir des contre-mesures adaptées.\n"
 "         Contribuer à la base de données en affichant votre propre "
 "empreinte ou consulter les statistiques sur les empreintes récupérées à "
 "travers le monde!"
@@ -235,13 +240,13 @@ msgstr "Version beta"
 
 #: templates/home.html:16
 msgid ""
-"This website is still in development. If you find any bugs, don't "
-"hesitate to report them on\n"
+"This website is still in development. If you find any bugs, don't hesitate "
+"to report them on\n"
 "          <a href=\"https://github.com/plaperdr/fp-central\"><strong>our "
 "official GitHub repository</strong></a>."
 msgstr ""
-"Ce site est toujours en développement. Si vous trouvez des bugs, "
-"n'hésitez pas à les reporter sur \n"
+"Ce site est toujours en développement. Si vous trouvez des bugs, n'hésitez "
+"pas à les reporter sur \n"
 "<a href=\"https://github.com/plaperdr/fp-central\"><strong>notre page "
 "GitHub officiel</strong></a>."
 
@@ -251,3 +256,5 @@ msgstr ""
 #~ msgid "count"
 #~ msgstr "nombre"
 
+#~ msgid "Select the versions of the Tor browser"
+#~ msgstr "Sélectionner les versions du navigateur Tor"

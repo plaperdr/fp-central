@@ -26,7 +26,7 @@
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">1</span>
-            {{ _('Select the versions of the Tor browser') }}
+            {{ _('Select the browsers you want to study') }}
         </span>
     </h2>
 
@@ -34,14 +34,16 @@
         <label id="all" class="btn btn-default active">
             <input type="radio" checked="checked"/> {{ _('All') }}
         </label>
+        <label id="tbb" class="btn btn-default">
+            <input type="radio"/> {{ _('Only Tor browsers') }}
+        </label>
         <label id="custom" class="btn btn-default">
             <input type="radio"/> {{ _('Custom') }}
         </label>
-     </div>
-    <br><br>
-    <div id="tags">
+    </div>
+    <div id="tags" style="visibility: hidden; display:inline;">
     {%  for tag in tags %}
-        <label class="btn btn-primary" disabled="disabled"><input type="checkbox" name="{{ tag }}" disabled="disabled" checked> &nbsp;  {{ tag }}</label>
+        <label class="btn btn-primary"><input type="checkbox" name="{{ tag }}" checked> &nbsp;  {{ tag }}</label>
     {%  endfor %}
     </div>
 
