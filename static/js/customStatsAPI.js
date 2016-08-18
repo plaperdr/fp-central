@@ -217,7 +217,9 @@ api.renderTable = function(jsData, columnList){
         data: tableData,
         height: 1000,
         showColumns: true,
-        showMultiSort: true
+        showMultiSort: true,
+        pageSize: 20,
+        pageList: [10, 20, 50, 100]
     });
 
 };
