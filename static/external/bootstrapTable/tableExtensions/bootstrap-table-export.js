@@ -29,7 +29,7 @@
     });
 
     $.extend($.fn.bootstrapTable.defaults.icons, {
-        export: 'glyphicon-export icon-share'
+        export: 'fa-floppy-o icon-share'
     });
 
     $.extend($.fn.bootstrapTable.locales, {

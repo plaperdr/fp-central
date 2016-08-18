@@ -30,7 +30,7 @@ function btnTransition(name){
     btn.classList.add("disabled");
     btn.classList.remove("btn-info");
     btn.classList.add("btn-success");
-    document.getElementById(name+"Ok").classList.add("glyphicon-ok-circle");
+    document.getElementById(name+"Ok").classList.add("fa-check-circle-o");
 }
 
 function dlBtnTransition(fpData){
@@ -57,7 +57,7 @@ function showAcceptableColumn(){
     $("#jsTable").toggleClass("hideAcc");
 
     //Activate all popover elements
-    $("span[id$='"+popover+"']").popover()
+    $("i[id$='"+popover+"']").popover()
 }
 
 //Updating the state of the collection page
@@ -171,17 +171,17 @@ api.addAcceptableValue = function(name, value){
     var color = "";
     if(value == "Yes") {
         color = "#B9D98A";
-        glyph = "ok";
+        glyph = "check";
         showAcceptable = true;
     } else if (value == "No") {
         color = "#FF8080";
-        glyph = "remove";
+        glyph = "times";
         showAcceptable = true;
     } else {
         color = "#A3A3C2";
         glyph = "minus";
     }
-    document.getElementById(name + acceptable).innerHTML ="<span class='glyphicon glyphicon-" + glyph + "' style='color:"+color+"'></span>";
+    document.getElementById(name + acceptable).innerHTML ="<i class='fa fa-" + glyph + "' style='color:"+color+"'></i>";
 };
 
 
@@ -190,15 +190,15 @@ api.addAcceptableInfo = function(name,percent,popular){
     text += "popular value is \""+popular[0]._id+"\" shared by "+(popular[0].count*100/numberFP).toFixed(2).toString()+"% of the population.";
 
     var idHtml = name+popover;
-    var addHTML = "&nbsp; <span id='"+idHtml+"' class='glyphicon glyphicon-info-sign clickableGlyph'";
-    addHTML +=  "data-container='body' data-toggle='popover' data-placement='left' data-content='"+text+"'></span>";
+    var addHTML = "&nbsp; <i id='"+idHtml+"' class='fa fa-info-circle  clickableGlyph'";
+    addHTML +=  "data-container='body' data-toggle='popover' data-placement='left' data-content='"+text+"'></i>";
 
     document.getElementById(name + acceptable).innerHTML += addHTML;
 };
 
 api.addAcceptableHelper = function(name,link){
     document.getElementById(name + acceptable).innerHTML +=
-        "&nbsp; <a href='tor#"+link+"' target='_blank' style='color: #3E3F3A'><i class='glyphicon glyphicon-question-sign'></i></a>";
+        "&nbsp; <a href='tor#"+link+"' target='_blank' style='color: #3E3F3A'><i class='fa fa-question-circle'></i></a>";
 };
 
 

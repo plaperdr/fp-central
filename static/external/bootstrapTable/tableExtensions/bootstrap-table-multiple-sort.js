@@ -170,9 +170,9 @@
     });
 
     $.extend($.fn.bootstrapTable.defaults.icons, {
-        sort: 'glyphicon-sort',
-        plus: 'glyphicon-plus',
-        minus: 'glyphicon-minus'
+        sort: 'fa-sort',
+        plus: 'fa-plus',
+        minus: 'fa-minus'
     });
 
     $.extend($.fn.bootstrapTable.Constructor.EVENTS, {

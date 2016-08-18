@@ -12,10 +12,10 @@ $(document).ready(function() {
     //Helper functions
     function setPanel(name,val){
         if(val=="Ok"){
-            $("#"+name+res).toggleClass("glyphicon-ok").css("color", green);
+            $("#"+name+res).toggleClass("fa-check").css("color", green);
             $("#"+name+"Ok").css("display", "block");
         } else {
-            $("#"+name+res).toggleClass("glyphicon-remove").css("color", red);
+            $("#"+name+res).toggleClass("fa-times").css("color", red);
             $("#"+name+"NotOk").css("display", "block");
         }
     }

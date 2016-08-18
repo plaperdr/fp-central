@@ -434,7 +434,7 @@
     });
 
     $.extend($.fn.bootstrapTable.defaults.icons, {
-        clear: 'glyphicon-trash icon-clear'
+        clear: 'fa-trash-o icon-clear'
     });
 
     $.extend($.fn.bootstrapTable.locales, {

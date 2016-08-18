@@ -18,7 +18,7 @@
     <p>
         On this page, you can visualize your own browser fingerprint. You can run a series of tests and see what your browser engine returns in the tables below.
         The server can also computes statistics to help you understand how unique your fingerprint can be with respect to other users.
-        The <a href="/faq" target="_blank">FAQ page <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> gives a detailed list of
+        The <a href="/faq" target="_blank">FAQ page <i class="fa fa-external-link" aria-hidden="true"></i></a> gives a detailed list of
         attributes that are collected along with links to documentation.
     </p>
     <div data-intro="Thank you for following this quick introduction! You can follow it again at anytime by clicking on the 'Help' button during your visit." data-step="9">
@@ -30,19 +30,19 @@
         <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"
            data-intro="Click on this button to run the JavaScript tests and see the values returned by your browser."
            data-step="6">
-            <span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <span id="runOk" class="glyphicon"></span>
+            <span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <i id="runOk" class="fa"></i>
         </a>
         <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.send()"
            data-intro="After reviewing the values in the JavaScript table below, you can send your complete fingerprint to our server so that it is stored for statistical purposes.
                       The collected data will help us understand the diversity of browser fingerprints and it will provide developers insight into how to develop and design good defenses against tracking."
            data-step="7">
-            <span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <span id="sendOk" class="glyphicon"></span>
+            <span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <i id="sendOk" class="fa"></i>
         </a>
         <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"
            data-intro="The final action of the dashboard lets you see how your browser fingerprint compares with other ones. For each attribute, you will see the percentage of
                       fingerprints who share the exact same value as yours."
            data-step="8">
-            <span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong> <span id="statsOk" class="glyphicon"></span>
+            <span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong> <i id="statsOk" class="fa"></i>
         </a>
     </div>
 
@@ -52,7 +52,7 @@
                  If you are using the Tor browser, you can even get some extra information to see if returned values are acceptable or not (i.e. they are normal and they follow Tor guidelines). The 'Download as JSON' button becomes active as soon as all tests are run." data-step="3">
         {{ _('Results') }} &nbsp;
         <a id="dlBtn" type="button" class="btn btn-default btn-md disabled">
-            <span class="glyphicon glyphicon-download" aria-hidden="true"></span> {{ _('Download as JSON') }}
+            <i class="fa fa-download" aria-hidden="true"></i> {{ _('Download as JSON') }}
         </a>
     </h1>
     <div class="panel panel-default" data-intro="You will find here attributes related to HTTP headers. The values are already present since they were already sent to our server when you first connected to this website." data-step="4">
