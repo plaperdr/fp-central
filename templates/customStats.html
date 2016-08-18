@@ -124,7 +124,12 @@
        title="Attributes missing" data-content={{ _('You need to select at least one attribute to see results.') | tojson }}>
         <strong>{{ _('Submit') }}</strong>
     </a>
-
+    <span class="input-group-addon" style="display: inline">
+        <label>
+            <input id="includeNoJS" type="checkbox" checked>
+            Include fingerprints without JavaScript
+        </label>
+    </span>
     <h2>
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">5</span>

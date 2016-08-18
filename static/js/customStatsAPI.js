@@ -85,7 +85,8 @@ api.sendRequest = function(){
         var format = "YYYY-MM-DD";
         var start = d.startDate.format(format);
         var end = d.endDate.format(format);
-        xhr.send(JSON.stringify({"list": selected, "start": start, "end": end, "tags": tags}));
+        var includeNoJS = $("#includeNoJS").prop('checked').toString();
+        xhr.send(JSON.stringify({"list": selected, "start": start, "end": end, "tags": tags, "includeNoJS": includeNoJS}));
     } else {
         $("#submitBtn").popover('show');
     }
