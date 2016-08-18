@@ -8,25 +8,54 @@
 {%  block styles %}
     {{ super() }}
     <link href="{{url_for('static', filename='css/fp.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/intro/introjs.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/intro/introjs-nassim.css')}}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    <div class="btn-group btn-group-justified" role="group">
-        <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"><span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <span id="runOk" class="glyphicon"></span></a>
-        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.send()"><span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <span id="sendOk" class="glyphicon"></span></a>
-        <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"><span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong> <span id="statsOk" class="glyphicon"></span></a>
+
+    <h1>My fingerprint</h1>
+    <p>
+        On this page, you can visualize your own browser fingerprint. You can run a series of JavaScript tests and see what your browser engine returns.
+        The server can also computes statistics to help you understand how unique your fingerprint can be with respect to other users.
+        The <a href="/faq" target="_blank">FAQ page <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> gives a detailed list of
+        attributes that are collected along with links to documentation.
+    </p>
+    <div data-intro="Thank you for following this quick introduction! You can follow it again at anytime by clicking on the 'Help' button during your visit." data-step="9">
+        First visit? &nbsp;<button type="button" class="btn btn-default" onclick="introJs().start();" data-intro="Hello! Here is a quick introduction to the 'My fingerprint' page!" data-step="1">Take the tour</button>
+    </div>
+
+    <div data-intro="Here is the dashboard. It gives you control of what runs on this page and what is sent to our server." data-step="2">
+        <h1>Dashboard</h1>
+        <a id="runBtn" class="btn btn-info" type="button" onclick="api.run()"
+           data-intro="Click on this button to run the JavaScript tests and see the values returned by your browser."
+           data-step="6">
+            <span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <span id="runOk" class="glyphicon"></span>
+        </a>
+        <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.send()"
+           data-intro="After reviewing the values in the JavaScript table below, you can send your complete fingerprint to our server so that it is stored for statistical purposes.
+                      The collected data will help us understand the diversity of browser fingerprints and it will provide developers insight into how to develop and design good defenses against tracking."
+           data-step="7">
+            <span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <span id="sendOk" class="glyphicon"></span>
+        </a>
+        <a id="statsBtn" class="btn btn-info disabled" type="button" onclick="api.stats()"
+           data-intro="The final action of the dashboard lets you see how your browser fingerprint compares with other ones. For each attribute, you will see the percentage of
+                      fingerprints who share the exact same value as yours."
+           data-step="8">
+            <span class="badge">3</span> <strong>{{ _('Get statistics') }}</strong> <span id="statsOk" class="glyphicon"></span>
+        </a>
     </div>
 
     <br>
 
-    <h1>
+    <h1 data-intro="Below are the results of the fingerprinting process. Each table is composed of three columns: the name of the attribute, the value of this attribute collected from your browser and statistics on how popular or widespread your sent value is.
+                 If you are using the Tor browser, you can even get some extra information to see if returned values are acceptable or not (i.e. they are normal and they follow Tor guidelines). The 'Download as JSON' button becomes active as soon as all tests are run." data-step="3">
         {{ _('Results') }} &nbsp;
         <a id="dlBtn" type="button" class="btn btn-default btn-md disabled">
             <span class="glyphicon glyphicon-download" aria-hidden="true"></span> {{ _('Download as JSON') }}
         </a>
     </h1>
-    <div class="panel panel-default">
+    <div class="panel panel-default" data-intro="You will find here attributes related to HTTP headers. The values are already present since they were already sent to our server when you first connected to this website." data-step="4">
         <div class="panel-heading"><h2>HTTP headers</h2></div>
         <table id="httpTable" class="table table-striped table-hover tableCustom hideAcc" xmlns="http://www.w3.org/1999/html">
             <thead>
@@ -52,7 +81,8 @@
         </table>
     </div>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" data-intro="You will find here attributes related to the JavaScript engine of your browser. To see values from your own browser, you need to execute all the JavaScript tests by clicking on the
+                first button of the dashboard at the top of this page." data-step="5">
         <div class="panel-heading"><h2>JavaScript</h2></div>
         <table id="jsTable" class="table table-striped table-hover tableCustom hideAcc" xmlns="http://www.w3.org/1999/html">
             <thead>
@@ -80,6 +110,8 @@
 
     <!-- Load the FP Central API -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/clientAPI.js") }}"></script>
+    <!-- Load the intro.js library -->
+    <script type="text/javascript" src="{{ url_for('static', filename="external/intro/intro.min.js") }}"></script>
 
     <!-- Scripts to collect the attributes of a fingerprint -->
     {% for file in files %}
