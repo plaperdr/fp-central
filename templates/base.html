@@ -4,7 +4,8 @@
     ('/tor', 'tor', 'Tor' ),
     ('/globalStats', 'globalStats', _('Global statistics') ),
     ('/customStats', 'customStats', _('Custom statistics') ),
-    ('/faq', 'faq', _('FAQ') )
+    ('/faq', 'faq', _('FAQ') ),
+    ('/about', 'about', _('About') )
 ] -%}
 {% set active_page = active_page|default('index') -%}
 
@@ -57,6 +58,7 @@
                 {% for href, id, caption in navigation_bar %}
                 <li{% if id == active_page %} class="active"{% endif%}><a id="{{ id }}" href="{{ href|e }}">{{ caption|e }}</a></li>
                 {% endfor %}
+                <li><a href="https://github.com/plaperdr/fp-central" target="_blank">{{ _('View on GitHub') }}</a></li>
               </ul>
             </div><!--/.nav-collapse -->
         </div>

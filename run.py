@@ -91,6 +91,10 @@ def customStats():
 def faq():
     return render_template('faq.html',definitions=definitions)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/store', methods=['POST'])
 def store():
     return json.dumps(db.storeFP(request.data,True))

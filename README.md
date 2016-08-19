@@ -63,6 +63,7 @@ And for the front-end:
 * Highcharts ([Official](http://www.highcharts.com/) - [GitHub](https://github.com/highcharts/highcharts))
 * Date Range Picker ([Official](http://www.daterangepicker.com/) - [GitHub](https://github.com/dangrossman/bootstrap-daterangepicker))
 * Bootstrap Table ([Official](http://bootstrap-table.wenzhixin.net.cn/) - [GitHub](https://github.com/wenzhixin/bootstrap-table))
+* Font Awesome ([Official](http://fontawesome.io/) - [GitHub](https://github.com/FortAwesome/Font-Awesome))
 
 ## Features
 You will find below the list of currently supported features.

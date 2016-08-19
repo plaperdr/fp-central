@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% set active_page = "about" %}
+
+{% block title %}
+    {{ _('About') }} - FP Central
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <h1>Who is behind this project?</h1>
+        <h4>
+        <strong>Fingerprint Central</strong> is developed by
+        <a href="https://github.com/plaperdr" target="_blank">Pierre Laperdrix <i class="fa fa-external-link" aria-hidden="true"></i></a>
+        for the Tor project as part of the Google Summer of Code 2016 .
+        You can find the complete source code and contribute to it on GitHub.
+        </h4>
+        <h1>Links</h1>
+        <div class="col-sm-4 col-md-4 text-center">
+            <div class="thumbnail">
+                <img src="static/images/tor-logo.png" class="img-responsive" style="width: 80%">
+                <div class="caption">
+                    <h3>Tor project</h3>
+                    <br>
+                    <p>
+                        <a href="https://www.torproject.org/" class="btn btn-primary" role="button">
+                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                            &nbsp;Official website
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-4 text-center">
+            <div class="thumbnail">
+                <img src="static/images/gsoc-logo.png" class="img-responsive" style="width: 80%">
+                <div class="caption">
+                    <h3>Google Summer of Code</h3>
+                    <br>
+                    <p>
+                        <a href="https://summerofcode.withgoogle.com/" class="btn btn-primary" role="button">
+                            <i class="fa fa-google" aria-hidden="true"></i>
+                            &nbsp;Official website
+                        </a>
+                        <br><br>
+                        <a href="https://summerofcode.withgoogle.com/projects/#5574889654190080" class="btn btn-primary" role="button">
+                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                            &nbsp;Link to project
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-4 text-center">
+            <div class="thumbnail">
+                <img src="static/images/fpc-logo-cut.png" class="img-responsive" style="width: 100%">
+                <div class="caption">
+                    <h3>Fingerprint Central <br> source code</h3>
+                    <br>
+                    <p>
+                        <a href="https://github.com/plaperdr/fp-central" class="btn btn-primary" role="button">
+                            <i class="fa fa-github-alt" aria-hidden="true"></i>
+                            &nbsp;View on GitHub
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
