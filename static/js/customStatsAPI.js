@@ -69,7 +69,7 @@ api.sendRequest = function(){
     if(selected.length > 0) {
         $("#submitBtn").popover('destroy');
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/stats", true);
+        xhr.open("POST", "/customStats", true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
@@ -86,7 +86,7 @@ api.sendRequest = function(){
         var start = d.startDate.format(format);
         var end = d.endDate.format(format);
         var includeNoJS = $("#includeNoJS").prop('checked').toString();
-        xhr.send(JSON.stringify({"list": selected, "start": start, "end": end, "tags": tags, "includeNoJS": includeNoJS}));
+        xhr.send(JSON.stringify({"name": selected, "start": start, "end": end, "tags": tags, "includeNoJS": includeNoJS}));
     } else {
         $("#submitBtn").popover('show');
     }

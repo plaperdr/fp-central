@@ -1,11 +1,11 @@
-from flask import Flask,render_template,Blueprint,request,make_response
+from flask import Flask,render_template,Blueprint,request,make_response,jsonify
 from fingerprint.attributes_manager import *
 from fingerprint.tags_manager import *
 from fingerprint.acceptable_manager import *
-from flask_restful import Api, Resource
 from flask_babel import Babel
 from flask_pymongo import PyMongo
 from datetime import datetime, timedelta
+from functools import wraps
 
 import env_config as config
 import json
@@ -16,7 +16,6 @@ import sys
 ###### App
 app = Flask(__name__)
 app.debug = config.debug
-api = Api(app)
 
 attributes = Blueprint('site', __name__, static_url_path='', static_folder='fingerprint/attributes',url_prefix='/fp')
 app.register_blueprint(attributes)
@@ -30,6 +29,8 @@ tagChecker = TagChecker()
 tags = tagChecker.getTagList()
 
 acceptableChecker = AcceptableChecker()
+
+unspecifiedValue = "-"
 
 @app.route('/')
 def home():
@@ -57,7 +58,7 @@ def fpNoJS():
     headersPer = []
     for header in request.headers:
         if header[0] != "Cookie":
-            headersPer.append(header+(db.getLifetimeStats(header[0],header[1])*100/nbTotal,))
+            headersPer.append(header+(db.getNumberFP({'name':header[0],"value":header[1]})*100/nbTotal,))
 
     resp = make_response(render_template('fpNoJS.html', headers=headersPer, nbFP = nbTotal))
 
@@ -75,9 +76,9 @@ def tor():
 def globalStats():
     return render_template('globalStats.html',
                            totalFP=db.getNumberLifetimeFP(),
-                           epochFP=db.getNumberDaysFP(90),
-                           dailyFP=db.getDailyFP(),
-                           lang=db.getLifetimeValues("Accept-Language")
+                           epochFP=db.getNumberLastDaysFP(90),
+                           dailyFP=db.getNumberDailyFP(),
+                           lang=db.getValues({"name":"Accept-Language"})
                            )
 
 @app.route('/customStats')
@@ -123,6 +124,25 @@ class Db(object):
         #Get the list of hashed variables
         self.hashedVariables = get_hashed_variables()
 
+
+    ######Utility functions
+    # Hashing method using SHA-256
+    @staticmethod
+    def hashValue(value):
+        return hashlib.sha256(value.encode('ascii', 'ignore')).hexdigest()
+
+    # Method to get the date from the date string
+    @staticmethod
+    def getStartDate(date):
+        return datetime.strptime(date, '%Y-%m-%d')
+
+    # Method to add one day to the end date so that
+    # it takes the data collected during the day
+    @staticmethod
+    def getEndDate(date):
+        return datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
+
+
     ######Storage
     def storeFP(self,fingerprint,decode):
         if decode :
@@ -154,113 +174,101 @@ class Db(object):
         else:
             return {'tags': parsedFP["tags"]}
 
-    #Hashing method using SHA-256
-    @staticmethod
-    def hashValue(value):
-        return hashlib.sha256(value.encode('ascii','ignore')).hexdigest()
 
-
-    ######Global stats
+    ######Number of fingerprints
     #Returns the number of lifetime fingerprints
     def getNumberLifetimeFP(self):
         return self.mongo.db.fp.count()
 
     #Returns the number of fingerprints collected in the last X days
-    def getNumberDaysFP(self, days):
+    def getNumberLastDaysFP(self, days):
         startID = datetime.today() - timedelta(days=days)
         return self.mongo.db.fp.find({"date": {"$gte": startID}}).count()
 
-    #Returns the number of fingerprints on a specific time period
-    #With or without a list of specific tags
-    #With or without fingerprints without JS
+    # Get the number of daily stored fingerprints
+    def getNumberDailyFP(self):
+        return list(self.mongo.db.fp.aggregate([{"$group": {"_id": {"year": {"$year": "$date"},
+                                                                    "month": {"$month": "$date"},
+                                                                    "day": {"$dayOfMonth": "$date"}
+                                                                    },
+                                                            "count": {"$sum": 1}}}]))
+
+    #Returns the number of fingerprints
+    #  start/end -> With or without a specific time period
+    # name/value -> With or without an attribute and its value
+    #       tags -> With or without a list of specific tags
+    #includeNoJS -> With or without fingerprints without JS
     def getNumberFP(self,jsonData):
         query = {}
-        startID = self.getStartDate(jsonData["start"])
-        endID = self.getEndDate(jsonData["end"])
-        query["date"] = {"$gte": startID, "$lt": endID}
 
-        if "tags" in jsonData and jsonData["tags"] != "all":
+        if "start" in jsonData:
+            startID = self.getStartDate(jsonData["start"])
+            endID = self.getEndDate(jsonData["end"])
+            query["date"] = {"$gte": startID, "$lt": endID}
+        if "tags" in jsonData and jsonData["tags"] not in ["all","No tags"]:
             query["tags"] =  { "$in": jsonData["tags"]}
         if "includeNoJS" in jsonData and jsonData["includeNoJS"] == "false":
             query["platform"] = {"$exists" : True}
 
-        return self.mongo.db.fp.find(query).count()
-
-
-    #Get the number of daily stored fingerprints
-    def getDailyFP(self):
-        return list(self.mongo.db.fp.aggregate( [{ "$group" : {"_id": {"year" : { "$year" : "$date" },
-                                                                 "month" : { "$month" : "$date" },
-                                                                 "day" : { "$dayOfMonth" : "$date" }
-                                                              },
-                                                   "count": { "$sum": 1 }}}] ))
-
-
-    ######Lifetime stats (since the creation of the collection)
-    #Return the number of fingerprints having the exact same value for the specified attribute
-    def getLifetimeStats(self, name, value):
-        if name in self.hashedVariables:
-            return self.mongo.db.hash.find({name: self.hashValue(value)}).count()
+        if "value" not in jsonData:
+            return self.mongo.db.fp.find(query).count()
         else:
-            return self.mongo.db.fp.find({name:value}).count()
-
-    #Return all the values for a specific attribute
-    def getLifetimeValues(self, name):
-        return list(self.mongo.db.fp.aggregate([{"$project": {name: {"$ifNull": ["$"+name,"Unspecified"]}}},
-                                                {"$group": {"_id": "$" + name, "count": {"$sum": 1}}},
-                                                {"$sort": {"count": -1}}]))
-
-    #Return the most popular values for a specific attribute
-    def getPopularLifetimeValues(self, name, limit):
-        return list(self.mongo.db.fp.aggregate([{"$project": {name: {"$ifNull": ["$"+name,"Unspecified"]}}},
-                                          {"$group": {"_id":"$"+name, "count": {"$sum": 1}}},
-                                          {"$sort": { "count" : -1}},{"$limit": limit}]))
+            if jsonData["name"] in self.hashedVariables:
+                query[jsonData["name"]] = self.hashValue(json.loads(jsonData["value"]))
+                return self.mongo.db.hash.find(query).count()
+            else:
+                query[jsonData["name"]] = json.loads(jsonData["value"])
+                return self.mongo.db.fp.find(query).count()
 
 
-    ######Epoch stats (stats on a specified period of time)
-    #Method to get the date from the date string
-    @staticmethod
-    def getStartDate(date):
-        return datetime.strptime(date,'%Y-%m-%d')
+    ######Values
+    #Return specific values
+    #  start/end -> With or without a specific time period
+    #       tags -> With or without a list of specific tags
+    #includeNoJS -> With or without fingerprints without JS
+    #       name -> List of attributes or a single attribute
+    #      limit -> With or without a limit on the nb of values
+    def getValues(self, jsonData):
+        query = []
 
-    #Method to add one day to the end date so that
-    #it takes the data collected during the day
-    @staticmethod
-    def getEndDate(date):
-        return datetime.strptime(date, '%Y-%m-%d') +  timedelta(days=1)
-
-    #Return the number of fingerprints having the exact same value for the specified attribute in the last X days
-    def getEpochStats(self, name, value, start, end):
-        startID = self.getStartDate(start)
-        endID = self.getEndDate(end)
-        if name in self.hashedVariables:
-            return self.mongo.db.hash.find({"date": {"$gte": startID, "$lt": endID}, name: self.hashValue(value)}).count()
-        else:
-            return self.mongo.db.fp.find({"date": {"$gte": startID, "$lt": endID}, name: value}).count()
-
-    #Return the values for one attribute or a list of attributes in the last X days
-    def getEpochValues(self, jsonData):
-        attList = jsonData["list"]
-        if type(attList) is list:
-            att = {}
-            for attribute in attList:
-                att[attribute] = "$"+attribute
-        else:
-            #attList is a single value
-            att = "$"+attList
-
-        startID = self.getStartDate(jsonData["start"])
-        endID = self.getEndDate(jsonData["end"])
-        match = [{"date": {"$gte": startID, "$lt": endID}}]
-
-        if "tags" in jsonData and jsonData["tags"] != "all":
+        #Generation of the match query
+        match = []
+        if "start" in jsonData:
+            startID = self.getStartDate(jsonData["start"])
+            endID = self.getEndDate(jsonData["end"])
+            match.append({"date": {"$gte": startID, "$lt": endID}})
+        if "tags" in jsonData and jsonData["tags"] not in ["all","No tags"]:
             match.append({"tags": {"$in": jsonData["tags"]}})
         if "includeNoJS" in jsonData and jsonData["includeNoJS"] == "false":
             match.append({"timezone": {"$exists": True}})
+        if len(match)>0:
+            query.append({"$match": {"$and": match}})
 
-        return list(self.mongo.db.fp.aggregate([{"$match": {"$and": match}},
-                                           {"$group": {"_id": att, "count": {"$sum": 1}}},
-                                           {"$sort": {"count": -1}}]))
+        #Generation of the project query
+        attList = jsonData["name"]
+        if type(attList) is list:
+            att = {}
+            project = {}
+            for attribute in attList:
+                att[attribute] = "$"+attribute
+                project[attribute] = {"$ifNull": ["$"+attribute,unspecifiedValue]}
+            query.append({"$project": project})
+        else:
+            #attList is a single value
+            att = "$"+attList
+            query.append({"$project": {attList: {"$ifNull": ["$" + attList, unspecifiedValue]}}})
+
+        #Generation of the group query
+        query.append({"$group": {"_id": att, "count": {"$sum": 1}}})
+
+        #Generation of the sort query
+        query.append({"$sort": {"count": -1}})
+        
+        #Generation of the limit query
+        if "limit" in jsonData:
+            query.append({"$limit": jsonData["limit"]})
+
+        return list(self.mongo.db.fp.aggregate(query))
 
     ##FOR TAG SUPPORT
     # ALL OF THEM
@@ -286,52 +294,59 @@ db = Db()
 
 
 ###### API
-class IndividualStatistics(Resource):
+def jsonResponse(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return jsonify(func(*args, **kwargs))
+    return wrapper
+
+@app.route('/stats/number', methods=['POST'])
+@jsonResponse
+def getNumberFP():
+    return db.getNumberFP(request.get_json(force=True))
+
+@app.route('/stats', methods=['POST'])
+@jsonResponse
+def getIndividualStats():
     #Get the statistics for the value sent in POST
-    def post(self):
-        jsonData = request.get_json(force=True)
-        if "name" in jsonData and "value" in jsonData:
-            if "start" not in jsonData:
-                result = {'count': db.getLifetimeStats(jsonData["name"], json.loads(jsonData["value"]))}
-                if len(jsonData["tags"]) > 0:
-                    result["acceptable"] = acceptableChecker.checkValue(jsonData["tags"],jsonData["name"], json.loads(jsonData["value"]))
+    jsonData = request.get_json(force=True)
+    if "name" in jsonData and "value" in jsonData:
+        result = {'count': db.getNumberFP(jsonData)}
 
-                    #If value is not acceptable, we get the most popular value
-                    #and check if any help is available for this attribute
-                    if result["acceptable"] == "No":
-                        #Get the most popular value
-                        result["popular"] = db.getPopularLifetimeValues(jsonData["name"], 1)
+        #If there is a tag, we check for an acceptable
+        if len(jsonData["tags"]) > 0:
+            result["acceptable"] = acceptableChecker.checkValue(jsonData["tags"],jsonData["name"], json.loads(jsonData["value"]))
 
-                        #Check for help
-                        l = acceptableChecker.hasHelp(jsonData["name"])
-                        if l != "":
-                            result["link"] = l
+            #If value is not acceptable, we get the most popular value
+            #and check if any help is available for this attribute
+            if result["acceptable"] == "No":
+                #Get the most popular value
+                jsonData["limit"] = 1
+                result["popular"] = db.getValues(jsonData)
 
-                return result
-            else:
-                return db.getEpochStats(jsonData["name"], json.loads(jsonData["value"]), jsonData["start"],jsonData["end"])
-        else:
-            if "start" in jsonData and "list" in jsonData:
-                nbFP = db.getNumberFP(jsonData)
-                data = db.getEpochValues(jsonData)
-                #We send data for the customStats page
-                return {
-                        "totalFP": nbFP,
-                        "data": data
-                        }
-            else:
-                return ""
+                #Check for help
+                l = acceptableChecker.hasHelp(jsonData["name"])
+                if l != "":
+                    result["link"] = l
+        return result
+    else:
+        return ""
 
-class GlobalStatistics(Resource):
-    # Get the most popular values
-    def get(self, att):
-        if att == "total":
-            return db.getNumberLifetimeFP()
-        else:
-            return db.getPopularLifetimeValues(att,5)
+@app.route('/customStats', methods=['POST'])
+@jsonResponse
+def getCustomStats():
+    jsonData = request.get_json(force=True)
+    if "start" in jsonData and "name" in jsonData:
+        nbFP = db.getNumberFP(jsonData)
+        data = db.getValues(jsonData)
+        # We send data for the customStats page
+        return {
+            "totalFP": nbFP,
+            "data": data
+        }
+    else:
+        return ""
 
-api.add_resource(IndividualStatistics, '/stats')
-api.add_resource(GlobalStatistics, '/stats/<string:att>')
 
 if __name__ == '__main__':
     if len(sys.argv)>1 and sys.argv[1] == "updateTags":

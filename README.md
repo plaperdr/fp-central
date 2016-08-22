@@ -29,14 +29,24 @@ The only way to launch FP Central is through the **run.py** script.
 Other ways will be added later on as new features get added to the project.
 
 For an easy installation, you can download everything through **[pip](https://packaging.python.org/en/latest/install_requirements_linux/#installing-pip-setuptools-wheel-with-linux-package-managers)**
-by executing the following instruction at the root of the repo:
+by executing the following instruction at the root of the repo.
+
+Creation of your virtual environment
+
+    pyvenv .venv
+
+Activation of your virtual environment
+    
+    source ./.venv/bin/activate
+
+Local installation of packages through pip
 
     pip3 install -r requirements.txt
 
 
 Then you need to have MongoDB running on your system.
 Refer to the official documentation [HERE](https://docs.mongodb.com/manual/installation/)
-for instructions on how to install it on your operating system.
+for instructions on how to install and run it on your operating system.
 
 After this step, you can directly run
 
@@ -53,7 +63,6 @@ Here is the list of technology or libraries currently used by the project for th
 * MongoDB ([Official](https://www.mongodb.com/) - [GitHub](https://github.com/mongodb/mongo) - [Debian](https://packages.debian.org/jessie/mongodb) - [Ubuntu](http://packages.ubuntu.com/xenial/mongodb) - [Fedora](https://apps.fedoraproject.org/packages/mongodb))
 * PyMongo ([Official](https://api.mongodb.com/python/current/) - [GitHub](https://github.com/mongodb/mongo-python-driver) - [Pypi](https://pypi.python.org/pypi/pymongo) - [Debian](https://packages.debian.org/jessie/python3-pymongo) - [Ubuntu](http://packages.ubuntu.com/xenial/python3-pymongo) - [Fedora](https://apps.fedoraproject.org/packages/python3-pymongo))
 * Flask-Babel [Official](https://pythonhosted.org/Flask-Babel/) - [GitHub](https://github.com/python-babel/flask-babel) - [Pypi](https://pypi.python.org/pypi/Flask-Babel) - [Debian](https://packages.debian.org/stretch/python3-flask-babel) - [Ubuntu](http://packages.ubuntu.com/xenial/python3-flask-babel) - [Fedora](https://apps.fedoraproject.org/packages/python-flask-babel))
-* Flask-RESTful ([Official](https://flask-restful.readthedocs.io/en/latest/) - [GitHub](https://github.com/flask-restful/flask-restful) - [Pypi](https://pypi.python.org/pypi/Flask-RESTful) - [Debian](https://packages.debian.org/stretch/python3-flask-restful) - [Ubuntu](http://packages.ubuntu.com/xenial/python3-flask-restful) - [Fedora](https://apps.fedoraproject.org/packages/python-flask-restful))
 * Flask-PyMongo ([Official](https://flask-pymongo.readthedocs.io/en/latest/) - [GitHub](https://github.com/dcrosta/flask-pymongo) - [Pypi](https://pypi.python.org/pypi/Flask-PyMongo))
 
 And for the front-end:
@@ -75,7 +84,7 @@ You will find below the list of currently supported features.
 - [x] Support of returning visitors
 - [x] Addition of basic statistics (for users + global page with aggregate statistics)
 - [x] Addition of finer-grained statistics with lifetime stats, epoched stats and browser version stats
-- [x] Addition of a RESTful API to get specific statistics easily
+- [x] Addition of an API to get specific statistics easily
 - [x] Support for localization
 - [x] Addition of a page for acceptable Tor fingerprints
 - [x] Support of additional browsers through the tagging system

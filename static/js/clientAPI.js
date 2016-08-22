@@ -44,6 +44,9 @@ function dlBtnTransition(fpData){
 function setTooltip(nbFPs){
     //Add a tooltip on each table header
     var tooltip = "Out of "+nbFPs+" collected fingerprints";
+    if(tags != "No tags"){
+        tooltip += " with tags: ["+tags.toString()+"]";
+    }
     document.getElementById("httpPerHeader").title = tooltip;
     document.getElementById("JSPerHeader").title = tooltip;
     $('[data-toggle="tooltip"]').tooltip({
@@ -272,7 +275,6 @@ api.send = function(){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/store", true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if(xhr.status == 200) {
@@ -298,13 +300,6 @@ api.send = function(){
 
 
 api.stats = function(){
-    //Get the total number of FPs
-    numberFP = parseInt(api.getTotalFP());
-    stats["number"] = numberFP;
-    
-    //Add a tooltip on each table header
-    setTooltip(numberFP);
-
     //Calculate the percentage for each attribute
     //And get the acceptable values if the list of
     //tags is not empty
@@ -375,9 +370,20 @@ api.getPerAndAcc = function(name,value){
     xhr.send(JSON.stringify({"name": name, "value": value, "tags": tags}));
 };
 
-api.getTotalFP = function(){
+api.getNumberFP = function(){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/stats/total", false);
-    xhr.send(null);
-    return xhr.responseText;
+    xhr.open("POST", "/stats/number", true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            numberFP = parseInt(xhr.responseText);
+            stats["number"] = numberFP;
+            //Add a tooltip on each table header
+            setTooltip(numberFP);
+
+            //Get the percentages of every values
+            api.stats();
+        }
+    };
+    xhr.send(JSON.stringify({"tags":tags}));
 };
