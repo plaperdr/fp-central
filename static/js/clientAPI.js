@@ -56,6 +56,9 @@ function showAcceptableColumn(){
     $("#httpTable").toggleClass("hideAcc");
     $("#jsTable").toggleClass("hideAcc");
 
+    //Show legend
+    $("#acceptableLegend").show();
+
     //Activate all popover elements
     $("i[id$='"+popover+"']").popover()
 }

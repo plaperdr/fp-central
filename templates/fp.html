@@ -46,6 +46,24 @@
         </a>
     </div>
 
+    <div id="acceptableLegend" style="display: none;">
+        <h2>Acceptable values legend</h2>
+        <h3><i class="fa fa-check fa-border" style="color:#B9D98A"></i> Acceptable value</h3>
+        The displayed value is "acceptable" (i.e. it is an expected one and it follows Tor guidelines).
+        The majority of users shares this exact same value.
+        <br>
+        <h3><i class="fa fa-times fa-border" style="color:#FF8080"></i> Unacceptable value</h3>
+        The displayed value is not "acceptable" and makes your browser vulnerable to tracking.
+        The &nbsp; <i id="screen.widthPop" class="fa fa-info-circle"></i> &nbsp; icon will give you information on the most popular value shared by users.
+        The &nbsp; <i class="fa fa-question-circle"></i> &nbsp; icon may also be present to direct you to a page with instructions on what to do to make this attribute acceptable.
+        A non-acceptable value can be caused by a misconfiguration of the browser. In that case, regenerating a new Tor identity can sometimes fix the problem. However, it can also come from
+        a genuine difference between TBB browsers and it should be investigated by Tor developers. You can report the problem on the Tor bug tracker by
+        <a href="https://trac.torproject.org/projects/tor" target="_blank"> opening a ticket  <i class="fa fa-external-link" aria-hidden="true"></i></a>.
+        <br>
+        <h3><i class="fa fa-minus fa-border" style="color:#A3A3C2"></i> Unchecked value</h3>
+        The attribute is not checked and can take any value.
+    </div>
+
     <br>
 
     <h1 data-intro="Below are the results of the fingerprinting process. Each table is composed of three columns: the name of the attribute, the value of this attribute collected from your browser and statistics on how popular or widespread your sent value is.
