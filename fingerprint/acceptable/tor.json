@@ -15,13 +15,13 @@
 	"dnt": "NC",
 	"buildID": "20100101",
 	"screen": {
-		"width": 1000,
-		"height": 1000,
+		"width": [1000,800,600,400,200],
+		"height": [1000,900,800,700,600,500,400,300,200],
 		"depth": 24,
 		"availTop": 0,
 		"availLeft": 0,
-		"availHeight": 1000,
-		"availWidth": 1000,
+		"availHeight": [1000,900,800,700,600,500,400,300,200],
+		"availWidth": [1000,800,600,400,200],
 		"left": 0,
 		"top": 0
 	},
