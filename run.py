@@ -206,7 +206,11 @@ class Db(object):
             endID = self.getEndDate(jsonData["end"])
             query["date"] = {"$gte": startID, "$lt": endID}
         if "tags" in jsonData and jsonData["tags"] not in ["all","No tags"]:
-            query["tags"] =  { "$in": jsonData["tags"]}
+            if "tagComb" in jsonData:
+                query["tags"] = {"$"+jsonData["tagComb"]: jsonData["tags"]}
+            else:
+                #We put "in" by default if it is not specified
+                query["tags"] = {"$in": jsonData["tags"]}
         if "includeNoJS" in jsonData and jsonData["includeNoJS"] == "false":
             query["platform"] = {"$exists" : True}
 
@@ -238,7 +242,11 @@ class Db(object):
             endID = self.getEndDate(jsonData["end"])
             match.append({"date": {"$gte": startID, "$lt": endID}})
         if "tags" in jsonData and jsonData["tags"] not in ["all","No tags"]:
-            match.append({"tags": {"$in": jsonData["tags"]}})
+            if "tagComb" in jsonData:
+                match.append({"tags": {"$"+jsonData["tagComb"]: jsonData["tags"]}})
+            else:
+                #We put "in" by default if it is not specified
+                match.append({"tags": {"$in": jsonData["tags"]}})
         if "includeNoJS" in jsonData and jsonData["includeNoJS"] == "false":
             match.append({"timezone": {"$exists": True}})
         if len(match)>0:

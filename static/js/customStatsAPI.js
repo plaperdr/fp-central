@@ -7,13 +7,13 @@ var api = {};
 $(document).ready(function() {
 
     $('#all').on('click', function(){
-        $("#tags").css("visibility","hidden");
+        $("#customDiv").css("display","none");
     });
     $('#tbb').on('click', function(){
-        $("#tags").css("visibility","hidden");
+        $("#customDiv").css("display","none");
     });
     $('#custom').on('click', function(){
-        $("#tags").css("visibility","visible");
+        $("#customDiv").css("display","block");
     });
 
     var start = moment("2016-07-01");
@@ -45,12 +45,16 @@ $(document).ready(function() {
 api.sendRequest = function(){
 
     var tags = [];
+    var tagComb = "in";
     var selection = $('#tagSelection .active').attr('id');
     if(selection == "custom") {
         //Get the list of chosen tags
         $('#tags input:checked').each(function () {
             tags.push($(this).attr('name'));
         });
+        if($("#tagAll").hasClass('active')){
+            tagComb = "all";
+        }
     } else if(selection == "tbb") {
         //Get the list of all Tor tags
         $("#tags").find("[name^='Tor']").each(function () {
@@ -86,7 +90,8 @@ api.sendRequest = function(){
         var start = d.startDate.format(format);
         var end = d.endDate.format(format);
         var includeNoJS = $("#includeNoJS").prop('checked').toString();
-        xhr.send(JSON.stringify({"name": selected, "start": start, "end": end, "tags": tags, "includeNoJS": includeNoJS}));
+        xhr.send(JSON.stringify({"name": selected, "start": start, "end": end, "tags": tags,
+                                 "tagComb": tagComb, "includeNoJS": includeNoJS}));
     } else {
         $("#submitBtn").popover('show');
     }

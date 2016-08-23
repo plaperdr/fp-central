@@ -367,7 +367,7 @@ api.getPerAndAcc = function(name,value){
         }
     };
 
-    xhr.send(JSON.stringify({"name": name, "value": value, "tags": tags}));
+    xhr.send(JSON.stringify({"name": name, "value": value, "tags": tags, "tagComb": "all"}));
 };
 
 api.getNumberFP = function(){
@@ -385,5 +385,5 @@ api.getNumberFP = function(){
             api.stats();
         }
     };
-    xhr.send(JSON.stringify({"tags":tags}));
+    xhr.send(JSON.stringify({"tags":tags, "tagComb": "all"}));
 };

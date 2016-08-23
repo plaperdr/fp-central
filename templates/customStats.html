@@ -41,10 +41,21 @@
             <input type="radio"/> {{ _('Custom') }}
         </label>
     </div>
-    <div id="tags" style="visibility: hidden; display:inline;">
-    {%  for tag in tags %}
-        <label class="btn btn-primary"><input type="checkbox" name="{{ tag }}" checked> &nbsp;  {{ tag }}</label>
-    {%  endfor %}
+    <div id="customDiv" style="display: none;">
+        <div id="tags">
+        {%  for tag in tags %}
+            <label class="btn btn-primary"><input type="checkbox" name="{{ tag }}"> &nbsp;  {{ tag }}</label>
+        {%  endfor %}
+        </div>
+        <h3>Tag combination method</h3>
+        <div id="tagComp" class="btn-group" data-toggle="buttons">
+            <label id="tagIn" class="btn btn-default active">
+                <input type="radio" checked="checked"/> {{ _('Tag X OR Tag Y') }}
+            </label>
+            <label id="tagAll" class="btn btn-default">
+                <input type="radio"/> {{ _('Tag X AND Tag Y') }}
+            </label>
+        </div>
     </div>
 
     <h2>
