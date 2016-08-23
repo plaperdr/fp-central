@@ -1,4 +1,5 @@
 from flask import Flask,render_template,Blueprint,request,make_response,jsonify
+from copy import deepcopy
 from fingerprint.attributes_manager import *
 from fingerprint.tags_manager import *
 from fingerprint.acceptable_manager import *
@@ -201,10 +202,14 @@ class Db(object):
     def getNumberFP(self,jsonData):
         query = {}
 
+        date = {}
         if "start" in jsonData:
-            startID = self.getStartDate(jsonData["start"])
-            endID = self.getEndDate(jsonData["end"])
-            query["date"] = {"$gte": startID, "$lt": endID}
+            date["$gte"] = jsonData["start"] if type(jsonData["start"]) is datetime else self.getStartDate(jsonData["start"])
+        if "end" in jsonData:
+            date["$lt"] = jsonData["end"] if type(jsonData["end"]) is datetime else self.getEndDate(jsonData["end"])
+        if len(date) > 0:
+            query["date"] = date
+
         if "tags" in jsonData and jsonData["tags"] not in ["all","No tags"]:
             if "tagComb" in jsonData:
                 query["tags"] = {"$"+jsonData["tagComb"]: jsonData["tags"]}
@@ -237,10 +242,13 @@ class Db(object):
 
         #Generation of the match query
         match = []
+        date = {}
         if "start" in jsonData:
-            startID = self.getStartDate(jsonData["start"])
-            endID = self.getEndDate(jsonData["end"])
-            match.append({"date": {"$gte": startID, "$lt": endID}})
+            date["$gte"] = jsonData["start"] if type(jsonData["start"]) is datetime else self.getStartDate(jsonData["start"])
+        if "end" in jsonData:
+            date["$lt"] = jsonData["end"] if type(jsonData["end"]) is datetime else self.getEndDate(jsonData["end"])
+        if len(date)>0:
+            match.append({"date": date})
         if "tags" in jsonData and jsonData["tags"] not in ["all","No tags"]:
             if "tagComb" in jsonData:
                 match.append({"tags": {"$"+jsonData["tagComb"]: jsonData["tags"]}})
@@ -308,10 +316,33 @@ def jsonResponse(func):
         return jsonify(func(*args, **kwargs))
     return wrapper
 
+def getCount(jsonData,prefix):
+    result = {}
+    startDays = datetime.today() - timedelta(days=90)
+
+    # Adding count with tags
+    result[prefix+"Per"] = db.getNumberFP(jsonData)
+
+    # Adding count with tags and a 90-day limit
+    jsonData["start"] = startDays
+    result[prefix+"PerLimit"] = db.getNumberFP(jsonData)
+
+    # Adding count with a 90-day limit
+    del (jsonData["tags"])
+    result[prefix+"PerTotalLimit"] = db.getNumberFP(jsonData)
+
+    # Adding count with no tags (all database)
+    del (jsonData["start"])
+    result[prefix+"PerTotal"] = db.getNumberFP(jsonData)
+
+    return result
+
+
 @app.route('/stats/number', methods=['POST'])
 @jsonResponse
 def getNumberFP():
-    return db.getNumberFP(request.get_json(force=True))
+    return getCount(request.get_json(force=True),"number")
+
 
 @app.route('/stats', methods=['POST'])
 @jsonResponse
@@ -319,10 +350,11 @@ def getIndividualStats():
     #Get the statistics for the value sent in POST
     jsonData = request.get_json(force=True)
     if "name" in jsonData and "value" in jsonData:
-        result = {'count': db.getNumberFP(jsonData)}
+        #Generating variables
+        result = getCount(deepcopy(jsonData),"")
 
-        #If there is a tag, we check for an acceptable
-        if len(jsonData["tags"]) > 0:
+        #If one of the tag is a Tor tag, we check for an acceptable value
+        if "Tor 6.X" in jsonData["tags"]:
             result["acceptable"] = acceptableChecker.checkValue(jsonData["tags"],jsonData["name"], json.loads(jsonData["value"]))
 
             #If value is not acceptable, we get the most popular value

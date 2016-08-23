@@ -72,15 +72,36 @@
         <a id="dlBtn" type="button" class="btn btn-default btn-md disabled">
             <i class="fa fa-download" aria-hidden="true"></i> {{ _('Download as JSON') }}
         </a>
+        <div id="percSelection" style="display: none;">
+            <div id="tagSwitch" class="btn-group" data-toggle="buttons">
+                <label id="withTags" class="btn btn-default active">
+                    <input type="radio" checked="checked"/> {{ _('Relevent fingerprints') }}
+                </label>
+                <label id="withoutTags" class="btn btn-default">
+                    <input type="radio"/> {{ _('All fingerprints') }}
+                </label>
+            </div>
+            <div id="limitSwitch" class="btn-group" data-toggle="buttons">
+                <label id="withoutLimit" class="btn btn-default active">
+                    <input type="radio" checked="checked"/> {{ _('All time') }}
+                </label>
+                <label id="withLimit" class="btn btn-default">
+                    <input type="radio"/> {{ _('Only past 90 days') }}
+                </label>
+            </div>
+        </div>
     </h1>
     <div class="panel panel-default" data-intro="You will find here attributes related to HTTP headers. The values are already present since they were already sent to our server when you first connected to this website." data-step="4">
         <div class="panel-heading"><h2>HTTP headers</h2></div>
-        <table id="httpTable" class="table table-striped table-hover tableCustom hideAcc" xmlns="http://www.w3.org/1999/html">
+        <table id="httpTable" class="table table-striped table-hover tableCustom hideAcc hidePerLimit hidePerTotal hidePerTotalLimit" xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
                     <th>{{ _('Name') }}</th>
                     <th>{{ _('Value') }}</th>
                     <th class="text-center"><a href="#" id="httpPerHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center"><a href="#" id="httpPerLimitHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center"><a href="#" id="httpPerTotalHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center"><a href="#" id="httpPerTotalLimitHeader" data-toggle="tooltip">%</a></th>
                     <th class="text-center">{{ _('Acceptable value') }}</th>
                 </tr>
             </thead>
@@ -91,6 +112,9 @@
                     <td>{{ header[0] }}</td>
                     <td id="{{ header[0] + "Val" }}">{{ header[1] }}</td>
                     <td class="text-center" id="{{ header[0] + "Per" }}"></td>
+                    <td class="text-center" id="{{ header[0] + "PerLimit" }}"></td>
+                    <td class="text-center" id="{{ header[0] + "PerTotal" }}"></td>
+                    <td class="text-center" id="{{ header[0] + "PerTotalLimit" }}"></td>
                     <td class="text-center" id="{{ header[0] + "Acc" }}"></td>
                 </tr>
                 {% endif %}
@@ -102,12 +126,15 @@
     <div class="panel panel-default" data-intro="You will find here attributes related to the JavaScript engine of your browser. To see values from your own browser, you need to execute all the JavaScript tests by clicking on the
                 first button of the dashboard at the top of this page." data-step="5">
         <div class="panel-heading"><h2>JavaScript</h2></div>
-        <table id="jsTable" class="table table-striped table-hover tableCustom hideAcc" xmlns="http://www.w3.org/1999/html">
+        <table id="jsTable" class="table table-striped table-hover tableCustom hideAcc hidePerLimit hidePerTotal hidePerTotalLimit" xmlns="http://www.w3.org/1999/html">
             <thead>
                 <tr>
                     <th>{{ _('Name') }}</th>
                     <th>{{ _('Value') }}</th>
                     <th class="text-center"><a href="#" id="JSPerHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center"><a href="#" id="JSPerLimitHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center"><a href="#" id="JSPerTotalHeader" data-toggle="tooltip">%</a></th>
+                    <th class="text-center"><a href="#" id="JSPerTotalLimitHeader" data-toggle="tooltip">%</a></th>
                     <th class="text-center">{{ _('Acceptable value') }}</th>
                 </tr>
             </thead>
@@ -118,6 +145,9 @@
                     <td>{{ variable }}</td>
                     <td id="{{ variable + "Val" }}"></td>
                     <td class="text-center" id="{{ variable + "Per" }}"></td>
+                    <td class="text-center" id="{{ variable + "PerLimit" }}"></td>
+                    <td class="text-center" id="{{ variable + "PerTotal" }}"></td>
+                    <td class="text-center" id="{{ variable + "PerTotalLimit" }}"></td>
                     <td class="text-center" id="{{ variable + "Acc" }}"></td>
                 </tr>
                 {% endfor %}

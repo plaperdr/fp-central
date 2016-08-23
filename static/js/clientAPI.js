@@ -11,7 +11,6 @@ var stats = {"fp": {}};
 var tags = [];
 var nbAttributes = 0;
 var statsFetched = 0;
-var numberFP = 0;
 var showAcceptable = false;
 
 var value = "Val";
@@ -22,6 +21,7 @@ var fpTemp = "fpTemp";
 var sendTemp = "sendTemp";
 var statsTemp = "statsTemp";
 var undef = "Undefined";
+var perColumns = ["Per","PerLimit","PerTotal","PerTotalLimit"];
 
 //Functions for dashboard and table transitions
 function btnTransition(name){
@@ -31,6 +31,10 @@ function btnTransition(name){
     btn.classList.remove("btn-info");
     btn.classList.add("btn-success");
     document.getElementById(name+"Ok").classList.add("fa-check-circle-o");
+
+    if(name == "stats"){
+        $("#percSelection").css("display","inline");
+    }
 }
 
 function dlBtnTransition(fpData){
@@ -41,23 +45,26 @@ function dlBtnTransition(fpData){
     dlBtn.classList.remove("disabled");
 }
 
-function setTooltip(nbFPs){
+function setTooltip(nbFPs,tagPresent,limitPresent){
     //Add a tooltip on each table header
-    var tooltip = "Out of "+nbFPs+" collected fingerprints";
-    if(tags != "No tags"){
+    var tooltip = "Out of "+nbFPs+" fingerprints";
+    var id  = "";
+    if(tagPresent){
         tooltip += " with tags: ["+tags.toString()+"]";
+    } else {
+        id += "Total";
     }
-    document.getElementById("httpPerHeader").title = tooltip;
-    document.getElementById("JSPerHeader").title = tooltip;
-    $('[data-toggle="tooltip"]').tooltip({
-        placement : 'top'
-    });
+    if(limitPresent){
+        tooltip += " collected in the past 90 days";
+        id += "Limit";
+    }
+    document.getElementById("httpPer"+id+"Header").title = tooltip;
+    document.getElementById("JSPer"+id+"Header").title = tooltip;
 }
 
 function showAcceptableColumn(){
     //Show columns
-    $("#httpTable").toggleClass("hideAcc");
-    $("#jsTable").toggleClass("hideAcc");
+    $("#httpTable,#jsTable").toggleClass("hideAcc");
 
     //Show legend
     $("#acceptableLegend").show();
@@ -66,8 +73,33 @@ function showAcceptableColumn(){
     $("i[id$='"+popover+"']").popover()
 }
 
+function switchPercentages(withTags,withLimit) {
+    $("#httpTable,#jsTable").addClass('hidePer hidePerLimit hidePerTotal hidePerTotalLimit');
+    if(withTags){
+        if(withLimit){
+            $("#httpTable,#jsTable").removeClass('hidePerLimit');
+        } else {
+            $("#httpTable,#jsTable").removeClass('hidePer');
+        }
+    } else {
+        if(withLimit){
+            $("#httpTable,#jsTable").removeClass('hidePerTotalLimit');
+        } else {
+            $("#httpTable,#jsTable").removeClass('hidePerTotal');
+        }
+    }
+
+}
+
+
 //Updating the state of the collection page
 $(document).ready(function() {
+
+    //We change the shown percentages on click
+    $('#withoutTags').on('click', function(){ switchPercentages(false,$("#withLimit").hasClass('active')); } );
+    $('#withTags').on('click', function(){ switchPercentages(true,$("#withLimit").hasClass('active')); } );
+    $('#withoutLimit').on('click', function(){ switchPercentages($("#withTags").hasClass('active'),false); } );
+    $('#withLimit').on('click',function(){ switchPercentages($("#withTags").hasClass('active'),true); } );
 
     //if the cookie is present, we load data from localStorage
     //if it is not, this means that it is either a new
@@ -95,10 +127,13 @@ $(document).ready(function() {
 
                     //We get the percentages if each value + the number of FP
                     stats = JSON.parse(localStorage.getItem(statsTemp));
-                    numberFP = stats["number"];
 
                     //Add a tooltip on each table header
-                    setTooltip(numberFP);
+                    setTooltip(stats["numberPer"],true,false);
+                    setTooltip(stats["numberPerLimit"],true,true);
+                    setTooltip(stats["numberPerTotal"],false,false);
+                    setTooltip(stats["numberPerTotalLimit"],false,true);
+                    $('[data-toggle="tooltip"]').tooltip({placement : 'top'});
 
                     //We perform the transition on the dashboard
                     btnTransition("stats");
@@ -106,7 +141,9 @@ $(document).ready(function() {
                     //Adding the percentage to the HTML table
                     for(var attribute in stats["fp"]) {
                         var att = stats["fp"][attribute];
-                        api.addPercentage(attribute,att.percentage);
+                        for(var i=0; i<perColumns.length; i++) {
+                            api.addPercentage(attribute, perColumns[i], att[perColumns[i]]);
+                        }
                         api.addAcceptable(attribute,att);
                     }
 
@@ -151,8 +188,8 @@ api.addValue = function(name, result){
     }
 };
 
-api.addPercentage = function(name, result){
-    document.getElementById(name + percentage).innerHTML = result;
+api.addPercentage = function(name, type, result){
+    document.getElementById(name + type).innerHTML = result;
 };
 
 api.addAcceptable = function(name,jsonData){
@@ -193,7 +230,7 @@ api.addAcceptableValue = function(name, value){
 
 api.addAcceptableInfo = function(name,percent,popular){
     var text = "Only "+percent+"% of collected fingerprints share the same value as you for the \""+name+"\" attribute. The most ";
-    text += "popular value is \""+popular[0]._id+"\" shared by "+(popular[0].count*100/numberFP).toFixed(2).toString()+"% of the population.";
+    text += "popular value is \""+popular[0]._id+"\" shared by "+(popular[0].count*100/stats["numberPer"]).toFixed(2).toString()+"% of the population.";
 
     var idHtml = name+popover;
     var addHTML = "&nbsp; <i id='"+idHtml+"' class='fa fa-info-circle  clickableGlyph'";
@@ -309,9 +346,6 @@ api.stats = function(){
         var result = fp[name];
         api.exploreJSON(name,result);
     }
-
-    //Disabling the stats button and providing visual feedback to the user
-    btnTransition("stats");
 };
 
 api.exploreJSON = function(name,result){
@@ -331,6 +365,9 @@ api.statsEnd = function(){
         //Store them in localStorage
         localStorage.setItem(statsTemp, JSON.stringify(stats, null, '\t'));
 
+        //Disabling the stats button and providing visual feedback to the user
+        btnTransition("stats");
+
         //We display the table headers that were hidden if
         //there are acceptable values
         if(showAcceptable) {
@@ -349,13 +386,16 @@ api.getPerAndAcc = function(name,value){
             //Parsing JSON result
             var jsonData = JSON.parse(xhr.responseText);
 
-            //Adding percentage to the table
-            var percent = parseInt(jsonData.count) * 100 / numberFP;
-            var val = percent.toFixed(2).toString();
-            jsonData.percentage = val;
+            //Adding percentages to the table
+            for(var i=0; i<perColumns.length; i++) {
+                var val = (parseInt(jsonData[perColumns[i]]) * 100 /  stats["number"+perColumns[i]]).toFixed(2).toString();
+                jsonData[perColumns[i]] = val;
 
-            //Adding percentages and acceptable value if present
-            api.addPercentage(name,val);
+                //Adding percentage to Table
+                api.addPercentage(name, perColumns[i], val);
+            }
+
+            //Adding acceptable value if present
             api.addAcceptable(name,jsonData);
 
             //We store the result in the stats JSON object
@@ -376,10 +416,18 @@ api.getNumberFP = function(){
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            numberFP = parseInt(xhr.responseText);
-            stats["number"] = numberFP;
-            //Add a tooltip on each table header
-            setTooltip(numberFP);
+            var jsonData = JSON.parse(xhr.responseText);
+
+            //Add a tooltip on each table headers
+            stats["numberPer"] = jsonData["numberPer"];
+            setTooltip(jsonData["numberPer"],true,false);
+            stats["numberPerLimit"] = jsonData["numberPerLimit"];
+            setTooltip(jsonData["numberPerLimit"],true,true);
+            stats["numberPerTotal"] = jsonData["numberPerTotal"];
+            setTooltip(jsonData["numberPerTotal"],false,false);
+            stats["numberPerTotalLimit"] = jsonData["numberPerTotalLimit"];
+            setTooltip(jsonData["numberPerTotalLimit"],false,true);
+            $('[data-toggle="tooltip"]').tooltip({placement : 'top'});
 
             //Get the percentages of every values
             api.stats();
