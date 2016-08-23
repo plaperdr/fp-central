@@ -64,6 +64,7 @@ Here is the list of technology or libraries currently used by the project for th
 * PyMongo ([Official](https://api.mongodb.com/python/current/) - [GitHub](https://github.com/mongodb/mongo-python-driver) - [Pypi](https://pypi.python.org/pypi/pymongo) - [Debian](https://packages.debian.org/jessie/python3-pymongo) - [Ubuntu](http://packages.ubuntu.com/xenial/python3-pymongo) - [Fedora](https://apps.fedoraproject.org/packages/python3-pymongo))
 * Flask-Babel [Official](https://pythonhosted.org/Flask-Babel/) - [GitHub](https://github.com/python-babel/flask-babel) - [Pypi](https://pypi.python.org/pypi/Flask-Babel) - [Debian](https://packages.debian.org/stretch/python3-flask-babel) - [Ubuntu](http://packages.ubuntu.com/xenial/python3-flask-babel) - [Fedora](https://apps.fedoraproject.org/packages/python-flask-babel))
 * Flask-PyMongo ([Official](https://flask-pymongo.readthedocs.io/en/latest/) - [GitHub](https://github.com/dcrosta/flask-pymongo) - [Pypi](https://pypi.python.org/pypi/Flask-PyMongo))
+* User agent parser ([GitHub](https://github.com/ua-parser) - [Pypi](https://pypi.python.org/pypi/ua-parser))
 
 And for the front-end:
 * Bootstrap ([Official](https://getbootstrap.com/) - [GitHub](https://github.com/twbs/bootstrap))

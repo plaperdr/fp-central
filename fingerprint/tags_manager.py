@@ -1,8 +1,9 @@
-from fingerprint.tags.tor import Tor
+from fingerprint.tags.browser import Browser
+from fingerprint.tags.os import OS
 
 class TagChecker:
     def __init__(self):
-        self.classList = [Tor()]
+        self.classList = [Browser(),OS()]
         self.tagList = []
         for c in self.classList:
             self.tagList.extend(c.getListOfTags())
