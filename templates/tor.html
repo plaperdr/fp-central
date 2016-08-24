@@ -21,7 +21,8 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Acceptable values for the Tor browser</h1>
+    <h1 data-intro="This page is made for Tor browser users to help them configure their browser so that their fingerprint
+        is as common as possible." data-step="1">Acceptable values for the Tor browser</h1>
     <p>
         The approach of the Tor browser towards browser fingerprinting is simple. The exposed fingerprints should be as
         uniform as possible so that no browser can be uniquely identifiable. Many modifications have already been made
@@ -35,7 +36,9 @@
     </p>
     <h2>Results</h2>
 
-    <div class="panel-group">
+    <div class="panel-group" data-intro="You will find here some step-by-step guides for different attributes in case your browser presents
+          some unacceptable values. If you see a <i class='fa fa-check'></i> next to an attribute's name, this means that your browser is properly
+          configured and you have nothing to do." data-step="2">
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -165,5 +168,14 @@
     <!-- Load the acceptable and slider JS script -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/acceptable.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="js/slider.js") }}"></script>
+
+    <!-- IntroJS tour instructions -->
+    <script type="text/javascript">
+        if (window.location.search.indexOf("multipage") > -1) {
+            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+                window.location.href = '/globalStats?multipage';
+            });
+        }
+    </script>
 
 {% endblock %}

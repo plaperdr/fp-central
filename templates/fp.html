@@ -8,8 +8,6 @@
 {%  block styles %}
     {{ super() }}
     <link href="{{url_for('static', filename='css/fp.css')}}" rel="stylesheet">
-    <link href="{{url_for('static', filename='external/intro/introjs.min.css')}}" rel="stylesheet">
-    <link href="{{url_for('static', filename='external/intro/introjs-nassim.css')}}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -21,8 +19,13 @@
         The <a href="/faq" target="_blank">FAQ page <i class="fa fa-external-link" aria-hidden="true"></i></a> gives a detailed list of
         attributes that are collected along with links to documentation.
     </p>
-    <div data-intro="Thank you for following this quick introduction! You can follow it again at anytime by clicking on the 'Help' button during your visit." data-step="9">
-        First visit? &nbsp;<button type="button" class="btn btn-default" onclick="introJs().start();" data-intro="Hello! Here is a quick introduction to the 'My fingerprint' page!" data-step="1">Take the tour</button>
+    <div data-intro="Thank you for following this quick introduction! You can follow it again at anytime by clicking on the 'Help' button during your visit.
+                     You can continue the tour to other pages bly clicking on 'Continue the tour'." data-step="9">
+        First visit? &nbsp;
+        <button type="button" class="btn btn-default" onclick="startTour()"
+               data-intro="Hello! Here is a quick introduction to the 'My fingerprint' page!" data-step="1">
+            Take the tour
+        </button>
     </div>
 
     <div data-intro="Here is the dashboard. It gives you control of what runs on this page and what is sent to our server." data-step="2">
@@ -33,8 +36,9 @@
             <span class="badge">1</span> <strong>{{ _('Run JavaScript tests') }}</strong>  <i id="runOk" class="fa"></i>
         </a>
         <a id="sendBtn" class="btn btn-info disabled" type="button" onclick="api.send()"
-           data-intro="After reviewing the values in the JavaScript table below, you can send your complete fingerprint to our server so that it is stored for statistical purposes.
-                      The collected data will help us understand the diversity of browser fingerprints and it will provide developers insight into how to develop and design good defenses against tracking."
+           data-intro="After reviewing the values in the JavaScript table below, you can send your complete fingerprint to our server so that it is stored for statistical purposes. This process is completely
+                        anonymous as no PII (Personally identifiable information) are stored. The collected data will help us understand the diversity of browser fingerprints and it will provide developers
+                        insight into how to develop and design good defenses against fingerprint tracking."
            data-step="7">
             <span class="badge">2</span> <strong>{{ _('Send to server') }}</strong> <i id="sendOk" class="fa"></i>
         </a>
@@ -91,7 +95,7 @@
             </div>
         </div>
     </h1>
-    <div class="panel panel-default" data-intro="You will find here attributes related to HTTP headers. The values are already present since they were already sent to our server when you first connected to this website." data-step="4">
+    <div class="panel panel-default" data-intro="You will find here attributes related to HTTP headers. The values are already present since they were sent to our server when you first connected to this website." data-step="4">
         <div class="panel-heading"><h2>HTTP headers</h2></div>
         <table id="httpTable" class="table table-striped table-hover tableCustom hideAcc hidePerLimit hidePerTotal hidePerTotalLimit" xmlns="http://www.w3.org/1999/html">
             <thead>
@@ -158,8 +162,18 @@
 
     <!-- Load the FP Central API -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/clientAPI.js") }}"></script>
-    <!-- Load the intro.js library -->
-    <script type="text/javascript" src="{{ url_for('static', filename="external/intro/intro.min.js") }}"></script>
+
+    <!-- IntroJS tour instructions -->
+    <script type="text/javascript">
+        function startTour(){
+            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+                window.location.href = '/tor?multipage';
+            });
+        }
+        if (window.location.search.indexOf("multipage") > -1) {
+            startTour();
+        }
+    </script>
 
     <!-- Scripts to collect the attributes of a fingerprint -->
     {% for file in files %}

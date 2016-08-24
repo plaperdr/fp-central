@@ -13,17 +13,21 @@
 
 {% block content %}
 
-    <h1>{{ _('Custom statistics') }}</h1>
-    <!--
-        - Select the tags you are interest in
-        - Select the browsers you want to study
-        - Select the attributes you want to use (can be one or more)
-        - Select the time period when the fingerprints were collected
-        - Get the popular values for the combination attributes/period
-        - Get the popular values on a graph and the detailed data in a table
-    -->
+    <h1 data-step="1" data-intro="Here is a quick introduction to the custom statistics of FP Central. The goal of this
+        page is to provide you with the tools to study browser fingerprinting and get the information that matter to you.
+        This page is divided into two parts: selection of a specific set of fingerprints and visualisation of the results.">
+        {{ _('Custom statistics') }}
+    </h1>
+    <div data-ste="13" data-intro="Thank you for following this quick introduction! You can see it again by clicking on the 'Take the tour'
+        button at anytime during your visit. You can continue the tour to other pages bly clicking on 'Continue the tour'.">
+        First visit? &nbsp;
+        <button type="button" class="btn btn-default" onclick="startTour()">
+            Take the tour
+        </button>
+    </div>
 
-    <h2>
+    <h2 data-step="2" data-intro="First step: choose the browsers you want to study. You can select the entire database or you can specify
+        one browser on a specific operating system.">
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">1</span>
             {{ _('Select the browsers you want to study') }}
@@ -37,7 +41,9 @@
         <label id="tbb" class="btn btn-default">
             <input type="radio"/> {{ _('Only Tor browsers') }}
         </label>
-        <label id="custom" class="btn btn-default">
+        <label id="custom" class="btn btn-default" data-step="3"
+            data-intro="If you click on 'Custom', you can choose specific browsers and operating systems. You can also change the method used to combine tags
+            (more details on this by clicking on the <i class='fa fa-question-circle'></i> icon when 'Custom' is chosen).">
             <input type="radio"/> {{ _('Custom') }}
         </label>
     </div>
@@ -47,7 +53,35 @@
             <label class="btn btn-primary"><input type="checkbox" name="{{ tag }}"> &nbsp;  {{ tag }}</label>
         {%  endfor %}
         </div>
-        <h3>Tag combination method</h3>
+
+        <h3>Tag combination method <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="modal" data-target="#combinationModal"></i></h3>
+        <!-- Modal explanation -->
+        <div class="modal fade" id="combinationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Tag combination method</h4>
+              </div>
+              <div class="modal-body">
+                  Fingerprint Central gives you two options to combine the custom tags you want to study.
+                  <h4>OR (Default option)</h4>
+                  With the 'OR' method, you will get fingerprints that satisfy at least one of the chosen tags.<br>
+                  <u>Example:</u> if you select 'Firefox' and 'Chrome' with the 'OR' method, you will get all fingerprints from Firefox and Chrome browsers.
+                  <h4>AND</h4>
+                  With the 'AND' method, you will only get fingerprints that satisfy all the tags.
+                  It is mostly recommended to study a combination of a specific browser with a specific operating system.<br>
+                  <u>Example:</u> if you select 'Firefox' and 'Chrome' with the 'AND' method,
+                  the results of your search will be empty since no fingerprints can satisfy being from both Firefox and Chrome at the same time.
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="tagComp" class="btn-group" data-toggle="buttons">
             <label id="tagIn" class="btn btn-default active">
                 <input type="radio" checked="checked"/> {{ _('Tag X OR Tag Y') }}
@@ -58,7 +92,8 @@
         </div>
     </div>
 
-    <h2>
+    <h2 data-step="4" data-intro="Second step: choose the attributes you want to study. You can select any number of attributes. If you select more than one,
+        the 'Results' section will show you the most popular combinations between the chosen attributes.">
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">2</span>
             {{ _('Select the attributes you are interested in') }}
@@ -112,7 +147,9 @@
     {%  endfor %}
     </div>
 
-    <h2>
+    <h2 data-step="5" data-intro="Third step: Select a specific time period. When you study browser fingerprinting, it is sometimes not
+        relevant to take into consideration fingerprints that are older than a few weeks or a few months. Or, you may just want to see the impact of a patch
+        that you deployed last week. For these reasons, you can select any time period you want in Fingerprint Central.">
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">3</span>
             {{ _('Select the collection period') }}
@@ -120,38 +157,50 @@
     </h2>
     <br>
     {{ _('Fingerprints collected between') }} &nbsp;
-    <span id="period" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;">
+    <span id="period" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;" data-step="6" data-intro="You can click here to select a specific time period or create your own custom date range.">
         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
         <span></span> <b class="caret"></b>
     </span>
     <br><br>
-    <h2>
+    <h2 data-step="12" data-intro="Finally, if you want to make a little tweak to your query, you can! After reclicking on the 'Submit' button,
+        the chart and the table will refresh with the right data!">
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">4</span>
             {{ _('Submit request') }}
         </span>
     </h2>
     <a id="submitBtn" tabindex="0" class="btn btn-primary" role="button" data-toggle="popover" data-trigger="focus" onclick="api.sendRequest()"
-       title="Attributes missing" data-content={{ _('You need to select at least one attribute to see results.') | tojson }}>
+       title="Attributes missing" data-step="8" data-intro="Ready to send your query to the server ? Click on this button to see the results."
+       data-content={{ _('You need to select at least one attribute to see results.') | tojson }}>
         <strong>{{ _('Submit') }}</strong>
     </a>
-    <span class="input-group-addon" style="display: inline">
+    <span class="input-group-addon" style="display: inline" data-step="7" data-intro="Fourth step: Before submitting your search to the server for processing, you may choose to
+            remove fingerprints that were collected without JavaScript. This can help you focus only on the data that is relevant to you.">
         <label>
             <input id="includeNoJS" type="checkbox" checked>
             Include fingerprints without JavaScript
         </label>
     </span>
-    <h2>
+    <h2 data-intro="After your custom-made query has been sent to the server, you can see the results of your search below" data-step="9">
         <span class="label label-info">
             <span style="background-color: white; color: #29ABE0" class="badge">5</span>
             {{ _('Result') }}
         </span>
     </h2>
 
-    <h3>{{ _('Chart') }}</h3>
-    <div id="chart" style="width:100%; height:500px;"></div>
+    <h3 data-step="10" data-intro="First, a pie chart will be rendered so that you can see the global trend of the chosen distribution.
+    Is one value shared by a large majority of users or is one attribute scattered between multiple values? This chart will give you the answer!">
+        {{ _('Chart') }}
+    </h3>
+    <div id="chart" style="width:100%; height:500px;" ></div>
+
     <br><br>
-    <h3>{{ _('Data') }}</h3>
+
+    <h3 data-step="11" data-intro="Then, if you want to understand the distribution in greater details, you can investigate the table with raw data. Several tools are at your
+     disposal to search, sort and organize the data the way you want. If you want to export the data to generate a new graph with another software or to write a through bug report,
+     you can do so by clicking on the <i class='fa fa-floppy-o'></i> icon and by selecting one of several popular formats.">
+        {{ _('Data') }}
+    </h3>
     <table id="table"
        data-toggle="table"
        data-show-export="true"
@@ -186,5 +235,17 @@
     <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/tableExport.min.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/bootstrap-table-filter-control.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="external/bootstrapTable/tableExtensions/bootstrap-table-multiple-sort.js") }}"></script>
+
+    <!-- IntroJS tour instructions -->
+    <script type="text/javascript">
+        function startTour(){
+            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+                window.location.href = '/faq?multipage';
+            });
+        }
+        if (window.location.search.indexOf("multipage") > -1) {
+            startTour();
+        }
+    </script>
 
 {% endblock %}

@@ -28,13 +28,16 @@
     <!-- Bootstrap core CSS  (Bootswatch Sandstone Theme) + FontAwesome -->
     <link href="{{url_for('static', filename='external/bootstrap/css/bootstrap-sandstone.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='external/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/intro/introjs.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='external/intro/introjs-nassim.css')}}" rel="stylesheet">
     <!-- Custom theme -->
     <link href="{{url_for('static', filename='css/theme.css')}}" rel="stylesheet">
     {%- endblock styles %}
 
     {% block scripts %}
-    <script src="{{url_for('static', filename='external/jquery/jquery.min.js')}}"></script>
-    <script src="{{url_for('static', filename='external/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='external/jquery/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='external/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename="external/intro/intro.min.js") }}"></script>
     {%- endblock scripts %}
 
     {%- endblock head %}

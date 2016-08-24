@@ -6,7 +6,8 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ _('Global statistics') }}</h1>
+    <h1 data-intro="Here is the 'Global statistics' page. It gives you an overview on the visits on FP Central."
+        data-step="1">{{ _('Global statistics') }}</h1>
     <div>
         {{ _('Lifetime') }}: {{ totalFP }} {{ _('fingerprints') }}
         <br>
@@ -14,9 +15,16 @@
    </div>
 
     <br>
-    <div id="daily" style="width:100%; height:500px;"></div>
+    <div id="daily" style="width:100%; height:500px;" data-step="2"
+        data-intro="This graph indicates the number of collected fingerprints since the launch of the website. Like the other graphs present
+        on this website, it is interactive so you can get extra details by positioning your mouse on specific points of interest.
+        If you are interested, you can also print or download a copy of any graph by clicking on the <i class='fa fa-bars'></i> icon that is present on the
+        top right."></div>
     <br>
-    <div id="lang" style="width:100%; height:500px;"></div>
+    <div id="lang" style="width:100%; height:500px;" data-step="3"
+        data-intro="This pie chart gives a global sense of the geographic distribution of visitors even if we do not analyse or collect
+        IP addresses. Each browser sends its preferred language in a header called 'Accept-Language' and this chart illustrates the most
+        popular ones."></div>
 
     <script type="text/javascript">
 
@@ -127,5 +135,15 @@
     <!-- Load the external libraries -->
     <script type="text/javascript" src="{{ url_for('static', filename="external/highcharts/highcharts.js") }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename="external/highcharts/highcharts-exporting.js") }}"></script>
+
+
+    <!-- IntroJS tour instructions -->
+    <script type="text/javascript">
+        if (window.location.search.indexOf("multipage") > -1) {
+            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+                window.location.href = '/customStats?multipage';
+            });
+        }
+    </script>
 
 {% endblock %}

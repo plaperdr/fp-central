@@ -6,8 +6,12 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ _('What is the current list of collected attributes?') }}</h1>
-    <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html">
+    <h1 data-intro="On this page, you can find additional information on Fingerprint Central)." data-step="1">FAQ</h1>
+    <h2>{{ _('What is the current list of collected attributes?') }}</h2>
+    <table class="table table-striped table-hover " xmlns="http://www.w3.org/1999/html"
+        data-intro="Here is the complete list of attributes that are collected when you visit the 'My fingerprint' page. This table is
+         autmoatically updated when a new attribute is added to the test suite. If you need additional information, do not hesitate to
+         click on the given URLs as they will explain to you in greater details the use of some attributes.">
         <thead>
             <tr>
                 <th>#</th>
@@ -33,6 +37,15 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- IntroJS tour instructions -->
+    <script type="text/javascript">
+        if (window.location.search.indexOf("multipage") > -1) {
+            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+                window.location.href = '/about?multipage';
+            });
+        }
+    </script>
 
 
 

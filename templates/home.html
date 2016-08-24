@@ -7,18 +7,33 @@
 {% block content %}
 
     <div class="jumbotron text-center">
-      <img src="static/images/banner.png" class="img-responsive" alt="Responsive image">
+      <img src="static/images/banner.png" class="img-responsive" alt="Responsive image"
+        data-intro="Welcome to Fingerprint Central, the place to study and investigate browser fingerprinting! I will guide you through the different pages of the website and explain to you the different
+                    features that are offered." data-step="1">
       <p>{{ _('Welcome to FP Central! This website aims at studying the diversity of browser fingerprints and providing developers with data to help them design good defenses.
          Contribute to the efforts by viewing your own browser fingerprint or consult the current statistics of data provided by users around the world!') }}
       <p>
-        <div class="alert alert-info">
-      <h2 class="">{{ _('Beta version') }}</h2>
-      <h4>{{ _('This website is still in development. If you find any bugs, don\'t hesitate to report them on
-          <a href="https://github.com/plaperdr/fp-central"><strong>our official GitHub repository</strong></a>.')}}
-      </h4>
-    </div>
-        <a class="btn btn-lg btn-default" role="button" href="/fp">{{ _('View my fingerprint') }}</a>
+        <div class="alert alert-info"
+             data-intro="Before we begin, do not hesitate to report any bug or problem you may find on
+             <a href='https://github.com/plaperdr/fp-central' target='_blank'><strong>our official GitHub repository</strong></a> !">
+          <h2 class="">{{ _('Beta version') }}</h2>
+          <h4>{{ _('This website is still in development. If you find any bugs, don\'t hesitate to report them on
+              <a href="https://github.com/plaperdr/fp-central" target="_blank"><strong>our official GitHub repository</strong></a>.')}}
+          </h4>
+        </div>
+        <a class="btn btn-lg btn-default" role="button" href="/fp"
+            data-intro="Let us visit now the 'My fingerprint' page where you can see your very own browser fingerprint!">{{ _('View my fingerprint') }}</a>
         <a class="btn btn-lg btn-default" role="button" href="/faq">{{ _('FAQ') }}</a>
+        <a id="firstVisit" class="btn btn-lg btn-default" role="button" onclick="introJs().start();">{{ _('First visit?') }}</a>
       </p>
     </div>
+
+    <!-- IntroJS tour instructions -->
+    <script type="text/javascript">
+        document.getElementById('firstVisit').onclick = function() {
+            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+                window.location.href = '/fp?multipage';
+            });
+        };
+    </script>
 {% endblock %}
