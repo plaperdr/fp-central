@@ -43,6 +43,7 @@ $(document).ready(function() {
         $("#plugins").html("Empty");
         setPanel("plugins","Ok");
     } else {
+        var np = window.navigator.plugins;
         var plist = [];
         for (var i = 0; i < np.length; i++) {
             plist[i] = np[i].name + "; ";
