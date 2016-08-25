@@ -286,16 +286,6 @@ class Db(object):
 
         return list(self.mongo.db.fp.aggregate(query))
 
-    ##FOR TAG SUPPORT
-    # ALL OF THEM
-    # t = [{"tags": el} for el in tags]
-    # t.append({"date": {"$gt": tempID})
-    #{"$match": {"$and": t}}
-    #
-    # AT LEAST ONE
-    #t = {"$match": {"$and": [{"tags": {"$in": tags}}, {"date": {"$gt": tempID}}]}}
-    #
-
 
     ######Database maintenance
     #Update the tags of all fingerprints -> run it if a tag's logic
