@@ -12,19 +12,19 @@
 
 {% block content %}
 
-    <h1>My fingerprint</h1>
+    <h1>{{ _('My fingerprint') }}</h1>
     <p>
-        On this page, you can visualize your own browser fingerprint. You can run a series of tests and see what your browser engine returns in the tables below.
+        {{ _('On this page, you can visualize your own browser fingerprint. You can run a series of tests and see what your browser engine returns in the tables below.
         The server can also computes statistics to help you understand how unique your fingerprint can be with respect to other users.
         The <a href="/faq" target="_blank">FAQ page <i class="fa fa-external-link" aria-hidden="true"></i></a> gives a detailed list of
-        attributes that are collected along with links to documentation.
+        attributes that are collected along with links to documentation.') }}
     </p>
     <div data-intro="Thank you for following this quick introduction! You can follow it again at anytime by clicking on the 'Help' button during your visit.
                      You can continue the tour to other pages bly clicking on 'Continue the tour'." data-step="9">
-        First visit? &nbsp;
+        {{ _('First visit?') }} &nbsp;
         <button type="button" class="btn btn-default" onclick="startTour()"
                data-intro="Hello! Here is a quick introduction to the 'My fingerprint' page!" data-step="1">
-            Take the tour
+            {{ _('Take the tour') }}
         </button>
     </div>
 
@@ -51,21 +51,21 @@
     </div>
 
     <div id="acceptableLegend" style="display: none;">
-        <h2>Acceptable values legend</h2>
-        <h3><i class="fa fa-check fa-border" style="color:#B9D98A"></i> Acceptable value</h3>
-        The displayed value is "acceptable" (i.e. it is an expected one and it follows Tor guidelines).
-        The majority of users shares this exact same value.
+        <h2>{{ _('Acceptable values legend') }}</h2>
+        <h3><i class="fa fa-check fa-border" style="color:#B9D98A"></i> {{ _('Acceptable value') }}</h3>
+        {{ _('The displayed value is "acceptable" (i.e. it is an expected one and it follows Tor guidelines).
+        The majority of users shares this exact same value.') }}
         <br>
-        <h3><i class="fa fa-times fa-border" style="color:#FF8080"></i> Unacceptable value</h3>
-        The displayed value is not "acceptable" and makes your browser vulnerable to tracking.
+        <h3><i class="fa fa-times fa-border" style="color:#FF8080"></i> {{ _('Unacceptable value') }}</h3>
+        {{ _('The displayed value is not "acceptable" and makes your browser vulnerable to tracking.
         The &nbsp; <i id="screen.widthPop" class="fa fa-info-circle"></i> &nbsp; icon will give you information on the most popular value shared by users.
         The &nbsp; <i class="fa fa-question-circle"></i> &nbsp; icon may also be present to direct you to a page with instructions on what to do to make this attribute acceptable.
         A non-acceptable value can be caused by a misconfiguration of the browser. In that case, regenerating a new Tor identity can sometimes fix the problem. However, it can also come from
         a genuine difference between TBB browsers and it should be investigated by Tor developers. You can report the problem on the Tor bug tracker by
-        <a href="https://trac.torproject.org/projects/tor" target="_blank"> opening a ticket  <i class="fa fa-external-link" aria-hidden="true"></i></a>.
+        <a href="https://trac.torproject.org/projects/tor" target="_blank"> opening a ticket  <i class="fa fa-external-link" aria-hidden="true"></i></a>.')}}
         <br>
-        <h3><i class="fa fa-minus fa-border" style="color:#A3A3C2"></i> Unchecked value</h3>
-        The attribute is not checked and can take any value.
+        <h3><i class="fa fa-minus fa-border" style="color:#A3A3C2"></i> {{ _('Unchecked value') }}</h3>
+        {{ _('The attribute is not checked and can take any value.') }}
     </div>
 
     <br>

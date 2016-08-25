@@ -22,19 +22,19 @@
 
 {% block content %}
     <h1 data-intro="This page is made for Tor browser users to help them configure their browser so that their fingerprint
-        is as common as possible." data-step="1">Acceptable values for the Tor browser</h1>
+        is as common as possible." data-step="1"> {{ _('Acceptable values for the Tor browser') }}</h1>
     <p>
-        The approach of the Tor browser towards browser fingerprinting is simple. The exposed fingerprints should be as
+        {{ _('The approach of the Tor browser towards browser fingerprinting is simple. The exposed fingerprints should be as
         uniform as possible so that no browser can be uniquely identifiable. Many modifications have already been made
         by Tor developers to limit the quantity of identifying information but differences still exist to support a
-        wide range of configurations.
+        wide range of configurations.') }}
     </p>
     <p>
-        On this page, several checks are performed to find out if several attributes of your browser fingerprint are "acceptable", i.e.
+        {{ _('On this page, several checks are performed to find out if several attributes of your browser fingerprint are "acceptable", i.e.
         they follow Tor basic guidelines. If they, this would mean that your fingerprint is not distinguishable from
-        the majority of Tor users, thus increasing your online privacy.
+        the majority of Tor users, thus increasing your online privacy.') }}
     </p>
-    <h2>Results</h2>
+    <h2>{{ _('Results') }}</h2>
 
     <div class="panel-group" data-intro="You will find here some step-by-step guides for different attributes in case your browser presents
           some unacceptable values. If you see a <i class='fa fa-check'></i> next to an attribute's name, this means that your browser is properly

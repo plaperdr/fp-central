@@ -54,29 +54,29 @@
         {%  endfor %}
         </div>
 
-        <h3>Tag combination method <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="modal" data-target="#combinationModal"></i></h3>
+        <h3>{{ _('Tag combination method') }} <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="modal" data-target="#combinationModal"></i></h3>
         <!-- Modal explanation -->
         <div class="modal fade" id="combinationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Tag combination method</h4>
+                <h4 class="modal-title" id="myModalLabel">{{ _('Tag combination method') }}</h4>
               </div>
               <div class="modal-body">
-                  Fingerprint Central gives you two options to combine the custom tags you want to study.
+                  {{ _('Fingerprint Central gives you two options to combine the custom tags you want to study.
                   <h4>OR (Default option)</h4>
-                  With the 'OR' method, you will get fingerprints that satisfy at least one of the chosen tags.<br>
-                  <u>Example:</u> if you select 'Firefox' and 'Chrome' with the 'OR' method, you will get all fingerprints from Firefox and Chrome browsers.
+                  With the \'OR\' method, you will get fingerprints that satisfy at least one of the chosen tags.<br>
+                  <u>Example:</u> if you select \'Firefox\' and \'Chrome\' with the \'OR\' method, you will get all fingerprints from Firefox and Chrome browsers.
                   <h4>AND</h4>
-                  With the 'AND' method, you will only get fingerprints that satisfy all the tags.
+                  With the \'AND\' method, you will only get fingerprints that satisfy all the tags.
                   It is mostly recommended to study a combination of a specific browser with a specific operating system.<br>
-                  <u>Example:</u> if you select 'Firefox' and 'Chrome' with the 'AND' method,
-                  the results of your search will be empty since no fingerprints can satisfy being from both Firefox and Chrome at the same time.
+                  <u>Example:</u> if you select \'Firefox\' and \'Chrome\' with the \'AND\' method,
+                  the results of your search will be empty since no fingerprints can satisfy being from both Firefox and Chrome at the same time.') }}
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _('Close') }}</button>
               </div>
             </div>
           </div>
@@ -178,7 +178,7 @@
             remove fingerprints that were collected without JavaScript. This can help you focus only on the data that is relevant to you.">
         <label>
             <input id="includeNoJS" type="checkbox" checked>
-            Include fingerprints without JavaScript
+            {{ _('Include fingerprints without JavaScript') }}
         </label>
     </span>
     <h2 data-intro="After your custom-made query has been sent to the server, you can see the results of your search below" data-step="9">
