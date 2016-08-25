@@ -255,20 +255,19 @@ api.run = function (){
         var name = attributes[i].name;
         var result = attributes[i].code();
         //Display results in HTML table
-        if(result == undefined) {
-            fp[name] = undef;
-            api.addValue(name,undef);
-        } else if (typeof result.then === "function") {
+        if (result != undefined && typeof result.then === "function") {
             //Result is a promise, wait for the result
             promises.push(result);
             result.then(function(result){
-                fp[result.name] = result.data;
-                api.addValue(result.name,result.data);
+                var checkedResult = api.checkResult(result.data);
+                fp[result.name] = checkedResult;
+                api.addValue(result.name,checkedResult);
             });
         } else {
-            //Result is either a single value or a JSON object
-            fp[name] = result;
-            api.addValue(name, result);
+            //Result is either undefined, a single value or a JSON object
+            var checkedResult = api.checkResult(result);
+            fp[name] = checkedResult;
+            api.addValue(name, checkedResult);
         }
     }
 
@@ -285,6 +284,22 @@ api.run = function (){
         Promise.all(promises).then(function(){
            api.postRun();
         });
+    }
+};
+
+api.checkResult = function(result){
+    //Replace undefined values with the "Undefined" string
+    if(result == undefined){
+        return undef;
+    } else {
+        if (result.constructor === {}.constructor) {
+            for (var key in result) {
+                result[key] = api.checkResult(result[key]);
+            }
+            return result;
+        } else {
+            return result;
+        }
     }
 };
 
