@@ -49,10 +49,20 @@
 
         //Language graph
         var lang = {{ lang|safe }};
-        var langData = [];
+        var langTemp = {};
         for(var k=0; k<lang.length; k++){
-            langData.push({'name': (lang[k]._id =="Unspecified")? {{ _('Unspecified') | tojson }} : lang[k]._id.substring(0,2), 'y': lang[k].count});
+            //We only consider the main primary language
+            var name = (lang[k]._id =="Unspecified")? {{ _('Unspecified') | tojson }} : lang[k]._id.substring(0,2);
+            if(langTemp.hasOwnProperty(name)){
+                langTemp[name] += lang[k].count;
+            } else {
+                langTemp[name] = lang[k].count;
+            }
         }
+        var langData = [];
+        Object.keys(langTemp).forEach(function (key) {
+            langData.push({'name': key, 'y': langTemp[key]})
+        });
 
         $(document).ready(function() {
             $('#daily').highcharts({
