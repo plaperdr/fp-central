@@ -84,7 +84,6 @@ def globalStats():
 
 @app.route('/customStats')
 def customStats():
-    print(request.args)
     return render_template('customStats.html',
                             tags=tags,
                             listOfVariables=variablesWithHTTP,
