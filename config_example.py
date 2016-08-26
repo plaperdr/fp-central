@@ -9,3 +9,6 @@ db_port = 27017
 
 #Cookies
 cookiesDays = 15
+
+#Password to lift restrictions on custom stats
+statsPassword = 'tobechanged'

@@ -84,6 +84,7 @@ def globalStats():
 
 @app.route('/customStats')
 def customStats():
+    print(request.args)
     return render_template('customStats.html',
                             tags=tags,
                             listOfVariables=variablesWithHTTP,
@@ -368,6 +369,12 @@ def getCustomStats():
     jsonData = request.get_json(force=True)
     if "start" in jsonData and "name" in jsonData:
         nbFP = db.getNumberFP(jsonData)
+
+        #We limit the returned values
+        if 'p' in [el[0] for el in request.args] and request.args['p'] == config.statsPassword:
+            jsonData["limit"] = 200
+        else:
+            jsonData["limit"] = 10
         data = db.getValues(jsonData)
         # We send data for the customStats page
         return {

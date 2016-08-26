@@ -73,7 +73,7 @@ api.sendRequest = function(){
     if(selected.length > 0) {
         $("#submitBtn").popover('destroy');
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/customStats", true);
+        xhr.open("POST", "/customStats"+window.location.search, true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
@@ -115,11 +115,13 @@ api.renderGraph = function(jsData, attributeList, startDate, endDate){
     //Transforming the data to suit the JS charting library
     var data = [];
     var result = jsData.data;
+    var fpCounter = 0;
     var totalFP = jsData.totalFP;
     var otherFPs = 0;
 
     for(var i =0; i<result.length; i++){
         var count = result[i].count;
+        fpCounter += count;
         var percentage = count*100/totalFP;
 
         //If percentage above 5%, we add it directly to the graph
@@ -149,6 +151,11 @@ api.renderGraph = function(jsData, attributeList, startDate, endDate){
         } else {
             otherFPs += count;
         }
+    }
+
+    //We add other values that are not present in the given data
+    if(fpCounter<totalFP){
+        otherFPs += (totalFP - fpCounter);
     }
 
     //Adding a section for the other values for the graph
