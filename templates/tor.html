@@ -9,12 +9,12 @@
     {{ super() }}
     <style type="text/css">
      /* Icon when the collapsible content is shown */
-    .btn:after {
+    .details:after {
         font-family: "FontAwesome";
         content: "\f078";
     }
     /* Icon when the collapsible content is hidden */
-    .btn.collapsed:after {
+    .details.collapsed:after {
         content: "\f054";
     }
     </style>
@@ -34,6 +34,12 @@
         they follow Tor basic guidelines. If they, this would mean that your fingerprint is not distinguishable from
         the majority of Tor users, thus increasing your online privacy.') }}
     </p>
+    <div>
+        {{ _('First visit?') }} &nbsp;
+        <button type="button" class="btn btn-default" onclick="startTour()">
+            {{ _('Take the tour') }}
+        </button>
+    </div>
     <h2>{{ _('Results') }}</h2>
 
     <div class="panel-group" data-intro="You will find here some step-by-step guides for different attributes in case your browser presents
@@ -46,7 +52,7 @@
                     <a data-toggle="collapse" href="#screenPanel"><strong>Screen resolution</strong></a>
                     <span id="screen"></span> <i id="screenRes" class="fa"></i>
 
-                    <button type="button" class="btn btn-primary btn-xs collapsed" data-toggle="collapse" data-target="#screenPanel" style="float: right">
+                    <button type="button" class="btn btn-primary btn-xs collapsed details" data-toggle="collapse" data-target="#screenPanel" style="float: right">
                         Details
                     </button>
 
@@ -82,7 +88,7 @@
                     <a data-toggle="collapse" href="#pluginsPanel"><strong>Plugins</strong></a>
                     <span id="plugins"></span> <i id="pluginsRes" class="fa"></i>
 
-                    <button type="button" class="btn btn-primary btn-xs collapsed" data-toggle="collapse" data-target="#pluginsPanel" style="float: right">
+                    <button type="button" class="btn btn-primary btn-xs collapsed details" data-toggle="collapse" data-target="#pluginsPanel" style="float: right">
                         Details
                     </button>
 
@@ -117,7 +123,7 @@
             <div class="panel-heading">
                 <h4 class="panel-title" style="font-size: 14px">
                     <a data-toggle="collapse" href="#sliderPanel"><strong>Security slider</strong></a>
-                    <button type="button" class="btn btn-primary btn-xs collapsed" data-toggle="collapse" data-target="#sliderPanel" style="float: right">
+                    <button type="button" class="btn btn-primary btn-xs collapsed details" data-toggle="collapse" data-target="#sliderPanel" style="float: right">
                         Details
                     </button>
                 </h4>
@@ -171,10 +177,13 @@
 
     <!-- IntroJS tour instructions -->
     <script type="text/javascript">
-        if (window.location.search.indexOf("multipage") > -1) {
-            introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
+        function startTour(){
+           introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
                 window.location.href = '/globalStats?multipage';
             });
+        }
+        if (window.location.search.indexOf("multipage") > -1) {
+            startTour();
         }
     </script>
 

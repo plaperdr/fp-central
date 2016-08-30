@@ -9,6 +9,13 @@
     <h1 data-intro="Here is the 'Global statistics' page. It gives you an overview on the visits on FP Central."
         data-step="1">{{ _('Global statistics') }}</h1>
     <div>
+        {{ _('First visit?') }} &nbsp;
+        <button type="button" class="btn btn-default" onclick="startTour()">
+            {{ _('Take the tour') }}
+        </button>
+    </div>
+    <br>
+    <div>
         {{ _('Lifetime') }}: {{ totalFP }} {{ _('fingerprints') }}
         <br>
         {{ _('Past 90 days') }}: {{ epochFP }} {{ _('fingerprints') }}
@@ -149,10 +156,13 @@
 
     <!-- IntroJS tour instructions -->
     <script type="text/javascript">
-        if (window.location.search.indexOf("multipage") > -1) {
+        function startTour(){
             introJs().setOption('doneLabel', 'Continue the tour').start().oncomplete(function() {
                 window.location.href = '/customStats?multipage';
             });
+        }
+        if (window.location.search.indexOf("multipage") > -1) {
+            startTour();
         }
     </script>
 
