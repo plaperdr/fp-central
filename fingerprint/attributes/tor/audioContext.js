@@ -31,21 +31,27 @@
             pxi_oscillator.start(0);
             context.startRendering();
             context.oncomplete = function (evnt) {
-                audioData.pxi_output = 0;
-                var sha1 = CryptoJS.algo.SHA1.create();
-                for (var i = 0; i < evnt.renderedBuffer.length; i++) {
-                    sha1.update(evnt.renderedBuffer.getChannelData(0)[i].toString());
+                try {
+                    audioData.pxi_output = 0;
+                    var sha1 = CryptoJS.algo.SHA1.create();
+                    for (var i = 0; i < evnt.renderedBuffer.length; i++) {
+                        sha1.update(evnt.renderedBuffer.getChannelData(0)[i].toString());
+                    }
+                    hash = sha1.finalize();
+                    audioData.pxi_full_buffer_hash = hash.toString(CryptoJS.enc.Hex);
+                    for (var i = 4500; 5e3 > i; i++) {
+                        audioData.pxi_output += Math.abs(evnt.renderedBuffer.getChannelData(0)[i]);
+                    }
+                    pxi_compressor.disconnect();
+                    resolve();
+                } catch(u){
+                    audioData.pxi_output = 0;
+                    resolve();
                 }
-                hash = sha1.finalize();
-                audioData.pxi_full_buffer_hash = hash.toString(CryptoJS.enc.Hex);
-                for (var i = 4500; 5e3 > i; i++) {
-                    audioData.pxi_output += Math.abs(evnt.renderedBuffer.getChannelData(0)[i]);
-                }
-                pxi_compressor.disconnect();
-                resolve();
             }
         } catch (u) {
             audioData.pxi_output = 0;
+            resolve();
         }
     });
 
