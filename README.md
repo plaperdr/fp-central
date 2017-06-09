@@ -1,4 +1,4 @@
-#Fingerprint Central
+# Fingerprint Central
 Welcome to the official Fingerprint Central repository!
 This project is developed as part of the
 [Google Summer of Code 2016](https://summerofcode.withgoogle.com/projects/#5574889654190080)
@@ -90,11 +90,11 @@ You will find below the list of currently supported features.
 - [x] Addition of a page for acceptable Tor fingerprints
 - [x] Support of additional browsers through the tagging system
 
-#Contributions
+# Contributions
 As the project is in early phases of development, it is subject to heavy modifications
 and refactoring. For that reason, I'm not accepting pull requests for the moment.
 However, as soon as the project is online, I'll gladly welcome any contributions with open arms
 to fix bugs or add new features.
 
-#License
+# License
 This project is licensed under the MIT License. See the LICENSE file for details.
