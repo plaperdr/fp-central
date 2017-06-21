@@ -4,6 +4,7 @@ from ua_parser import user_agent_parser
 tor4 = "Tor 4.X"
 tor5 = "Tor 5.X"
 tor6 = "Tor 6.X"
+torbrowser70 = "Tor Browser 7.0"
 chrome = "Chrome"
 firefox = "Firefox" #NB: A Tor browser cannot have the Firefox tag
 edge = "Edge"
@@ -19,8 +20,9 @@ class Browser(Tag):
     def checkTags(self, fp):
         ua = fp["User-Agent"]
         #We check first for UA from Tor browsers
-        ##NB: TO BE CHANGED when FIREFOX ESR 52.0 is released
-        if ua == "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0":
+        if ua == "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0":
+            return [torbrowser70]
+        elif ua == "Mozilla/5.0 (Windows NT 6.1; rv:45.0) Gecko/20100101 Firefox/45.0":
             return [tor6]
         elif ua == "Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0":
             return [tor5]
