@@ -85,43 +85,6 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title" style="font-size: 14px">
-                    <a data-toggle="collapse" href="#pluginsPanel"><strong>Plugins</strong></a>
-                    <span id="plugins"></span> <i id="pluginsRes" class="fa"></i>
-
-                    <button type="button" class="btn btn-primary btn-xs collapsed details" data-toggle="collapse" data-target="#pluginsPanel" style="float: right">
-                        Details
-                    </button>
-
-                </h4>
-            </div>
-            <div id="pluginsPanel" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <div id="pluginsOk" style="display: none">
-                        No plugins were detected!
-                    </div>
-                    <div id="pluginsNotOk" style="display: none">
-                        Your Tor browser has some browser plugins enabled and it can harm your online privacy. It is recommended
-                        <a href="https://www.torproject.org/download/download.html.en#Warning">not to enable or install any plugins</a>
-                        because they can be used to reveal your real IP address or identifying information on your system.
-                        <br><br>
-                        Two steps are required to easily disable plugins in the Tor browser. First, click on "Privacy and Security
-                        settings..." in the Onion menu.
-                        <img src="{{ url_for('static', filename="images/settings1.png") }}" class="img-responsive" alt="Responsive image">
-                        Then, make sure that "Disable browser plugins (such as Flash)" option is checked.
-                        <img src="{{ url_for('static', filename="images/settings2.png") }}" class="img-responsive" alt="Responsive image">
-                    </div>
-                    <div id="pluginsNoJS" style="display: block">
-                        No JavaScript.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <br><br>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title" style="font-size: 14px">
                     <a data-toggle="collapse" href="#sliderPanel"><strong>Security slider</strong></a>
                     <button type="button" class="btn btn-primary btn-xs collapsed details" data-toggle="collapse" data-target="#sliderPanel" style="float: right">
                         Details
@@ -134,21 +97,17 @@
                         We detected that the security level of your Tor browser is set on "Low".
                         Did you know that you can easily set the security level of your browser in the browser settings?<br>
 
-                        Open the Onion menu located on the left of the URL address bar and click on "Privacy and Security settings...".
+                        Open the Onion menu located on the left of the URL address bar and click on "Security settings...".
                         <img src="{{ url_for('static', filename="images/settings1.png") }}" class="img-responsive" alt="Responsive image">
 
                         Then, you can see the Security slider which provides a user-friendly interface to set your own security level.
-                        <img src="{{ url_for('static', filename="images/settings3.png") }}" class="img-responsive" alt="Responsive image">
+                        <img src="{{ url_for('static', filename="images/settings2.png") }}" class="img-responsive" alt="Responsive image">
 
                         You can easily see the trade off between functionality and security. Gradually increasing the security level will
                         disable more and more features reducing the vulnerability surface of your browser.
                     </div>
-                    <div id="sliderMediumLow" style="display: none">
-                        We detected that the security level of your Tor browser is set on "Medium-Low".
-                        Why not try a higher security level to increase your online privacy?
-                    </div>
-                    <div id="sliderMediumHigh" style="display: none">
-                        We detected that the security level of your Tor browser is set on "Medium-High".
+                    <div id="sliderMedium" style="display: none">
+                        We detected that the security level of your Tor browser is set on "Medium".
                         Why not try a higher security level to increase your online privacy?
                     </div>
                     <div id="sliderHigh" style="display: none">
@@ -167,9 +126,6 @@
     <svg id="svg" xmlns="http://www.w3.org/2000/svg" height="100" width="100" style="display: none">
 	    <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red"></circle>
     </svg>
-
-    <!-- URL to be changed for the production version -->
-    <script type="text/javascript" src="{{ url_for('static', filename="js/sliderMediumHigh.js", _scheme='http', _external=True) }}"></script>
 
     <!-- Load the acceptable and slider JS script -->
     <script type="text/javascript" src="{{ url_for('static', filename="js/acceptable.js") }}"></script>
