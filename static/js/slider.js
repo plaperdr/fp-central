@@ -14,9 +14,6 @@ div.innerHTML = "<math><mfrac><mi>xx</mi><mi>yy</mi></mfrac></math>";
 document.body.appendChild(div);
 var hasMathML = (div.offsetHeight > div.offsetWidth);
 
-//Medium-High level detection: blocking of external scripts provided through HTTP
-var hasHTTPBlocking = (typeof blockHTTP === "undefined");
-
 //High level detection: support of SVG elements
 var hasSVG = (document.getElementById("svg").height == undefined);
 
@@ -24,17 +21,12 @@ if(hasMathML){
     //Low level detected
     document.getElementById("sliderLow").style.display = "block";
 } else {
-    if(!hasHTTPBlocking){
-        //Medium-Low level detected
-        document.getElementById("sliderMediumLow").style.display = "block";
+    if(!hasSVG){
+        //Medium level detected
+        document.getElementById("sliderMedium").style.display = "block";
     } else {
-        if(!hasSVG){
-            //Medium-High level detected
-            document.getElementById("sliderMediumHigh").style.display = "block";
-        } else {
-            //High level detected
-            document.getElementById("sliderHigh").style.display = "block";
-        }
+        //High level detected
+        document.getElementById("sliderHigh").style.display = "block";
     }
 }
 
