@@ -344,7 +344,7 @@ def getIndividualStats():
         result = getCount(deepcopy(jsonData),"")
 
         #If one of the tag is a Tor tag, we check for an acceptable value
-        if "Tor 6.X" in jsonData["tags"]:
+        if "Tor 6.X" in jsonData["tags"] or "Tor Browser 7.0" in jsonData["tags"]:
             result["acceptable"] = acceptableChecker.checkValue(jsonData["tags"],jsonData["name"], json.loads(jsonData["value"]))
 
             #If value is not acceptable, we get the most popular value
