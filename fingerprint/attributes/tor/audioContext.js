@@ -67,8 +67,28 @@
     var p2 = new Promise(function (resolve, reject) {
         try {
             var nt_vc_context = window.AudioContext || window.webkitAudioContext;
-            if ("function" !== typeof nt_vc_context) audioData.nt_vc_output = "Not available";
-            else {
+            if ("function" !== typeof nt_vc_context) {
+                audioData.nt_vc_output = {
+                    "ac-sampleRate": 0,
+                    "ac-state": 0,
+                    "ac-maxChannelCount": 0,
+                    "ac-numberOfInputs": 0,
+                    "ac-numberOfOutputs": 0,
+                    "ac-channelCount": 0,
+                    "ac-channelCountMode": 0,
+                    "ac-channelInterpretation": 0,
+                    "an-fftSize": 0,
+                    "an-frequencyBinCount": 0,
+                    "an-minDecibels": 0,
+                    "an-maxDecibels": 0,
+                    "an-smoothingTimeConstant": 0,
+                    "an-numberOfInputs": 0,
+                    "an-numberOfOutputs": 0,
+                    "an-channelCount": 0,
+                    "an-channelCountMode": 0,
+                    "an-channelInterpretation": 0
+                };
+            } else {
                 var f = new nt_vc_context,
                     d = f.createAnalyser();
                 audioData.nt_vc_output = a({}, f, "ac-");
@@ -86,7 +106,14 @@
     var cc_output = [];
 
     var p3 = new Promise(function (resolve, reject) {
-        var audioCtx = new (window.AudioContext || window.webkitAudioContext),
+        var audioCtxFunc = window.AudioContext || window.webkitAudioContext;
+        if ("function" !== typeof audioCtxFunc) {
+            cc_output = 0;
+            resolve();
+            return;
+        }
+
+        var audioCtx = new audioCtxFunc,
             oscillator = audioCtx.createOscillator(),
             analyser = audioCtx.createAnalyser(),
             gain = audioCtx.createGain(),
@@ -120,7 +147,13 @@
     var hybrid_output = [];
 
     var p4 = new Promise(function (resolve, reject) {
-        var audioCtx = new (window.AudioContext || window.webkitAudioContext),
+        var audioCtxFunc = window.AudioContext || window.webkitAudioContext;
+        if ("function" !== typeof audioCtxFunc) {
+            hybrid_output = 0;
+            resolve();
+            return;
+        }
+        var audioCtx = new audioCtxFunc,
             oscillator = audioCtx.createOscillator(),
             analyser = audioCtx.createAnalyser(),
             gain = audioCtx.createGain(),
