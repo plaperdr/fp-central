@@ -12,6 +12,7 @@ var tags = [];
 var nbAttributes = 0;
 var statsFetched = 0;
 var showAcceptable = false;
+var notAcceptableAttributes = [];
 
 var value = "Val";
 var percentage = "Per";
@@ -71,6 +72,19 @@ function showAcceptableColumn(){
 
     //Activate all popover elements
     $("i[id$='"+popover+"']").popover()
+}
+
+function addAcceptableSummary(notAcceptableAttributes) {
+    var acceptableSummaryResult = document.createElement("div");
+    if (notAcceptableAttributes.length > 0) {
+        acceptableSummaryResult.innerHTML = "The following attributes do " +
+            "not have an acceptable value: " + notAcceptableAttributes.join(", ");
+    } else {
+        acceptableSummaryResult.innerHTML = "All attributes have an acceptable value.";
+    }
+    acceptableSummaryResult.setAttribute("id", "acceptableSummaryResult");
+    document.getElementById("acceptableSummary").appendChild(acceptableSummaryResult);
+    console.log(acceptableSummaryResult.innerHTML);
 }
 
 function switchPercentages(withTags,withLimit) {
@@ -150,6 +164,7 @@ $(document).ready(function() {
                     if(showAcceptable) {
                         //We display the table headers and columns that were hidden
                         showAcceptableColumn();
+                        addAcceptableSummary(notAcceptableAttributes);
                     }
                 } else {
                     document.getElementById("statsBtn").classList.remove("disabled");
@@ -220,6 +235,7 @@ api.addAcceptableValue = function(name, value){
         color = "#FF8080";
         glyph = "times";
         showAcceptable = true;
+        notAcceptableAttributes.push(name);
     } else {
         color = "#A3A3C2";
         glyph = "minus";
@@ -387,6 +403,7 @@ api.statsEnd = function(){
         //there are acceptable values
         if(showAcceptable) {
             showAcceptableColumn();
+            addAcceptableSummary(notAcceptableAttributes);
         }
     }
 };
