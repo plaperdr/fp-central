@@ -9,6 +9,9 @@ where developers can study device diversity.
 You will find here global information on the project.
 Additional details on the technical implementation can be found in readmes in the **fingerprint** folder.
 
+## Integration with the Tor Project
+FPCentral is officially part of the Tor Project since the end of 2017. An instance has been launched here: [https://fpcentral.tbb.torproject.org/](https://fpcentral.tbb.torproject.org/). The website will also be used to reinforce QA efforts of the TBB development team.
+
 ## Goal
 The goal of FP Central is to collect browser fingerprints from thousands of users and study
 the diversity of devices on the Internet. Data is key in understanding how much identifying
